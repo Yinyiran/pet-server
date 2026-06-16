@@ -4,8 +4,9 @@ import { MemberLevelModule } from './member-level/member-level.module';
 import { ProductCategoryModule } from './product-category/product-category.module';
 import { BannerModule } from './banner/banner.module';
 import { ProductModule } from './product/product.module';
+import { BundleModule } from './bundle/bundle.module';
 
 @Module({
-  imports: [PetUserModule, MemberLevelModule, ProductCategoryModule, BannerModule, ProductModule],
+  imports: [PetUserModule, MemberLevelModule, ProductCategoryModule, BannerModule, ProductModule, BundleModule],
 })
 export class PetModule {}
