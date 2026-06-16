@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Put, Param, Query, Delete, HttpCode } from
 import { ApiTags, ApiOperation, ApiBody, ApiConsumes, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
 import { DeptService } from './dept.service';
 import { CreateDeptDto, UpdateDeptDto, ListDeptDto } from './dto/index';
-import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
+import { RequirePermission } from 'src/common/decorators/require-permission.decorator';
 
 @ApiTags('部门管理')
 @Controller('system/dept')

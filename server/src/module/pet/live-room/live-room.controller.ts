@@ -2,7 +2,7 @@ import { Controller, Get, Post, Put, Delete, Body, Param, Query } from '@nestjs/
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { LiveRoomService } from './live-room.service';
 import { CreateLiveRoomDto, UpdateLiveRoomDto, ListLiveRoomDto } from './dto/index';
-import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
+import { RequirePermission } from 'src/common/decorators/require-permission.decorator';
 
 @ApiTags('业务-直播间管理')
 @ApiBearerAuth('Authorization')

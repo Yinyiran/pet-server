@@ -1,7 +1,7 @@
 import { Controller, Get, Delete, Query, Post, Res, Body } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { JobLogService } from './job-log.service';
-import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
+import { RequirePermission } from 'src/common/decorators/require-permission.decorator';
 import { ListJobLogDto } from './dto/create-job.dto';
 import { Response } from 'express';
 

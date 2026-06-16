@@ -2,7 +2,7 @@ import { Controller, Get, Post, Put, Delete, Body, Param, Query, Req } from '@ne
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { CourseService } from './course.service';
 import { CreateCourseDto, UpdateCourseDto, ListCourseDto, CreateVideoDto, UpdateVideoDto, ListStudentDto } from './dto/index';
-import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
+import { RequirePermission } from 'src/common/decorators/require-permission.decorator';
 
 @ApiTags('业务-课程管理')
 @ApiBearerAuth('Authorization')

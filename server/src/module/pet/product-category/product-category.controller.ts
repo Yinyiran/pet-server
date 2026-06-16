@@ -2,7 +2,7 @@ import { Controller, Get, Post, Put, Delete, Body, Param, Query } from '@nestjs/
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { ProductCategoryService } from './product-category.service';
 import { CreateProductCategoryDto, UpdateProductCategoryDto } from './dto/index';
-import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
+import { RequirePermission } from 'src/common/decorators/require-permission.decorator';
 
 @ApiTags('业务-商品分类')
 @ApiBearerAuth('Authorization')

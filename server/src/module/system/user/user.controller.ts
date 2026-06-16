@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Put, Param, Query, Res, Delete, Request, U
 import { ApiTags, ApiOperation, ApiBody, ApiConsumes, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { Response } from 'express';
-import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
+import { RequirePermission } from 'src/common/decorators/require-permission.decorator';
 import { RequireRole } from 'src/common/decorators/require-role.decorator';
 import { UploadService } from 'src/module/upload/upload.service';
 import { CreateUserDto, UpdateUserDto, ListUserDto, ChangeStatusDto, ResetPwdDto, UpdateProfileDto, UpdatePwdDto } from './dto/index';

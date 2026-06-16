@@ -3,7 +3,7 @@ import { ApiTags, ApiOperation, ApiBody, ApiConsumes, ApiQuery, ApiBearerAuth } 
 import { Response } from 'express';
 import { LoginlogService } from './loginlog.service';
 import { ListLoginlogDto } from './dto/index';
-import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
+import { RequirePermission } from 'src/common/decorators/require-permission.decorator';
 
 @ApiTags('登录日志')
 @Controller('monitor/logininfor')

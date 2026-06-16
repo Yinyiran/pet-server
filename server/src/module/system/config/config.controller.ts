@@ -3,7 +3,7 @@ import { Response } from 'express';
 import { ApiTags, ApiOperation, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
 import { ConfigService } from './config.service';
 import { CreateConfigDto, UpdateConfigDto, ListConfigDto } from './dto/index';
-import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
+import { RequirePermission } from 'src/common/decorators/require-permission.decorator';
 
 @ApiTags('参数设置')
 @Controller('system/config')

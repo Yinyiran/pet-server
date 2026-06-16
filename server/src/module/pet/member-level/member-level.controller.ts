@@ -2,7 +2,7 @@ import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { MemberLevelService } from './member-level.service';
 import { CreateMemberLevelDto, UpdateMemberLevelDto } from './dto/index';
-import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
+import { RequirePermission } from 'src/common/decorators/require-permission.decorator';
 
 @ApiTags('业务-会员等级')
 @ApiBearerAuth('Authorization')

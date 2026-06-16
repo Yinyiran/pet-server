@@ -2,7 +2,7 @@ import { Controller, Get, Post, Put, Delete, Body, Param, Query, Request } from 
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { PetUserService } from './pet-user.service';
 import { ListUserDto, UpdatePetUserDto, CreateAddressDto, UpdateAddressDto, CreatePetDto, UpdatePetDto, WxLoginDto, UpdateProfileDto } from './dto/index';
-import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
+import { RequirePermission } from 'src/common/decorators/require-permission.decorator';
 
 @ApiTags('业务-用户管理')
 @ApiBearerAuth('Authorization')

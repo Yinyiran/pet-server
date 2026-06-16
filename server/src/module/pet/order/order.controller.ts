@@ -2,7 +2,7 @@ import { Controller, Get, Post, Put, Body, Param, Query, Req } from '@nestjs/com
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { OrderService } from './order.service';
 import { ListOrderDto, ShipOrderDto, ListPaymentDto } from './dto/index';
-import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
+import { RequirePermission } from 'src/common/decorators/require-permission.decorator';
 
 @ApiTags('业务-订单管理')
 @ApiBearerAuth('Authorization')

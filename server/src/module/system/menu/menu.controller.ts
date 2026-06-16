@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Query, Put, Param, Delete } from '@nestjs/
 import { ApiTags, ApiOperation, ApiBody, ApiConsumes, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
 import { MenuService } from './menu.service';
 import { CreateMenuDto, UpdateMenuDto, ListDeptDto } from './dto/index';
-import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
+import { RequirePermission } from 'src/common/decorators/require-permission.decorator';
 
 @ApiTags('菜单管理')
 @Controller('system/menu')

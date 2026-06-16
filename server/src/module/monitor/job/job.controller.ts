@@ -3,7 +3,7 @@ import { Response } from 'express';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { JobService } from './job.service';
 import { CreateJobDto, ListJobDto } from './dto/create-job.dto';
-import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
+import { RequirePermission } from 'src/common/decorators/require-permission.decorator';
 
 @ApiTags('定时任务管理')
 @Controller('monitor/job')

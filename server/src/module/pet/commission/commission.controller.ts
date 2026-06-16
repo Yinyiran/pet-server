@@ -2,7 +2,7 @@ import { Controller, Get, Post, Put, Body, Param, Query, Req } from '@nestjs/com
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { CommissionService } from './commission.service';
 import { CreateTierDto, UpdateTierDto, ListAccountDto, ListLogDto, ListInviteDto, ListWithdrawDto, AuditWithdrawDto, ApplyWithdrawDto } from './dto/index';
-import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
+import { RequirePermission } from 'src/common/decorators/require-permission.decorator';
 
 @ApiTags('业务-分佣等级')
 @ApiBearerAuth('Authorization')

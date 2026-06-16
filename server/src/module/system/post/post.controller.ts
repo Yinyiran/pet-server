@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Put, Param, Delete, Res, Query } from '@ne
 import { ApiTags, ApiOperation, ApiBody, ApiConsumes, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
 import { PostService } from './post.service';
 import { CreatePostDto, UpdatePostDto, ListPostDto } from './dto/index';
-import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
+import { RequirePermission } from 'src/common/decorators/require-permission.decorator';
 import { Response } from 'express';
 
 @ApiTags('岗位管理')

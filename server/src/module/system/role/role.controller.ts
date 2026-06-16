@@ -4,7 +4,7 @@ import { RoleService } from './role.service';
 import { Response } from 'express';
 import { CreateRoleDto, UpdateRoleDto, ListRoleDto, ChangeStatusDto, AuthUserCancelDto, AuthUserCancelAllDto, AuthUserSelectAllDto } from './dto/index';
 import { AllocatedListDto } from '../user/dto/index';
-import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
+import { RequirePermission } from 'src/common/decorators/require-permission.decorator';
 
 import { UserService } from '../user/user.service';
 import { User, UserDto } from 'src/module/system/user/user.decorator';
