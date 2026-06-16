@@ -10,8 +10,9 @@ import { OrderModule } from './order/order.module';
 import { RefundModule } from './refund/refund.module';
 import { CourseModule } from './course/course.module';
 import { LiveRoomModule } from './live-room/live-room.module';
+import { CommissionModule } from './commission/commission.module';
 
 @Module({
-  imports: [PetUserModule, MemberLevelModule, ProductCategoryModule, BannerModule, ProductModule, BundleModule, MerchantModule, OrderModule, RefundModule, CourseModule, LiveRoomModule],
+  imports: [PetUserModule, MemberLevelModule, ProductCategoryModule, BannerModule, ProductModule, BundleModule, MerchantModule, OrderModule, RefundModule, CourseModule, LiveRoomModule, CommissionModule],
 })
 export class PetModule {}
