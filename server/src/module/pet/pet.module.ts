@@ -6,8 +6,9 @@ import { BannerModule } from './banner/banner.module';
 import { ProductModule } from './product/product.module';
 import { BundleModule } from './bundle/bundle.module';
 import { MerchantModule } from './merchant/merchant.module';
+import { OrderModule } from './order/order.module';
 
 @Module({
-  imports: [PetUserModule, MemberLevelModule, ProductCategoryModule, BannerModule, ProductModule, BundleModule, MerchantModule],
+  imports: [PetUserModule, MemberLevelModule, ProductCategoryModule, BannerModule, ProductModule, BundleModule, MerchantModule, OrderModule],
 })
 export class PetModule {}
