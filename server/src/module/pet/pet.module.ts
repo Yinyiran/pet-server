@@ -12,8 +12,9 @@ import { CourseModule } from './course/course.module';
 import { LiveRoomModule } from './live-room/live-room.module';
 import { CommissionModule } from './commission/commission.module';
 import { MealModule } from './meal/meal.module';
+import { FinanceModule } from './finance/finance.module';
 
 @Module({
-  imports: [PetUserModule, MemberLevelModule, ProductCategoryModule, BannerModule, ProductModule, BundleModule, MerchantModule, OrderModule, RefundModule, CourseModule, LiveRoomModule, CommissionModule, MealModule],
+  imports: [PetUserModule, MemberLevelModule, ProductCategoryModule, BannerModule, ProductModule, BundleModule, MerchantModule, OrderModule, RefundModule, CourseModule, LiveRoomModule, CommissionModule, MealModule, FinanceModule],
 })
 export class PetModule {}
