@@ -7,8 +7,9 @@ import { ProductModule } from './product/product.module';
 import { BundleModule } from './bundle/bundle.module';
 import { MerchantModule } from './merchant/merchant.module';
 import { OrderModule } from './order/order.module';
+import { RefundModule } from './refund/refund.module';
 
 @Module({
-  imports: [PetUserModule, MemberLevelModule, ProductCategoryModule, BannerModule, ProductModule, BundleModule, MerchantModule, OrderModule],
+  imports: [PetUserModule, MemberLevelModule, ProductCategoryModule, BannerModule, ProductModule, BundleModule, MerchantModule, OrderModule, RefundModule],
 })
 export class PetModule {}
