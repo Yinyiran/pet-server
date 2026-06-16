@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>梵优茗宠 — 后台管理端页面规划</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: #f8f4f0;
+    color: #3d2c1e;
+    padding: 20px;
+  }
+  .header {
+    text-align: center;
+    padding: 24px 16px 16px;
+    background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+    border-radius: 16px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(6,95,70,0.06);
+  }
+  .header h1 { font-size: 22px; font-weight: 800; color: #065f46; margin-bottom: 6px; }
+  .header p { font-size: 13px; color: #6b7280; }
+
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .stat-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 14px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(6,95,70,0.05);
+  }
+  .stat-card .num { font-size: 28px; font-weight: 800; color: #10b981; }
+  .stat-card .label { font-size: 12px; color: #9ca3af; margin-top: 2px; }
+
+  .module { margin-bottom: 24px; }
+  .module-title {
+    font-size: 16px; font-weight: 700; color: #065f46;
+    padding: 10px 14px; border-radius: 10px; margin-bottom: 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .module-title .icon { font-size: 20px; }
+  .module-title .badge {
+    font-size: 11px; padding: 2px 8px; border-radius: 10px;
+    background: #d1fae5; color: #065f46; font-weight: 600; margin-left: auto;
+  }
+
+  .page-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+  @media (min-width: 900px) { .page-grid { grid-template-columns: 1fr 1fr; } }
+
+  .page-card {
+    background: #fff; border-radius: 12px; padding: 16px;
+    box-shadow: 0 2px 8px rgba(6,95,70,0.05);
+    border-left: 3px solid #ccc;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .page-card:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(6,95,70,0.08); }
+  .page-card.c-green { border-left-color: #10b981; }
+  .page-card.c-orange { border-left-color: #f97316; }
+  .page-card.c-purple { border-left-color: #a78bfa; }
+  .page-card.c-pink { border-left-color: #f472b6; }
+  .page-card.c-yellow { border-left-color: #f59e0b; }
+  .page-card.c-blue { border-left-color: #38bdf8; }
+  .page-card.c-red { border-left-color: #ef4444; }
+  .page-card.c-cyan { border-left-color: #06b6d4; }
+  .page-card.c-indigo { border-left-color: #6366f1; }
+  .page-card.c-slate { border-left-color: #64748b; }
+
+  .page-card .name { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+  .page-card .route { font-size: 11px; color: #9ca3af; font-family: monospace; background: #f3f4f6; padding: 1px 6px; border-radius: 4px; display: inline-block; margin-bottom: 8px; }
+  .page-card .desc { font-size: 13px; color: #6b7280; line-height: 1.6; margin-bottom: 8px; }
+  .page-card .tables { display: flex; flex-wrap: wrap; gap: 4px; }
+  .page-card .tables span {
+    font-size: 11px; padding: 2px 8px; border-radius: 10px;
+    background: #f0fdf4; color: #065f46; border: 1px solid #d1fae5;
+  }
+  .page-card .features { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+  .page-card .features span {
+    font-size: 11px; padding: 2px 7px; border-radius: 10px;
+    background: #fef3c7; color: #92400e;
+  }
+
+  .section-divider {
+    margin: 28px 0 16px;
+    font-size: 14px; font-weight: 800; color: #059669;
+    padding-left: 10px; border-left: 3px solid #10b981;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  .summary-box {
+    background: #fff; border-radius: 12px; padding: 18px;
+    box-shadow: 0 2px 8px rgba(6,95,70,0.05); margin-top: 20px;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px;
+  }
+  .summary-box .item { text-align: center; }
+  .summary-box .item .num { font-size: 30px; font-weight: 800; color: #10b981; }
+  .summary-box .item .label { font-size: 12px; color: #6b7280; margin-top: 2px; }
+
+  @media (prefers-color-scheme: dark) {
+    body { background: #1a1a2e; color: #e8e3dc; }
+    .page-card, .stat-card, .summary-box { background: #16213e; }
+    .header { background: linear-gradient(135deg, #16213e, #0f3460); }
+    .header p { color: #b8a898; }
+    .page-card .desc { color: #b8a898; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>梵优茗宠 — 后台管理端页面规划</h1>
+  <p>根据前端 5 Tab + 子页面 + 弹窗覆盖层的功能需求，梳理后台管理所需的全部页面、功能点和涉及数据表</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat-card"><div class="num">15</div><div class="label">一级菜单模块</div></div>
+  <div class="stat-card"><div class="num">53</div><div class="label">功能页面</div></div>
+  <div class="stat-card"><div class="num">29</div><div class="label">列表管理页</div></div>
+  <div class="stat-card"><div class="num">8</div><div class="label">审核/审批流</div></div>
+  <div class="stat-card"><div class="num">34</div><div class="label">涉及数据表</div></div>
+</div>
+
+<!-- ==================== 一、仪表盘 ==================== -->
+<div class="section-divider">📊 一、仪表盘 Dashboard</div>
+
+<div class="page-grid">
+  <div class="page-card c-green">
+    <div class="name">数据总览</div>
+    <div class="route">/dashboard</div>
+    <div class="desc">核心指标看板：今日新增用户、订单数、GMV、佣金总额、待审核数（入驻/提现/售后）、实时趋势图、近7天对比</div>
+    <div class="tables"><span>聚合查询</span></div>
+    <div class="features"><span>图表可视化</span><span>实时数据</span><span>可下钻</span></div>
+  </div>
+</div>
+
+<!-- ==================== 二、用户管理 ==================== -->
+<div class="section-divider">👤 二、用户管理</div>
+
+<div class="page-grid">
+  <div class="page-card c-green">
+    <div class="name">用户列表</div>
+    <div class="route">/users</div>
+    <div class="desc">全部注册用户列表，支持按手机号/nickname/open_id搜索、按等级/城市/注册时间筛选、批量导出、启用/禁用</div>
+    <div class="tables"><span>USER</span><span>MEMBER_LEVEL</span></div>
+    <div class="features"><span>搜索</span><span>筛选</span><span>导出</span><span>状态管理</span></div>
+  </div>
+  <div class="page-card c-green">
+    <div class="name">用户详情</div>
+    <div class="route">/users/:id</div>
+    <div class="desc">个人资料全览：基本信息、宠物列表、收货地址、订单记录、积分流水、消费记录、分佣账户、课程学习进度</div>
+    <div class="tables"><span>USER</span><span>USER_PET</span><span>USER_ADDRESS</span><span>ORDER</span><span>POINTS_LOG</span></div>
+    <div class="features"><span>Tab切换</span><span>关联查询</span><span>信息编辑</span></div>
+  </div>
+  <div class="page-card c-green">
+    <div class="name">会员等级配置</div>
+    <div class="route">/users/levels</div>
+    <div class="desc">管理会员等级体系：等级名称、升级门槛、下一档门槛、积分倍率、权益JSON编辑、排序、启用/禁用</div>
+    <div class="tables"><span>MEMBER_LEVEL</span></div>
+    <div class="features"><span>列表</span><span>新增</span><span>编辑</span><span>拖拽排序</span></div>
+  </div>
+</div>
+
+<!-- ==================== 三、宠物管理 ==================== -->
+<div class="section-divider">🐾 三、宠物档案管理</div>
+
+<div class="page-grid">
+  <div class="page-card c-green">
+    <div class="name">宠物列表</div>
+    <div class="route">/pets</div>
+    <div class="desc">所有宠物档案，按主人/品种/类型(cat/dog)/年龄段筛选，查看详情（体重/年龄/绝育状态）</div>
+    <div class="tables"><span>USER_PET</span><span>USER</span></div>
+    <div class="features"><span>搜索</span><span>筛选</span><span>主人关联</span></div>
+  </div>
+</div>
+
+<!-- ==================== 四、商品管理 ==================== -->
+<div class="section-divider">📦 四、商品管理</div>
+
+<div class="page-grid">
+  <div class="page-card c-orange">
+    <div class="name">商品列表</div>
+    <div class="route">/products</div>
+    <div class="desc">全部商品管理：按名称/分类/商家/上架状态搜索筛选、批量上下架、库存预警、限时特供标记</div>
+    <div class="tables"><span>PRODUCT</span><span>PRODUCT_CATEGORY</span><span>CITY_MERCHANT</span></div>
+    <div class="features"><span>搜索</span><span>筛选</span><span>批量操作</span><span>库存预警</span></div>
+  </div>
+  <div class="page-card c-orange">
+    <div class="name">新增 / 编辑商品</div>
+    <div class="route">/products/new | /products/:id/edit</div>
+    <div class="desc">商品表单：名称、描述（富文本）、售价/原价、库存、分类选择、标签、主图+轮播图上传、规格JSON编辑（多规格SKU）、所属商家、限时特供设置（flash价格/起止时间）、上架开关</div>
+    <div class="tables"><span>PRODUCT</span></div>
+    <div class="features"><span>富文本</span><span>图片上传</span><span>JSON编辑器</span><span>规格配置</span></div>
+  </div>
+  <div class="page-card c-orange">
+    <div class="name">商品分类管理</div>
+    <div class="route">/products/categories</div>
+    <div class="desc">分类树管理：支持二级分类（parent_id自关联）、排序、启用/禁用、分类下的商品数量统计</div>
+    <div class="tables"><span>PRODUCT_CATEGORY</span></div>
+    <div class="features"><span>树形结构</span><span>拖拽排序</span><span>关联统计</span></div>
+  </div>
+</div>
+
+<!-- ==================== 五、Banner 运营 ==================== -->
+<div class="section-divider">🖼️ 五、Banner 轮播运营</div>
+
+<div class="page-grid">
+  <div class="page-card c-blue">
+    <div class="name">Banner 列表</div>
+    <div class="route">/banners</div>
+    <div class="desc">轮播 Banner 管理：按启用状态/时间段筛选、排序查看、预览效果</div>
+    <div class="tables"><span>BANNER</span></div>
+    <div class="features"><span>搜索</span><span>预览</span><span>拖拽排序</span></div>
+  </div>
+  <div class="page-card c-blue">
+    <div class="name">新增 / 编辑 Banner</div>
+    <div class="route">/banners/new | /banners/:id/edit</div>
+    <div class="desc">Banner 表单：标题/副标题、背景图上传+兜底色选择、按钮文字/颜色、跳转类型（product/merchant/page/url/none）→ 目标选择器（选商品/选商家/填路径/填URL）、展示时段（valid_from ~ valid_until）、排序、启用开关</div>
+    <div class="tables"><span>BANNER</span><span>PRODUCT</span><span>CITY_MERCHANT</span></div>
+    <div class="features"><span>图片上传</span><span>颜色选择器</span><span>关联选择器</span><span>时间范围</span></div>
+  </div>
+</div>
+
+<!-- ==================== 六、订单管理 ==================== -->
+<div class="section-divider">🧾 六、订单管理</div>
+
+<div class="page-grid">
+  <div class="page-card c-orange">
+    <div class="name">订单列表</div>
+    <div class="route">/orders</div>
+    <div class="desc">全部订单：按订单号/用户搜索、按状态Tab筛选（待付款/待发货/待收货/已完成/已取消）、时间范围筛选、导出报表</div>
+    <div class="tables"><span>ORDER</span><span>ORDER_ITEM</span><span>USER</span></div>
+    <div class="features"><span>多Tab筛选</span><span>搜索</span><span>导出</span><span>状态流转</span></div>
+  </div>
+  <div class="page-card c-orange">
+    <div class="name">订单详情</div>
+    <div class="route">/orders/:id</div>
+    <div class="desc">订单完整信息：用户信息、收货地址、商品明细（快照）、支付明细、物流信息、状态时间线、关联售后记录、关联分佣记录</div>
+    <div class="tables"><span>ORDER</span><span>ORDER_ITEM</span><span>PAYMENT</span><span>REFUND</span><span>COMMISSION_LOG</span></div>
+    <div class="features"><span>时间线</span><span>物流追踪</span><span>关联查询</span></div>
+  </div>
+  <div class="page-card c-orange">
+    <div class="name">发货管理</div>
+    <div class="route">/orders/shipping</div>
+    <div class="desc">待发货订单列表，录入物流公司+物流单号，一键发货，批量发货（导入Excel），物流轨迹查询</div>
+    <div class="tables"><span>ORDER</span></div>
+    <div class="features"><span>批量发货</span><span>物流录入</span><span>Excel导入</span></div>
+  </div>
+  <div class="page-card c-orange">
+    <div class="name">支付记录</div>
+    <div class="route">/orders/payments</div>
+    <div class="desc">全部支付流水：按支付方式/状态筛选、关联订单、交易号对账</div>
+    <div class="tables"><span>PAYMENT</span><span>ORDER</span></div>
+    <div class="features"><span>对账</span><span>筛选</span><span>导出</span></div>
+  </div>
+</div>
+
+<!-- ==================== 七、售后管理 ==================== -->
+<div class="section-divider">🔄 七、售后管理</div>
+
+<div class="page-grid">
+  <div class="page-card c-red">
+    <div class="name">售后列表</div>
+    <div class="route">/refunds</div>
+    <div class="desc">全部售后单：按类型（退款/换货）/状态（待审核/处理中/已退款/已拒绝）筛选、关联订单查询</div>
+    <div class="tables"><span>REFUND</span><span>ORDER</span><span>USER</span></div>
+    <div class="features"><span>多状态Tab</span><span>搜索</span><span>筛选</span></div>
+  </div>
+  <div class="page-card c-red">
+    <div class="name">售后审核</div>
+    <div class="route">/refunds/:id/audit</div>
+    <div class="desc">审核详情：售后原因、退款金额、上传凭证、原订单信息 → 审核通过（触发退款/换货流程）/ 审核拒绝（填写原因）</div>
+    <div class="tables"><span>REFUND</span><span>ORDER</span><span>PAYMENT</span><span>USER</span></div>
+    <div class="features"><span>凭证查看</span><span>审核操作</span><span>状态流转</span></div>
+  </div>
+</div>
+
+<!-- ==================== 八、同城商家 ==================== -->
+<div class="section-divider">🏪 八、同城商家管理</div>
+
+<div class="page-grid">
+  <div class="page-card c-yellow">
+    <div class="name">商家列表</div>
+    <div class="route">/merchants</div>
+    <div class="desc">全部入驻商家：按类型(shop/hospital/...)/评分/状态搜索筛选、查看详情、启用/禁用</div>
+    <div class="tables"><span>CITY_MERCHANT</span><span>PRODUCT</span></div>
+    <div class="features"><span>搜索</span><span>筛选</span><span>商品数统计</span></div>
+  </div>
+  <div class="page-card c-yellow">
+    <div class="name">商家详情</div>
+    <div class="route">/merchants/:id</div>
+    <div class="desc">商家全貌：基本信息、营业时间、位置（地图展示）、商家上架的商品列表、评分评价</div>
+    <div class="tables"><span>CITY_MERCHANT</span><span>PRODUCT</span></div>
+    <div class="features"><span>地图展示</span><span>商品关联</span><span>编辑</span></div>
+  </div>
+  <div class="page-card c-yellow">
+    <div class="name">入驻申请列表</div>
+    <div class="route">/merchants/applications</div>
+    <div class="desc">待审核 / 已审核的入驻申请，搜索筛选，查看申请详情</div>
+    <div class="tables"><span>MERCHANT_APPLY</span></div>
+    <div class="features"><span>状态筛选</span><span>批量审核</span></div>
+  </div>
+  <div class="page-card c-yellow">
+    <div class="name">入驻审核</div>
+    <div class="route">/merchants/applications/:id/audit</div>
+    <div class="desc">审核入驻表单：商户类型、名称、联系人、地址、说明 → 审核通过（自动创建 CITY_MERCHANT 记录）/ 审核拒绝（填写原因）</div>
+    <div class="tables"><span>MERCHANT_APPLY</span><span>CITY_MERCHANT</span></div>
+    <div class="features"><span>审核操作</span><span>自动创建商家</span></div>
+  </div>
+</div>
+
+<!-- ==================== 九、分佣管理 ==================== -->
+<div class="section-divider">💰 九、分佣管理</div>
+
+<div class="page-grid">
+  <div class="page-card c-purple">
+    <div class="name">分佣等级配置</div>
+    <div class="route">/commission/tiers</div>
+    <div class="desc">三级差额分佣体系配置：等级名、图标、佣金率(commission_rate: 9%/15%/18%)、各级佣金拆分(rates JSON)、资格获取方式(qualification: 购买课程/后端设置)、升级条件、主题色、是否隐藏(城市分公司)、启用/禁用</div>
+    <div class="tables"><span>COMMISSION_TIER</span></div>
+    <div class="features"><span>列表</span><span>编辑</span><span>佣金率配置</span><span>资格方式</span><span>隐藏开关</span></div>
+  </div>
+  <div class="page-card c-purple">
+    <div class="name">分佣系统配置</div>
+    <div class="route">/commission/settings</div>
+    <div class="desc">分佣全局配置：城市分公司功能开关(enableCityBranch)、差额分佣规则说明、课程-分销资格映射关系查看、邀请码规则配置</div>
+    <div class="tables"><span>COMMISSION_CONFIG</span><span>COURSE</span></div>
+    <div class="features"><span>功能开关</span><span>规则说明</span><span>课程资格映射</span></div>
+  </div>
+  <div class="page-card c-purple">
+    <div class="name">分佣账户列表</div>
+    <div class="route">/commission/accounts</div>
+    <div class="desc">全部用户的分佣账户：累计收益/待结算/可提现/冻结金额、邀请人数、活跃数、本月收益、等级(合伙人/主理人/城市分公司)、佣金率，按金额排序</div>
+    <div class="tables"><span>USER_COMMISSION</span><span>USER</span><span>COMMISSION_TIER</span></div>
+    <div class="features"><span>搜索</span><span>排序</span><span>等级筛选</span><span>佣金率展示</span></div>
+  </div>
+  <div class="page-card c-purple">
+    <div class="name">佣金流水</div>
+    <div class="route">/commission/logs</div>
+    <div class="desc">全部佣金流水明细：按受益人/消费用户/订单号/类型(direct/team)/状态筛选、显示差额计算公式(上级rate-下级rate)、按时间范围查询、导出报表</div>
+    <div class="tables"><span>COMMISSION_LOG</span><span>USER</span><span>ORDER</span></div>
+    <div class="features"><span>多维度筛选</span><span>差额公式展示</span><span>导出</span><span>关联订单</span></div>
+  </div>
+  <div class="page-card c-purple">
+    <div class="name">邀请关系</div>
+    <div class="route">/commission/invites</div>
+    <div class="desc">全部邀请关系树：被邀请人→邀请人、关系深度(1-3级)、邀请时间、状态，可展开查看下级邀请链</div>
+    <div class="tables"><span>USER_INVITE</span><span>USER</span></div>
+    <div class="features"><span>关系树</span><span>层级筛选</span><span>下钻</span></div>
+  </div>
+  <div class="page-card c-purple">
+    <div class="name">提现审核列表</div>
+    <div class="route">/commission/withdrawals</div>
+    <div class="desc">提现申请管理：按状态（待审核/已打款/已拒绝）筛选、查看详情</div>
+    <div class="tables"><span>WITHDRAW</span><span>USER</span></div>
+    <div class="features"><span>状态Tab</span><span>搜索</span><span>批量审核</span></div>
+  </div>
+  <div class="page-card c-purple">
+    <div class="name">提现审核详情</div>
+    <div class="route">/commission/withdrawals/:id/audit</div>
+    <div class="desc">审核详情：提现金额、提现方式(微信/银行卡)、账户信息（脱敏显示）、申请人分佣账户概况 → 审核通过（标记打款）/ 审核拒绝（填写原因，回滚余额）</div>
+    <div class="tables"><span>WITHDRAW</span><span>USER_COMMISSION</span></div>
+    <div class="features"><span>脱敏显示</span><span>审核操作</span><span>余额回滚</span></div>
+  </div>
+</div>
+
+<!-- ==================== 十、积分管理 ==================== -->
+<div class="section-divider">⭐ 十、积分管理</div>
+
+<div class="page-grid">
+  <div class="page-card c-yellow">
+    <div class="name">积分流水</div>
+    <div class="route">/points/logs</div>
+    <div class="desc">全部积分变动流水：按类型(earn/spend/expire)/来源/用户筛选、时间范围查询、导出</div>
+    <div class="tables"><span>POINTS_LOG</span><span>USER</span></div>
+    <div class="features"><span>多维度筛选</span><span>导出</span><span>余额快照</span></div>
+  </div>
+  <div class="page-card c-yellow">
+    <div class="name">积分规则配置</div>
+    <div class="route">/points/rules</div>
+    <div class="desc">积分获取/消耗/过期规则配置（系统配置项）：签到积分、邀请积分、消费积分比例、积分有效期天数、积分抵扣比例、积分兑换商品管理</div>
+    <div class="tables"><span>系统配置</span></div>
+    <div class="features"><span>规则编辑</span><span>数值配置</span></div>
+  </div>
+</div>
+
+<!-- ==================== 十一、财务管理 ==================== -->
+<div class="section-divider">💳 十一、财务管理</div>
+
+<div class="page-grid">
+  <div class="page-card c-cyan">
+    <div class="name">充值记录</div>
+    <div class="route">/finance/recharges</div>
+    <div class="desc">全部充值流水：按充值方式/状态筛选、关联用户、交易号对账</div>
+    <div class="tables"><span>RECHARGE_LOG</span><span>USER</span></div>
+    <div class="features"><span>筛选</span><span>对账</span><span>导出</span></div>
+  </div>
+  <div class="page-card c-cyan">
+    <div class="name">消费流水</div>
+    <div class="route">/finance/consumptions</div>
+    <div class="desc">全部消费记录：按类型(商品购买/退款)/支付方式(余额/微信)筛选、金额汇总、导出</div>
+    <div class="tables"><span>CONSUMPTION_LOG</span><span>USER</span></div>
+    <div class="features"><span>筛选</span><span>汇总</span><span>导出</span></div>
+  </div>
+  <div class="page-card c-cyan">
+    <div class="name">财务报表</div>
+    <div class="route">/finance/reports</div>
+    <div class="desc">营收报表：日/周/月 GMV、订单数/客单价趋势、支付方式占比、退款率、分佣支出、充值金额汇总，可视化图表 + 导出</div>
+    <div class="tables"><span>ORDER</span><span>PAYMENT</span><span>REFUND</span><span>COMMISSION_LOG</span><span>RECHARGE_LOG</span></div>
+    <div class="features"><span>图表</span><span>时间维度</span><span>导出Excel</span></div>
+  </div>
+</div>
+
+<!-- ==================== 十二、内容管理 ==================== -->
+<div class="section-divider">🎓 十二、内容管理（轻创课程 + 直播间）</div>
+
+<div class="page-grid">
+  <div class="page-card c-purple">
+    <div class="name">课程列表</div>
+    <div class="route">/courses</div>
+    <div class="desc">全部课程：按层级(basic/pro/partner)/上架状态筛选、排序管理、查看购买人数、关联分销资格(购买pro→合伙人资格/partner→主理人资格)</div>
+    <div class="tables"><span>COURSE</span><span>USER_COURSE</span><span>COMMISSION_TIER</span></div>
+    <div class="features"><span>筛选</span><span>排序</span><span>购买统计</span><span>分销资格关联</span></div>
+  </div>
+  <div class="page-card c-purple">
+    <div class="name">新增 / 编辑课程</div>
+    <div class="route">/courses/new | /courses/:id/edit</div>
+    <div class="desc">课程表单：名称、层级选择、价格、简介（富文本）、封面图、关联分销资格等级(购买此课程可获得的分销等级)、特色JSON编辑、章节大纲JSON编辑（章节名+视频列表）、上架开关</div>
+    <div class="tables"><span>COURSE</span><span>COURSE_VIDEO</span><span>COMMISSION_TIER</span></div>
+    <div class="features"><span>富文本</span><span>JSON编辑器</span><span>视频关联</span><span>分销资格绑定</span></div>
+  </div>
+  <div class="page-card c-purple">
+    <div class="name">视频管理</div>
+    <div class="route">/courses/:courseId/videos</div>
+    <div class="desc">课程下视频列表：标题、视频地址、缩略图、时长、是否免费试看、排序、批量上传</div>
+    <div class="tables"><span>COURSE_VIDEO</span></div>
+    <div class="features"><span>视频上传</span><span>排序</span><span>免费标记</span></div>
+  </div>
+  <div class="page-card c-purple">
+    <div class="name">学员管理</div>
+    <div class="route">/courses/students</div>
+    <div class="desc">全部购买学员：按课程/学习状态(学习中/已完成/已过期)筛选、购买时间/到期时间查看</div>
+    <div class="tables"><span>USER_COURSE</span><span>USER</span><span>COURSE</span></div>
+    <div class="features"><span>筛选</span><span>到期监控</span></div>
+  </div>
+  <div class="page-card c-purple">
+    <div class="name">直播间管理</div>
+    <div class="route">/live-rooms</div>
+    <div class="desc">直播间列表：名称、平台(douyin等)、房间号、分享口令、启用开关，支持新增/编辑</div>
+    <div class="tables"><span>LIVE_ROOM</span></div>
+    <div class="features"><span>列表</span><span>新增/编辑</span><span>启用开关</span></div>
+  </div>
+</div>
+
+<!-- ==================== 十三、AI配餐管理 ==================== -->
+<div class="section-divider">🤖 十三、AI 配餐管理</div>
+
+<div class="page-grid">
+  <div class="page-card c-pink">
+    <div class="name">配餐方案列表</div>
+    <div class="route">/meals/plans</div>
+    <div class="desc">全部配餐方案：按宠物类型(cat/dog)/标签/启用状态筛选、排序管理</div>
+    <div class="tables"><span>MEAL_PLAN</span><span>MEAL_INGREDIENT</span></div>
+    <div class="features"><span>筛选</span><span>排序</span><span>食材预览</span></div>
+  </div>
+  <div class="page-card c-pink">
+    <div class="name">新增 / 编辑配餐方案</div>
+    <div class="route">/meals/plans/new | /meals/plans/:id/edit</div>
+    <div class="desc">方案表单：名称、宠物类型、标签、匹配规则JSON（体质类型→方案映射）、食材配方列表（食材名+配比克数+排序）、月单价、是否默认方案、上架开关</div>
+    <div class="tables"><span>MEAL_PLAN</span><span>MEAL_INGREDIENT</span></div>
+    <div class="features"><span>JSON编辑器</span><span>食材列表</span><span>匹配规则</span></div>
+  </div>
+  <div class="page-card c-pink">
+    <div class="name">答题记录</div>
+    <div class="route">/meals/quiz-records</div>
+    <div class="desc">用户AI答题记录：按用户/宠物类型/体质类型筛选、查看答题详情（答案JSON）、体质分析结果</div>
+    <div class="tables"><span>QUIZ_RECORD</span><span>USER</span></div>
+    <div class="features"><span>筛选</span><span>答案查看</span><span>体质分布</span></div>
+  </div>
+  <div class="page-card c-pink">
+    <div class="name">配餐订单</div>
+    <div class="route">/meals/orders</div>
+    <div class="desc">配餐订单列表：按用户/方案/状态筛选、查看详情（餐次/天数/总价/关联答题）</div>
+    <div class="tables"><span>MEAL_ORDER</span><span>MEAL_PLAN</span><span>QUIZ_RECORD</span><span>USER</span></div>
+    <div class="features"><span>筛选</span><span>关联查询</span><span>导出</span></div>
+  </div>
+</div>
+
+<!-- ==================== 十四、商品组合包 ==================== -->
+<div class="section-divider">🎁 十四、商品组合包管理</div>
+
+<div class="page-grid">
+  <div class="page-card c-orange">
+    <div class="name">组合包列表</div>
+    <div class="route">/bundles</div>
+    <div class="desc">全部组合包：按上架状态筛选、排序管理、查看组合价与原价合计对比</div>
+    <div class="tables"><span>PRODUCT_BUNDLE</span></div>
+    <div class="features"><span>筛选</span><span>价格对比</span><span>上下架</span></div>
+  </div>
+  <div class="page-card c-orange">
+    <div class="name">新增 / 编辑组合包</div>
+    <div class="route">/bundles/new | /bundles/:id/edit</div>
+    <div class="desc">组合包表单：名称、封面图、描述（富文本）、选品列表（搜索添加商品+设置数量+排序）、自动计算 original_price、手动设置 bundle_price、上架开关</div>
+    <div class="tables"><span>PRODUCT_BUNDLE</span><span>PRODUCT_BUNDLE_ITEM</span><span>PRODUCT</span></div>
+    <div class="features"><span>商品搜索选择</span><span>自动计价</span><span>数量配置</span></div>
+  </div>
+</div>
+
+<!-- ==================== 汇总 ==================== -->
+<div class="summary-box">
+  <div class="item"><div class="num">15</div><div class="label">一级菜单</div></div>
+  <div class="item"><div class="num">53</div><div class="label">功能页面</div></div>
+  <div class="item"><div class="num">29</div><div class="label">列表页</div></div>
+  <div class="item"><div class="num">17</div><div class="label">表单/编辑页</div></div>
+  <div class="item"><div class="num">7</div><div class="label">详情页</div></div>
+  <div class="item"><div class="num">8</div><div class="label">审核流</div></div>
+  <div class="item"><div class="num">3</div><div class="label">报表/统计</div></div>
+</div>
+
+<script>
+document.querySelectorAll('.page-grid').forEach(grid => {
+  if (grid.children.length === 0) grid.style.display = 'none';
+});
+</script>
+</body>
+</html>

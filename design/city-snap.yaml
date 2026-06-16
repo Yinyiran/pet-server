@@ -1,0 +1,174 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - generic [ref=e5]:
+      - generic [ref=e6]: 🐾
+      - text: 梵优茗宠
+  - main [ref=e7]:
+    - generic [ref=e8]:
+      - generic [ref=e10]:
+        - generic [ref=e11] [cursor=pointer]:
+          - generic [ref=e12]:
+            - generic [ref=e13]: 🛒 品质甄选
+            - generic [ref=e14]: 宠物优选商城
+            - generic [ref=e15]: 零食·主粮·用品，一站式采购爱宠所需
+            - generic [ref=e16]:
+              - text: 去逛逛
+              - img [ref=e17]
+          - generic: 🛍️
+        - generic [ref=e19] [cursor=pointer]:
+          - generic [ref=e20]:
+            - generic [ref=e21]: 🏪 线下体验
+            - generic [ref=e22]: 合作宠物门店
+            - generic [ref=e23]: 洗澡美容·寄养托管，就近预约服务
+            - generic [ref=e24]:
+              - text: 去预约
+              - img [ref=e25]
+          - generic: ✂️
+        - generic [ref=e27] [cursor=pointer]:
+          - generic [ref=e28]:
+            - generic [ref=e29]: 🏥 健康守护
+            - generic [ref=e30]: 在线宠物医院
+            - generic [ref=e31]: 在线问诊·疫苗预约·体检套餐一站搞定
+            - generic [ref=e32]:
+              - text: 去预约
+              - img [ref=e33]
+          - generic: 💊
+      - generic [ref=e40]:
+        - generic [ref=e41] [cursor=pointer]:
+          - generic [ref=e42]: 🦴
+          - generic [ref=e43]: 狗狗零食
+        - generic [ref=e44] [cursor=pointer]:
+          - generic [ref=e45]: 🐟
+          - generic [ref=e46]: 猫咪零食
+        - generic [ref=e47] [cursor=pointer]:
+          - generic [ref=e48]: 🥫
+          - generic [ref=e49]: 主粮罐头
+        - generic [ref=e50] [cursor=pointer]:
+          - generic [ref=e51]: 💊
+          - generic [ref=e52]: 营养保健
+        - generic [ref=e53] [cursor=pointer]:
+          - generic [ref=e54]: 🎾
+          - generic [ref=e55]: 玩具用品
+        - generic [ref=e56] [cursor=pointer]:
+          - generic [ref=e57]: 🧴
+          - generic [ref=e58]: 清洁护理
+        - generic [ref=e59] [cursor=pointer]:
+          - generic [ref=e60]: 👔
+          - generic [ref=e61]: 服饰出行
+        - generic [ref=e62] [cursor=pointer]:
+          - generic [ref=e63]: 🏥
+          - generic [ref=e64]: 医疗健康
+      - generic [ref=e65] [cursor=pointer]:
+        - generic [ref=e66]: AI 专属定制
+        - generic [ref=e67]: 填写猫咪基础信息，AI智能分析爱宠特征，精准推荐最适合的营养配餐方案
+        - generic [ref=e68]:
+          - text: 开始定制
+          - img [ref=e69]
+        - generic [ref=e71]: 🤖
+      - generic [ref=e72]:
+        - generic [ref=e73]:
+          - generic [ref=e74]: ⚡
+          - generic [ref=e75]: 限时特供
+        - generic [ref=e76]:
+          - generic [ref=e77]: "03"
+          - generic [ref=e78]: ":"
+          - generic [ref=e79]: "22"
+          - generic [ref=e80]: ":"
+          - generic [ref=e81]: "12"
+      - generic [ref=e82]:
+        - generic [ref=e83]:
+          - generic [ref=e84]: 🦴
+          - generic [ref=e85]: 磨牙洁齿棒
+          - generic [ref=e86]: ¥19.9¥39.9
+        - generic [ref=e87]:
+          - generic [ref=e88]: 🐟
+          - generic [ref=e89]: 三文鱼冻干
+          - generic [ref=e90]: ¥29.9¥59.9
+        - generic [ref=e91]:
+          - generic [ref=e92]: 🧀
+          - generic [ref=e93]: 奶酪小饼干
+          - generic [ref=e94]: ¥15.9¥29.9
+        - generic [ref=e95]:
+          - generic [ref=e96]: 🥩
+          - generic [ref=e97]: 牛肉粒零食
+          - generic [ref=e98]: ¥24.9¥45.9
+      - generic [ref=e100]:
+        - generic [ref=e101]: 🎁
+        - generic [ref=e102]: 零食全家桶
+      - generic [ref=e103] [cursor=pointer]:
+        - generic [ref=e104]:
+          - generic [ref=e105]: 🍖
+          - generic [ref=e106]: 🐟
+          - generic [ref=e107]: 🧀
+          - generic [ref=e108]: 🥩
+        - generic [ref=e109]:
+          - generic [ref=e110]: 超值零食全家桶
+          - generic [ref=e111]: 精选磨牙棒、冻干肉、牛肉粒、芝士饼干四大爆款，一次满足爱宠所有口味。优质天然食材，低盐低脂配方，营养全面均衡，好吃更健康
+        - generic [ref=e112]:
+          - generic [ref=e113]:
+            - text: ¥89
+            - generic [ref=e114]: ¥168
+          - button "立即选购" [ref=e115]:
+            - img [ref=e116]
+            - text: 立即选购
+      - generic [ref=e121]:
+        - generic [ref=e122]: 🍪
+        - generic [ref=e123]: 零食专区
+      - generic [ref=e124]:
+        - generic [ref=e125] [cursor=pointer]:
+          - generic [ref=e126]:
+            - text: 🦴
+            - generic [ref=e127]: 热卖
+          - generic [ref=e128]:
+            - generic [ref=e129]: 鸡肉缠绕磨牙棒
+            - generic [ref=e130]: 精选鸡胸肉缠绕，耐咬洁齿，中大型犬最爱
+            - generic [ref=e131]:
+              - generic [ref=e132]: ¥25.9
+              - button "+" [ref=e133]
+        - generic [ref=e134] [cursor=pointer]:
+          - generic [ref=e135]:
+            - text: 🐟
+            - generic [ref=e136]: 新品
+          - generic [ref=e137]:
+            - generic [ref=e138]: 深海三文鱼冻干
+            - generic [ref=e139]: 富含Omega-3，美毛护肤，猫咪狗狗都爱吃
+            - generic [ref=e140]:
+              - generic [ref=e141]: ¥39.9
+              - button "+" [ref=e142]
+        - generic [ref=e143] [cursor=pointer]:
+          - generic [ref=e144]:
+            - text: 🧀
+            - generic [ref=e145]: 爆款
+          - generic [ref=e146]:
+            - generic [ref=e147]: 芝士味训练饼干
+            - generic [ref=e148]: 浓郁芝士风味，小颗粒设计，训练奖励首选
+            - generic [ref=e149]:
+              - generic [ref=e150]: ¥18.9
+              - button "+" [ref=e151]
+        - generic [ref=e152] [cursor=pointer]:
+          - generic [ref=e153]:
+            - text: 🥩
+            - generic [ref=e154]: 热卖
+          - generic [ref=e155]:
+            - generic [ref=e156]: 原切牛肉粒零食
+            - generic [ref=e157]: 整块原切牛肉制成，高蛋白低脂肪，健康美味
+            - generic [ref=e158]:
+              - generic [ref=e159]: ¥32.9
+              - button "+" [ref=e160]
+  - navigation [ref=e162]:
+    - generic [ref=e163] [cursor=pointer]:
+      - img [ref=e164]
+      - text: 首页
+    - generic [ref=e167] [cursor=pointer]:
+      - img [ref=e168]
+      - text: 同城
+    - generic [ref=e171] [cursor=pointer]:
+      - img [ref=e173]
+      - generic [ref=e175]: 轻创
+    - generic [ref=e176] [cursor=pointer]:
+      - img [ref=e177]
+      - generic [ref=e181]: "4"
+      - text: 购物车
+    - generic [ref=e182] [cursor=pointer]:
+      - img [ref=e183]
+      - text: 我的

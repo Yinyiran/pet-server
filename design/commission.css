@@ -1,0 +1,1022 @@
+/* ========================================
+   Commission.css — 分佣系统样式
+   ======================================== */
+
+/* ========== 分佣入口菜单项 ========== */
+.commission-menu-entry {
+  background: linear-gradient(135deg, #fff7ed 0%, #fff1e0 100%) !important;
+  border: 1px solid #fed7aa !important;
+  position: relative;
+  overflow: hidden;
+}
+.commission-menu-entry::after {
+  content: '';
+  position: absolute;
+  right: -8px;
+  top: -8px;
+  width: 48px;
+  height: 48px;
+  background: radial-gradient(circle, rgba(249, 115, 22, 0.08) 0%, transparent 70%);
+  border-radius: 50%;
+}
+.commission-menu-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--primary);
+  flex-shrink: 0;
+}
+.commission-menu-tag {
+  font-size: 11px;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, var(--primary), #ea580c);
+  padding: 2px 8px;
+  border-radius: 10px;
+  flex-shrink: 0;
+  letter-spacing: 0.5px;
+}
+
+/* ========== 分佣概览弹窗 ========== */
+.commission-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  animation: fadeIn 0.25s ease;
+  backdrop-filter: blur(3px);
+}
+.commission-overlay.hidden {
+  display: none;
+}
+.commission-sheet {
+  background: #faf8f5;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 0 0 24px;
+  animation: slideUp 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.commission-handle {
+  width: 36px;
+  height: 4px;
+  background: #d4c8b8;
+  border-radius: 2px;
+  margin: 10px auto 16px;
+}
+.commission-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  margin-bottom: 12px;
+}
+.commission-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+}
+.commission-close {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #f0ebe4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: var(--text-light);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.commission-close:active {
+  background: #e0d8ce;
+}
+
+/* ========== 等级卡片 ========== */
+.commission-tier-card {
+  margin: 0 16px 14px;
+  border-radius: var(--radius-lg);
+  padding: 18px 16px 14px;
+  position: relative;
+  overflow: hidden;
+  /* default (orange/合伙人) */
+  background: linear-gradient(145deg, #fff7ed 0%, #ffedd5 40%, #fed7aa 100%);
+  border: 1.5px solid rgba(249, 115, 22, 0.15);
+  box-shadow: 0 2px 12px rgba(249, 115, 22, 0.08);
+}
+
+/* ---- gold (梵优主理人) ---- */
+.commission-tier-card.gold {
+  background: linear-gradient(150deg, #fefce8 0%, #fffbeb 25%, #fef3c7 50%, #fde68a 85%, #fcd34d 100%);
+  border: 1.5px solid rgba(217, 119, 6, 0.25);
+  box-shadow:
+    0 2px 16px rgba(217, 119, 6, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+/* 金色光晕 */
+.commission-tier-card.gold .tier-card-glow {
+  position: absolute;
+  top: -30px;
+  right: -20px;
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(circle, rgba(251, 191, 36, 0.35) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+/* 金色装饰短线 */
+.commission-tier-card.gold::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 16px;
+  right: 16px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(251, 191, 36, 0.5), transparent);
+  border-radius: 1px;
+}
+
+/* ---- diamond (分公司) ---- */
+.commission-tier-card.diamond {
+  background: linear-gradient(145deg, #eff6ff 0%, #e0f2fe 40%, #bae6fd 100%);
+  border: 1.5px solid rgba(59, 130, 246, 0.2);
+  box-shadow:
+    0 2px 16px rgba(59, 130, 246, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+.commission-tier-card.diamond::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 16px;
+  right: 16px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(96, 165, 250, 0.5), transparent);
+  border-radius: 1px;
+}
+
+/* ---- 卡片头部 ---- */
+.tier-card-glow {
+  display: none;
+}
+.tier-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  position: relative;
+  z-index: 1;
+}
+.tier-card-icon {
+  font-size: 32px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+}
+.tier-card-header-text {
+  flex: 1;
+  min-width: 0;
+}
+.tier-card-name {
+  display: block;
+  font-size: 17px;
+  font-weight: 700;
+  color: #78350f;
+  letter-spacing: 0.3px;
+}
+.commission-tier-card.gold .tier-card-name {
+  color: #78350f;
+}
+.commission-tier-card.diamond .tier-card-name {
+  color: #1e3a5f;
+}
+.tier-card-subtitle {
+  display: block;
+  font-size: 13px;
+  color: #a16207;
+  margin-top: 4px;
+}
+.commission-tier-card.diamond .tier-card-subtitle {
+  color: #3b82f6;
+}
+.tier-card-total-rate {
+  font-size: 30px;
+  font-weight: 800;
+  color: #c2410c;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.commission-tier-card.gold .tier-card-total-rate {
+  color: #b45309;
+  background: linear-gradient(135deg, #b45309, #d97706);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.commission-tier-card.diamond .tier-card-total-rate {
+  color: #1d4ed8;
+}
+
+/* ========== 收益统计 ========== */
+.commission-stats {
+  display: flex;
+  margin: 0 16px 14px;
+  background: #fff;
+  border-radius: var(--radius-lg);
+  padding: 14px 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+.commission-stat {
+  flex: 1;
+  text-align: center;
+}
+.commission-stat-num {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.2;
+}
+.commission-stat-num.pending {
+  color: #f59e0b;
+}
+.commission-stat-num.available {
+  color: #10b981;
+}
+.commission-stat-label {
+  font-size: 11px;
+  color: var(--text-light);
+  margin-top: 3px;
+}
+.commission-stat-divider {
+  width: 1px;
+  background: #f0ebe4;
+  margin: 0 6px;
+  align-self: stretch;
+}
+
+/* ========== 快捷操作 ========== */
+.commission-actions {
+  display: flex;
+  gap: 10px;
+  margin: 0 16px 14px;
+}
+.commission-action-btn {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+.commission-action-btn.primary {
+  background: linear-gradient(135deg, var(--primary), #ea580c);
+  color: #fff;
+  box-shadow: 0 3px 10px rgba(249, 115, 22, 0.25);
+}
+.commission-action-btn.primary:active {
+  transform: scale(0.97);
+  box-shadow: 0 1px 4px rgba(249, 115, 22, 0.3);
+}
+.commission-action-btn.secondary {
+  background: #fff;
+  color: var(--primary);
+  border: 1.5px solid var(--primary);
+}
+.commission-action-btn.secondary:active {
+  background: #fff7f0;
+  transform: scale(0.97);
+}
+
+/* ========== 收益明细列表 ========== */
+.commission-section-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  padding: 0 16px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.commission-section-more {
+  font-size: 12px;
+  color: var(--primary);
+  font-weight: 600;
+  cursor: pointer;
+}
+.commission-log-list {
+  margin: 0 16px;
+}
+.commission-log-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  background: #fff;
+  border-radius: var(--radius-sm);
+  margin-bottom: 6px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  cursor: pointer;
+}
+.commission-log-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #fef3c7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.commission-log-info {
+  flex: 1;
+  min-width: 0;
+}
+.commission-log-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.commission-log-meta {
+  font-size: 11px;
+  color: var(--text-light);
+  margin-top: 2px;
+}
+.commission-log-amount {
+  font-size: 16px;
+  font-weight: 800;
+  color: #10b981;
+  flex-shrink: 0;
+}
+.commission-log-amount.pending {
+  color: #f59e0b;
+}
+.commission-log-empty {
+  text-align: center;
+  padding: 32px 16px;
+  color: var(--text-light);
+  font-size: 13px;
+}
+
+/* ========== 收益明细全屏弹窗 ========== */
+.commission-detail-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 210;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  animation: fadeIn 0.25s ease;
+  backdrop-filter: blur(3px);
+}
+.commission-detail-overlay.hidden {
+  display: none;
+}
+.commission-detail-sheet {
+  background: #faf8f5;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 0 0 24px;
+  animation: slideUp 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.commission-detail-tabs {
+  display: flex;
+  margin: 0 16px 12px;
+  background: #f0ebe4;
+  border-radius: var(--radius-sm);
+  padding: 3px;
+}
+.commission-detail-tab {
+  flex: 1;
+  padding: 8px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-light);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.commission-detail-tab.active {
+  background: #fff;
+  color: var(--primary);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* ========== 提现弹窗 ========== */
+.withdraw-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 220;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  animation: fadeIn 0.25s ease;
+  backdrop-filter: blur(3px);
+}
+.withdraw-overlay.hidden {
+  display: none;
+}
+.withdraw-sheet {
+  background: #fff;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 0 0 24px;
+  animation: slideUp 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.withdraw-balance-card {
+  margin: 0 16px 16px;
+  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  text-align: center;
+}
+.withdraw-balance-label {
+  font-size: 12px;
+  color: #065f46;
+  margin-bottom: 4px;
+}
+.withdraw-balance-num {
+  font-size: 32px;
+  font-weight: 800;
+  color: #059669;
+}
+.withdraw-form {
+  margin: 0 16px;
+}
+.withdraw-form-group {
+  margin-bottom: 14px;
+}
+.withdraw-form-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+  display: block;
+}
+.withdraw-form-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  color: var(--text);
+  background: #faf8f5;
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+.withdraw-form-input:focus {
+  border-color: var(--primary);
+  background: #fff;
+}
+.withdraw-form-input::placeholder {
+  color: #c4b8a8;
+}
+.withdraw-form-hint {
+  font-size: 11px;
+  color: var(--text-light);
+  margin-top: 4px;
+}
+.withdraw-form-hint.warn {
+  color: #ef4444;
+}
+.withdraw-amount-presets {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.withdraw-amount-preset {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  background: #faf8f5;
+  border: 1px solid var(--border);
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.withdraw-amount-preset:active,
+.withdraw-amount-preset.selected {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+.withdraw-submit-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, var(--primary), #ea580c);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 14px rgba(249, 115, 22, 0.3);
+}
+.withdraw-submit-btn:active {
+  transform: scale(0.98);
+  box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);
+}
+.withdraw-submit-btn:disabled {
+  background: #d4c8b8;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* ========== 我的团队弹窗 ========== */
+.invite-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 210;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  animation: fadeIn 0.25s ease;
+  backdrop-filter: blur(3px);
+}
+.invite-overlay.hidden {
+  display: none;
+}
+.invite-sheet {
+  background: #faf8f5;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 0 0 24px;
+  animation: slideUp 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+/* ========== 邀请 Tab 切换 ========== */
+.invite-tabs {
+  display: flex;
+  margin: 0 16px 14px;
+  background: #f0ebe4;
+  border-radius: var(--radius-sm);
+  padding: 3px;
+  gap: 4px;
+}
+.invite-tab {
+  flex: 1;
+  padding: 10px 8px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-light);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.invite-tab.active {
+  background: #fff;
+  color: var(--primary);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+.invite-tab-count {
+  display: inline-block;
+  margin-left: 6px;
+  font-size: 16px;
+  font-weight: 800;
+}
+.invite-tab.active .invite-tab-count {
+  color: var(--primary);
+}
+
+/* (旧邀请统计卡片 — 已废弃，保留备用)
+.invite-stats {
+  display: flex;
+  margin: 0 16px 14px;
+  gap: 8px;
+}
+.invite-stat-card {
+  flex: 1;
+  background: #fff;
+  border-radius: var(--radius-lg);
+  padding: 12px;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+.invite-stat-card .invite-stat-num {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--primary);
+  line-height: 1.2;
+}
+.invite-stat-card .invite-stat-label {
+  font-size: 11px;
+  color: var(--text-light);
+  margin-top: 3px;
+}
+*/
+
+.invite-level-filter {
+  margin: 0 16px 12px;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.invite-level-filter::-webkit-scrollbar {
+  display: none;
+}
+.invite-level-chip {
+  flex-shrink: 0;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 13px;
+  color: var(--text-light);
+  background: #f3f4f6;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+  user-select: none;
+}
+.invite-level-chip.active {
+  background: var(--primary);
+  color: #fff;
+  font-weight: 500;
+}
+.invite-level-chip:active {
+  transform: scale(0.96);
+}
+.invite-list {
+  margin: 0 16px;
+  height: 40vh;
+  overflow: auto;
+}
+.invite-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: #fff;
+  border-radius: var(--radius-sm);
+  margin-bottom: 6px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  cursor: pointer;
+}
+.invite-item:active {
+  background: #fef3c7;
+}
+.invite-item-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ffedd5, #fed7aa);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.invite-item-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.invite-item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.invite-item-row-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.invite-item-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+.invite-item-meta {
+  font-size: 11px;
+  color: var(--text-light);
+}
+.invite-item-level {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 8px;
+  background: #f0ebe4;
+  color: var(--text-light);
+  white-space: nowrap;
+}
+.invite-item-level.partner {
+  background: #ffedd5;
+  color: #c2410c;
+}
+.invite-item-level.manager {
+  background: #fef3c7;
+  color: #b45309;
+}
+.invite-item-team {
+  font-size: 11px;
+  color: var(--text-light);
+  white-space: nowrap;
+}
+.invite-item-consume {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+.invite-item-consume.consumed {
+  background: #dcfce7;
+  color: #16a34a;
+}
+.invite-item-consume.not-consumed {
+  background: #fee2e2;
+  color: #dc2626;
+}
+.invite-empty {
+  text-align: center;
+  padding: 32px 16px;
+  color: var(--text-light);
+  font-size: 13px;
+}
+
+/* ========== 邀请二维码/分享卡片 ========== */
+.invite-share-card {
+  margin: 0 16px 16px;
+  background: linear-gradient(135deg, #fff7ed 0%, #fed7aa 50%, #fdba74 100%);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  text-align: center;
+  color: #7c2d12;
+}
+.invite-share-title {
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+.invite-share-subtitle {
+  font-size: 12px;
+  opacity: 0.8;
+  margin-bottom: 14px;
+}
+.invite-share-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+.invite-share-btn {
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+}
+.invite-share-btn.link {
+  background: var(--primary);
+  color: #fff;
+}
+.invite-share-btn.link:active {
+  background: #ea580c;
+}
+
+/* ========== 邀请用户详情弹窗 ========== */
+.invite-user-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 230;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  animation: fadeIn 0.25s ease;
+  backdrop-filter: blur(3px);
+}
+.invite-user-overlay.hidden {
+  display: none;
+}
+.invite-user-sheet {
+  background: #faf8f5;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  max-height: 70vh;
+  overflow-y: auto;
+  padding: 0 0 24px;
+  animation: slideUp 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.invite-user-content {
+  text-align: center;
+  padding: 16px 24px;
+}
+.invite-user-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ffedd5, #fed7aa);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  margin: 0 auto 8px;
+}
+.invite-user-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.invite-user-detail-list {
+  margin-top: 16px;
+  background: #fff;
+  border-radius: var(--radius-sm);
+  padding: 4px 0;
+  text-align: left;
+}
+.invite-user-detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #f5f0eb;
+}
+.invite-user-detail-item:last-child {
+  border-bottom: none;
+}
+.invite-user-detail-label {
+  font-size: 13px;
+  color: var(--text-light);
+}
+.invite-user-detail-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* ========== 角色标签（列表已隐藏，仅弹窗使用） ========== */
+.invite-item-role {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 8px;
+  background: #f0ebe4;
+  color: var(--text-light);
+}
+.invite-item-role.partner {
+  background: #ffedd5;
+  color: #c2410c;
+}
+.invite-item-role.manager {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+/* ========== 收益详情弹窗（点击明细条目） ========== */
+.commission-log-detail-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 215;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  animation: fadeIn 0.25s ease;
+  backdrop-filter: blur(3px);
+}
+.commission-log-detail-overlay.hidden {
+  display: none;
+}
+.commission-log-detail-sheet {
+  background: #fff;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 0 0 32px;
+  animation: slideUp 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* 金额区域 */
+.comm-log-detail-amount-area {
+  margin: 14px 16px 0;
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+}
+.comm-log-detail-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+.comm-log-detail-label {
+  font-size: 13px;
+  color: #166534;
+  font-weight: 600;
+}
+.comm-log-detail-value {
+  font-size: 18px;
+  font-weight: 800;
+  color: #15803d;
+}
+.comm-log-detail-formula {
+  font-size: 12px;
+  color: #4ade80;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 6px;
+  padding: 6px 10px;
+  margin: 6px 0;
+  text-align: center;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+.comm-log-detail-earned {
+  font-size: 20px;
+  font-weight: 800;
+  color: #059669;
+}
+
+/* 状态 + 时间栏 */
+.comm-log-detail-meta-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 12px 16px 0;
+  padding: 0 2px;
+}
+.comm-log-detail-status {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: 10px;
+}
+.comm-log-detail-status.settled {
+  background: #dcfce7;
+  color: #166534;
+}
+.comm-log-detail-status.pending {
+  background: #fef3c7;
+  color: #b45309;
+}
+.comm-log-detail-time {
+  font-size: 11px;
+  color: var(--text-light);
+}
+
+/* 商品列表 */
+.comm-log-detail-items-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 16px 16px 8px;
+}
+.comm-log-detail-items {
+  margin: 0 16px;
+  background: #faf8f5;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.comm-log-detail-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 14px;
+  border-bottom: 1px solid #f0ebe4;
+}
+.comm-log-detail-item:last-child {
+  border-bottom: none;
+}
+.comm-log-detail-item-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.comm-log-detail-item-qty {
+  font-size: 12px;
+  color: var(--text-light);
+  margin: 0 12px;
+  flex-shrink: 0;
+}
+.comm-log-detail-item-price {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  flex-shrink: 0;
+}

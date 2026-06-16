@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>梵优茗宠 — 业务逻辑流程图</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: #f8f4f0;
+    color: #3d2c1e;
+    padding: 20px;
+  }
+  .header {
+    text-align: center;
+    padding: 24px 16px 16px;
+    background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+    border-radius: 16px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(6,95,70,0.06);
+  }
+  .header h1 {
+    font-size: 22px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #10b981, #059669);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 6px;
+  }
+  .header p {
+    font-size: 13px;
+    color: #6b7280;
+    line-height: 1.5;
+  }
+  .nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin: 16px 0 20px;
+    padding: 0 8px;
+  }
+  .nav a {
+    display: inline-block;
+    padding: 6px 14px;
+    background: #fff;
+    border: 1px solid #d1fae5;
+    border-radius: 20px;
+    font-size: 12px;
+    color: #065f46;
+    text-decoration: none;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .nav a:hover {
+    background: #ecfdf5;
+    border-color: #10b981;
+    color: #059669;
+  }
+  .section {
+    background: #fff;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(6,95,70,0.06);
+    overflow-x: auto;
+  }
+  .section h2 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #065f46;
+    margin-bottom: 6px;
+    padding-left: 10px;
+    border-left: 3px solid #10b981;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section .subtitle {
+    font-size: 12px;
+    color: #9ca3af;
+    margin-bottom: 14px;
+    padding-left: 18px;
+  }
+  .mermaid-wrap {
+    min-height: 200px;
+    display: flex;
+    justify-content: center;
+    overflow-x: auto;
+  }
+  .mermaid-wrap svg { min-width: 600px; width: 100%; height: auto; }
+  .note {
+    background: #ecfdf5;
+    border-left: 3px solid #10b981;
+    padding: 10px 14px;
+    border-radius: 0 8px 8px 0;
+    margin-top: 12px;
+    font-size: 12px;
+    color: #6b7280;
+    line-height: 1.6;
+  }
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    color: #fff;
+    font-weight: 600;
+    vertical-align: middle;
+  }
+  .badge-green { background: #10b981; }
+  .badge-orange { background: #f97316; }
+  .badge-purple { background: #a78bfa; }
+  .badge-pink { background: #f472b6; }
+  .badge-yellow { background: #f59e0b; }
+  .badge-blue { background: #38bdf8; }
+  @media (prefers-color-scheme: dark) {
+    body { background: #1a1a2e; color: #e8e3dc; }
+    .section { background: #16213e; }
+    .header { background: linear-gradient(135deg, #16213e, #0f3460); }
+    .header p { color: #b8a898; }
+    .nav a { background: #16213e; border-color: #1e3a5f; color: #6ee7b7; }
+    .note { background: #16213e; color: #b8a898; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>梵优茗宠 — 业务逻辑流程图</h1>
+  <p>覆盖用户端、商家端、运营端的全链路数据流转与业务决策流程</p>
+</div>
+
+<div class="nav">
+  <a href="#user-lifecycle">用户生命周期</a>
+  <a href="#purchase">商品购买链路</a>
+  <a href="#ai-meal">AI配餐</a>
+  <a href="#commission">分佣结算</a>
+  <a href="#withdraw">提现</a>
+  <a href="#merchant">商家入驻</a>
+  <a href="#refund">售后</a>
+  <a href="#points">积分</a>
+  <a href="#member">会员等级</a>
+  <a href="#course">轻创课程</a>
+  <a href="#banner">Banner运营</a>
+  <a href="#bundle">组合包</a>
+  <a href="#flash">限时特供</a>
+  <a href="#group-buy">拼团</a>
+  <a href="#overview">数据流转总览</a>
+</div>
+
+<!-- ===== 用户生命周期 ===== -->
+<div class="section" id="user-lifecycle">
+  <h2><span class="badge badge-green">基础</span> 用户生命周期 & 数据初始化</h2>
+  <p class="subtitle">从微信授权 → 注册 → 添加宠物 → 完善地址的全链路</p>
+  <div class="mermaid-wrap"><div class="mermaid">
+graph TD
+    A["📱 用户打开小程序"] --> B{"微信授权登录"}
+    B -->|首次进入| C["获取 open_id<br/>写入 USER 表"]
+    B -->|已注册| D["匹配 open_id<br/>读取用户数据"]
+    C --> E["用户完善资料<br/>nickname / avatar / phone / birthday"]
+    D --> E
+    E --> F["📝 添加宠物档案<br/>USER_PET 表"]
+    F --> F1{"更多宠物？"}
+    F1 -->|是| F
+    F1 -->|否| G["📍 添加收货地址<br/>USER_ADDRESS 表"]
+    G --> G1["设为默认地址<br/>is_default = true"]
+    G1 --> H{"所在城市？"}
+    H -->|有城市信息| I["写入 USER.city<br/>匹配同城服务"]
+    H -->|未设置| J["提示设置城市"]
+    I --> K["✅ 用户就绪<br/>可浏览/消费/答题"]
+    J --> K
+
+    style A fill:#ecfdf5,stroke:#10b981,stroke-width:2px
+    style K fill:#d1fae5,stroke:#059669,stroke-width:2px
+    style C fill:#f0fdf4
+    style F fill:#f0fdf4
+    style G fill:#f0fdf4
+  </div></div>
+  <div class="note">关键节点：注册时创建 USER 记录 → 宠物档案写入 USER_PET（可多条）→ 地址写入 USER_ADDRESS（可多条，一个默认）→ 城市字段关联同城服务</div>
+</div>
+
+<!-- ===== 商品购买全链路 ===== -->
+<div class="section" id="purchase">
+  <h2><span class="badge badge-orange">交易</span> 商品购买全链路</h2>
+  <p class="subtitle">浏览 → 加购 → 下单 → 支付 → 发货 → 收货，完整电商闭环</p>
+  <div class="mermaid-wrap"><div class="mermaid">
+graph TD
+    A["🏠 首页 / 同城页"] --> B{"入口来源"}
+    B -->|Banner轮播| B1["BANNER 表查询<br/>按 sort_order / is_active<br/>valid_from ≤ now ≤ valid_until"]
+    B -->|商品分类| B2["PRODUCT_CATEGORY 表<br/>按分类浏览"]
+    B -->|限时特供| B3["PRODUCT 表<br/>is_flash = true<br/>flash_start ≤ now ≤ flash_end"]
+    B -->|组合包| B4["PRODUCT_BUNDLE 表<br/>is_active = true"]
+
+    B1 --> B1a{"link_type？"}
+    B1a -->|product| C
+    B1a -->|merchant| B1b["跳转同城商家<br/>CITY_MERCHANT 详情"]
+    B1a -->|page| B1c["跳转内部页面"]
+    B1a -->|url| B1d["跳转外部链接"]
+    B1b --> C
+
+    B2 --> C["📦 商品详情页<br/>PRODUCT + merchant_id → CITY_MERCHANT"]
+    B3 --> C
+    B4 --> B4a["组合包详情<br/>PRODUCT_BUNDLE + PRODUCT_BUNDLE_ITEM<br/>→ 关联 PRODUCT 列表"]
+    B4a --> C
+
+    C --> D{"用户操作"}
+    D -->|加入购物车| E["INSERT CART<br/>user_id + product_id + qty + spec"]
+    D -->|立即购买| F["跳过购物车<br/>直接进入下单"]
+
+    E --> G["🛒 购物车页<br/>CART JOIN PRODUCT<br/>按 is_checked 计算总价"]
+    G --> H{"勾选商品 → 结算"}
+    H --> F
+
+    F --> I["📋 确认订单页"]
+    I --> I1["选择收货地址 → USER_ADDRESS"]
+    I --> I2["计算价格 = SUM(product.price × qty)"]
+    I --> I3{"是否有组合包？"}
+    I3 -->|是| I3a["使用 bundle_price<br/>替代单品累加"]
+    I3 -->|否| I3b["按单品价格计算"]
+    I3a --> I4{"是否限时特供？"}
+    I3b --> I4
+    I4 -->|是| I4a["使用 flash_price<br/>original_price 显示划线价"]
+    I4 -->|否| I4b["使用正常 price"]
+
+    I4a --> J["提交订单"]
+    I4b --> J
+    J --> J1["生成 order_no"]
+    J --> J2["INSERT ORDER → 状态:待付款"]
+    J --> J3["INSERT ORDER_ITEM<br/>快照 product_name / price"]
+    J --> J4["扣减 PRODUCT.stock<br/>增加 sales"]
+    J --> J5["清空购物车对应商品"]
+
+    J1 --> K["💳 选择支付方式"]
+    J2 --> K
+    J3 --> K
+    J4 --> K
+    J5 --> K
+
+    K --> K1["微信支付"]
+    K --> K2["余额支付"]
+    K1 --> L["INSERT PAYMENT<br/>method / amount / status"]
+    K2 --> L
+
+    L --> M{"支付结果"}
+    M -->|成功| N["ORDER.status → 待发货<br/>PAYMENT.status → success"]
+    M -->|失败| O["ORDER.status → 已取消<br/>回滚 stock / sales"]
+
+    N --> N1["增加积分 points_log<br/>(按 member_level.points_rate)"]
+    N1 --> N2["触发分佣计算<br/>→ COMMISSION_LOG"]
+    N2 --> N3["记录消费流水<br/>→ CONSUMPTION_LOG"]
+
+    N3 --> P["🚚 商家发货"]
+    P --> P1["ORDER.status → 待收货<br/>写入 logistics 信息"]
+
+    P1 --> Q["📦 用户收货"]
+    Q --> Q1["ORDER.status → 已完成<br/>received_at = now"]
+
+    Q1 --> R["✅ 交易完成"]
+
+    style A fill:#ecfdf5,stroke:#10b981,stroke-width:2px
+    style R fill:#d1fae5,stroke:#059669,stroke-width:2px
+    style J fill:#fef3c7,stroke:#f59e0b
+    style L fill:#fef3c7,stroke:#f59e0b
+    style N fill:#d1fae5
+  </div></div>
+  <div class="note">核心链路涉及 9 张表：BANNER → PRODUCT → CART → ORDER → ORDER_ITEM → PAYMENT → POINTS_LOG → COMMISSION_LOG → CONSUMPTION_LOG。价格优先级：flash_price > bundle_price > price。订单金额 = 商品小计 - 优惠折扣。</div>
+</div>
+
+<!-- ===== AI配餐流程 ===== -->
+<div class="section" id="ai-meal">
+  <h2><span class="badge badge-pink">AI</span> AI配餐流程</h2>
+  <p class="subtitle">答题 → 体质分析 → 方案匹配 → 下单配餐</p>
+  <div class="mermaid-wrap"><div class="mermaid">
+graph TD
+    A["🐱 AI答题入口"] --> B["逐题展示<br/>quiz.js 分页逻辑"]
+    B --> B1["选择题 → 350ms 自动跳转"]
+    B --> B2["填空/多选 → 手动下一题"]
+    B --> B3{"条件题目"}
+    B3 -->|品种=其他| B3a["显示品种输入题"]
+    B3 -->|模式=多宠| B3b["显示多宠配置题"]
+    B3a --> C
+    B3b --> C
+
+    C["最后一题完成"] --> D["显示提交按钮"]
+    D --> E["收集全部 answers JSON"]
+    E --> F["🤖 体质分析引擎"]
+    F --> F1{"匹配规则<br/>pet_type + 年龄 + 体重 + 品种"}
+    F --> F2["生成 constitution_type<br/>+ tags + desc"]
+    F1 --> G["INSERT QUIZ_RECORD"]
+    F2 --> G
+
+    G --> H["📊 展示体质报告"]
+    H --> I["匹配配餐方案<br/>MEAL_PLAN.match_rules<br/>↔ 体质 tags"]
+    I --> J["展示推荐方案列表<br/>MEAL_PLAN + MEAL_INGREDIENT"]
+
+    J --> K{"用户选择"}
+    K -->|查看方案详情| J
+    K -->|下单配餐| L["确认配餐订单<br/>meal_freq(餐次) + meal_days(天数)"]
+
+    L --> M["计算总价<br/>meal_freq × meal_days × 单餐价"]
+    M --> N["INSERT MEAL_ORDER<br/>关联 quiz_id + plan_id"]
+    N --> O["💳 支付<br/>已购买的配餐中修改"]
+    O --> P{"支付成功？"}
+    P -->|是| Q["MEAL_ORDER.status → 已生效"]
+    P -->|否| R["status → 已取消"]
+    Q --> S["✅ 配送/自取"]
+
+    style A fill:#fdf2f8,stroke:#f472b6,stroke-width:2px
+    style S fill:#fce7f3,stroke:#ec4899,stroke-width:2px
+    style F fill:#fef3c7,stroke:#f59e0b
+    style G fill:#f0fdf4
+    style N fill:#f0fdf4
+  </div></div>
+  <div class="note">涉及 4 张表：QUIZ_RECORD → MEAL_PLAN + MEAL_INGREDIENT → MEAL_ORDER。答题分页由前端 quiz.js 控制，体质匹配规则存于 MEAL_PLAN.match_rules。</div>
+</div>
+
+<!-- ===== 分佣结算流程 ===== -->
+<div class="section" id="commission">
+  <h2><span class="badge badge-purple">分佣</span> 分佣结算流程</h2>
+  <p class="subtitle">购买课程获取资格 → 分享邀请 → 被邀请人消费 → 差额分佣计算 → 收益入账</p>
+  <div class="mermaid-wrap"><div class="mermaid">
+graph TD
+    Q["🎓 购买轻创课程"] --> Q1{"课程层级"}
+    Q1 -->|梵优合伙人 ¥2999| Q2["USER.level = 梵优合伙人<br/>commission_rate = 9%"]
+    Q1 -->|梵优主理人 ¥5999| Q3["USER.level = 梵优主理人<br/>commission_rate = 15%"]
+    Q4["⚙️ 后端手动设置"] --> Q5["USER.level = 梵优城市分公司<br/>commission_rate = 18%"]
+
+    Q2 --> A["👤 用户 分享邀请码"]
+    Q3 --> A
+    Q5 --> A
+    A --> B["被邀请人 扫码注册"]
+    B --> C["INSERT USER_INVITE<br/>user_id = B / parent_id = A<br/>level_depth = 1"]
+
+    C --> H["🛒 被邀请人 下单并支付成功"]
+    H --> I["触达 ORDER: status → 待发货"]
+
+    I --> J["🔍 向上追溯邀请链<br/>B → A (depth=1)"]
+
+    J --> K{"查询 COMMISSION_TIER<br/>邀请人A的佣金率"}
+    K -->|梵优合伙人 9%| L1["INSERT COMMISSION_LOG<br/>amount = order.total × 9%<br/>rate = 9 / commission_level = 1"]
+    K -->|梵优主理人 15%| L2["INSERT COMMISSION_LOG<br/>amount = order.total × (15% - 下级费率)<br/>rate = 差额 / commission_level = 对应层级"]
+    K -->|梵优城市分公司 18%| L3["INSERT COMMISSION_LOG<br/>amount = order.total × (18% - 下级费率)<br/>rate = 差额 / commission_level = 对应层级"]
+
+    L1 --> M["更新 USER_COMMISSION<br/>total_earned / pending_amount"]
+    L2 --> M
+    L3 --> M
+
+    M --> N{"订单确认收货"}
+    N --> N1["COMMISSION_LOG.status → 已结算<br/>USER_COMMISSION: pending→available"]
+
+    N1 --> O["💰 可提现金额增加"]
+    O --> P["显示在 profilePage<br/>commission-menu-entry"]
+
+    style Q fill:#e3f2fd,stroke:#1565c0,stroke-width:2px
+    style A fill:#f5f3ff,stroke:#a78bfa,stroke-width:2px
+    style O fill:#ede9fe,stroke:#8b5cf6,stroke-width:2px
+    style J fill:#fef3c7,stroke:#f59e0b
+    style M fill:#f0fdf4
+  </div></div>
+  <div class="note">涉及 4 张表：USER_INVITE（邀请关系树）→ COMMISSION_TIER（三级费率: 9%/15%/18%）→ COMMISSION_LOG（收益明细）→ USER_COMMISSION（账户汇总）。<br>❗ 差额制分佣：上级佣金 = 上级费率 - 下级费率。合伙人购买¥2999课程获取资格，主理人购买¥5999课程获取资格，城市分公司后端手动设置(默认隐藏)。<br>佣金计算公式：COMMISSION_LOG.amount = ORDER.total × (COMMISSION_TIER.commission_rate - 直接下级commission_rate) / 100。佣金在收货后结算，pending → available。</div>
+</div>
+
+<!-- ===== 提现流程 ===== -->
+<div class="section" id="withdraw">
+  <h2><span class="badge badge-purple">资金</span> 提现流程</h2>
+  <p class="subtitle">申请 → 审核 → 打款</p>
+  <div class="mermaid-wrap"><div class="mermaid">
+graph TD
+    A["💰 分佣概览弹窗<br/>查看 available_balance"] --> B["点击「提现」"]
+    B --> C{"余额 ≥ ¥10？"}
+    C -->|否| C1["❌ 提示：最低提现 ¥10"]
+    C -->|是| D["选择提现方式"]
+    D --> D1["微信零钱"]
+    D --> D2["银行卡"]
+    D1 --> E["输入/选择金额"]
+    D2 --> E
+    E --> F{"金额 ≤ available_balance？"}
+    F -->|否| F1["❌ 提示：余额不足"]
+    F -->|是| G["填写账户信息<br/>account_info 加密存储"]
+    G --> H["INSERT WITHDRAW<br/>status = pending"]
+    H --> I["USER_COMMISSION<br/>available_balance -amount<br/>frozen_amount +amount"]
+    I --> J["🔍 平台审核"]
+    J --> K{"审核结果"}
+    K -->|通过| L["打款 → WITHDRAW.status = success<br/>finished_at = now<br/>frozen_amount -amount"]
+    K -->|拒绝| M["WITHDRAW.status = rejected<br/>audit_remark 写原因<br/>回滚 balance"]
+    L --> N["✅ 提现完成"]
+    M --> N
+
+    style A fill:#f5f3ff,stroke:#a78bfa,stroke-width:2px
+    style N fill:#ede9fe,stroke:#8b5cf6,stroke-width:2px
+    style H fill:#fef3c7,stroke:#f59e0b
+    style J fill:#fef3c7,stroke:#f59e0b
+  </div></div>
+  <div class="note">涉及 2 张表：WITHDRAW（提现记录）+ USER_COMMISSION（冻结/解冻余额）。最低提现 ¥10，审核通过后实际打款。</div>
+</div>
+
+<!-- ===== 商家入驻流程 ===== -->
+<div class="section" id="merchant">
+  <h2><span class="badge badge-orange">商家</span> 商家入驻 & 商品上架</h2>
+  <p class="subtitle">合作申请 → 审核 → 创建商家 → 上架商品</p>
+  <div class="mermaid-wrap"><div class="mermaid">
+graph TD
+    A["🏪 同城页 → 商家合作入口"] --> B["填写入驻表单<br/>MERCHANT_APPLY"]
+    B --> B1["merchant_type: shop/hospital/..."]
+    B --> B2["name / contact / phone / city / address"]
+    B --> B3["description / wechat"]
+    B1 --> C["提交申请<br/>status = pending"]
+    B2 --> C
+    B3 --> C
+
+    C --> D["🔍 平台审核"]
+    D --> E{"审核结果"}
+    E -->|通过| F["INSERT CITY_MERCHANT<br/>从 MERCHANT_APPLY 同步信息"]
+    E -->|拒绝| G["status = rejected<br/>通知申请人"]
+    F --> H["商家获得后台权限<br/>可管理自己的商品"]
+
+    H --> I["📦 上架商品"]
+    I --> I1["INSERT PRODUCT<br/>merchant_id = CITY_MERCHANT.id"]
+    I1 --> I2["设置价格 / 库存 / 规格"]
+    I2 --> I3["设置 is_flash 限时特供(可选)"]
+    I3 --> I4["设置 is_active = true"]
+    I4 --> J["✅ 商品展示在<br/>同城商家详情页"]
+
+    J --> K["商家可继续添加<br/>更多商品"]
+    K --> I
+
+    style A fill:#fff7ed,stroke:#f97316,stroke-width:2px
+    style J fill:#fed7aa,stroke:#ea580c,stroke-width:2px
+    style D fill:#fef3c7,stroke:#f59e0b
+    style F fill:#f0fdf4
+  </div></div>
+  <div class="note">涉及 3 张表：MERCHANT_APPLY → CITY_MERCHANT → PRODUCT。商家入驻后自主管理商品，merchant_id 关联关系。</div>
+</div>
+
+<!-- ===== 售后流程 ===== -->
+<div class="section" id="refund">
+  <h2><span class="badge badge-orange">售后</span> 退款/换货流程</h2>
+  <p class="subtitle">申请 → 审核 → 退款 / 换货</p>
+  <div class="mermaid-wrap"><div class="mermaid">
+graph TD
+    A["📦 订单详情页<br/>ORDER 已完成/已收货"] --> B["点击「申请售后」"]
+    B --> C["选择售后类型"]
+    C --> C1["退款"]
+    C --> C2["换货"]
+    C1 --> D["填写原因 / 上传凭证"]
+    C2 --> D
+    D --> E["INSERT REFUND<br/>type / reason / refund_amount<br/>status = pending"]
+
+    E --> F["🔍 平台/商家审核"]
+    F --> G{"审核结果"}
+    G -->|拒绝| H["status = rejected<br/>说明原因"]
+    G -->|通过-退款| I["触发退款流程"]
+    G -->|通过-换货| J["触发换货流程"]
+
+    I --> I1{"原支付方式"}
+    I1 -->|微信支付| I2["原路退回 → PAYMENT"]
+    I1 -->|余额支付| I3["退回余额 → USER.balance + refund_amount"]
+    I2 --> I4["REFUND.status = success"]
+    I3 --> I4
+    I4 --> I5["回滚积分(如有)"]
+    I5 --> I6["💰 退款完成"]
+
+    J --> J1["生成换货运单<br/>商家重新发货"]
+    J1 --> J2["REFUND.status = 换货中"]
+    J2 --> J3["用户收货 → status = 已完成"]
+
+    style A fill:#fff7ed,stroke:#f97316,stroke-width:2px
+    style I6 fill:#fed7aa,stroke:#ea580c,stroke-width:2px
+    style J3 fill:#fed7aa,stroke:#ea580c,stroke-width:2px
+    style F fill:#fef3c7,stroke:#f59e0b
+    style E fill:#f0fdf4
+  </div></div>
+  <div class="note">涉及 3 张表：REFUND（售后记录）+ PAYMENT（退款） + USER.balance（余额退款）。退款按原支付方式返回，同时回滚积分。</div>
+</div>
+
+<!-- ===== 积分系统流程 ===== -->
+<div class="section" id="points">
+  <h2><span class="badge badge-yellow">积分</span> 积分系统流程</h2>
+  <p class="subtitle">获取 → 累积 → 消耗 → 过期</p>
+  <div class="mermaid-wrap"><div class="mermaid">
+graph TD
+    A["📊 积分来源"] --> A1["购物消费<br/>(按 member_level.points_rate)"]
+    A --> A2["每日签到"]
+    A --> A3["邀请好友注册"]
+    A --> A4["完成AI答题"]
+    A --> A5["平台活动赠送"]
+
+    A1 --> B["INSERT POINTS_LOG<br/>type = earn<br/>change_value +"]
+    A2 --> B
+    A3 --> B
+    A4 --> B
+    A5 --> B
+
+    B --> C["USER.points += change_value<br/>balance_after = 新余额"]
+
+    C --> D{"积分消耗场景"}
+    D --> D1["兑换优惠券"]
+    D --> D2["抵扣现金"]
+    D --> D3["兑换商品"]
+    D1 --> E["INSERT POINTS_LOG<br/>type = spend<br/>change_value -"]
+    D2 --> E
+    D3 --> E
+    E --> F["USER.points -= change_value"]
+
+    C --> G["⏰ 定时任务<br/>检查积分过期"]
+    G --> H{"积分超过有效期？"}
+    H -->|是| I["INSERT POINTS_LOG<br/>type = expire<br/>扣除过期积分"]
+    H -->|否| G
+    I --> J["USER.points 减少"]
+
+    style A fill:#fffbeb,stroke:#f59e0b,stroke-width:2px
+    style C fill:#fef3c7
+    style F fill:#fef3c7
+    style J fill:#fef3c7
+  </div></div>
+  <div class="note">涉及 2 张表：POINTS_LOG（流水）+ USER.points（余额）。购物积分 = 订单金额 × member_level.points_rate。定时任务处理积分过期。</div>
+</div>
+
+<!-- ===== 会员等级流程 ===== -->
+<div class="section" id="member">
+  <h2><span class="badge badge-blue">会员</span> 会员等级升降级</h2>
+  <p class="subtitle">累计消费触发 → 自动升级 → 权益解锁</p>
+  <div class="mermaid-wrap"><div class="mermaid">
+graph TD
+    A["🛒 订单确认收货<br/>total_spent += order.total_amount"] --> B{"累计消费 total_spent<br/>vs MEMBER_LEVEL.threshold"}
+
+    B --> B1["银牌: total_spent ≥ ¥500"]
+    B --> B2["金牌: total_spent ≥ ¥1000"]
+    B --> B3["黑钻: total_spent ≥ ¥3000"]
+
+    B1 --> C{"当前等级 低于 新等级?"}
+    B2 --> C
+    B3 --> C
+
+    C -->|是| D["USER.member_level 升级"]
+    C -->|否-已是新等级| E["不变化"]
+    C -->|否-新等级更低| F["不降级"]
+
+    D --> G["解锁新等级权益<br/>MEMBER_LEVEL.privileges"]
+    G --> G1["更高积分倍率 points_rate"]
+    G --> G2["专属折扣"]
+    G --> G3["生日礼包"]
+    G --> G4["优先配送"]
+
+    G1 --> H["下次购物积分计算<br/>使用新倍率"]
+    H --> I["✅ 权益生效"]
+
+    style A fill:#f0f9ff,stroke:#38bdf8,stroke-width:2px
+    style I fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px
+    style D fill:#fef3c7,stroke:#f59e0b
+  </div></div>
+  <div class="note">涉及 2 张表：USER.total_spent（累计消费） + MEMBER_LEVEL（等级配置）。三档会员：银牌(≥500)、金牌(≥1000)、黑钻(≥3000)。只升不降，阈值触发自动切换。</div>
+</div>
+
+<!-- ===== 轻创课程流程 ===== -->
+<div class="section" id="course">
+  <h2><span class="badge badge-purple">课程</span> 轻创课程购买与学习</h2>
+  <p class="subtitle">浏览 → 购买 → 解锁视频 → 完成学习</p>
+  <div class="mermaid-wrap"><div class="mermaid">
+graph TD
+    A["🎓 轻创页<br/>COURSE 列表"] --> B["查看课程详情<br/>hero_img / description / features"]
+    B --> C{"课程层级 tier"}
+    C -->|basic 入门| C1["¥399 基础课"]
+    C -->|pro 进阶| C2["¥2999 梵优合伙人"]
+    C -->|partner 合伙人| C3["¥5999 梵优主理人"]
+
+    C1 --> D["查看章节大纲<br/>chapter_list JSON"]
+    C2 --> D
+    C3 --> D
+
+    D --> E["试看免费视频<br/>COURSE_VIDEO.is_free = true"]
+    E --> F{"决定购买？"}
+    F -->|否| G["返回浏览"]
+    F -->|是| H["💳 支付课程费用"]
+
+    H --> I["INSERT USER_COURSE<br/>user_id + course_id<br/>status = 学习中<br/>paid_at = now<br/>expire_at = 付费+365天"]
+
+    I --> I1{"课程类型判断"}
+    I1 -->|梵优合伙人 ¥2999| I2["USER.level = 梵优合伙人<br/>INSERT/UPDATE USER_COMMISSION<br/>tier_id = 合伙人(9%)"]
+    I1 -->|梵优主理人 ¥5999| I3["USER.level = 梵优主理人<br/>INSERT/UPDATE USER_COMMISSION<br/>tier_id = 主理人(15%)"]
+    I1 -->|基础课 ¥399| I4["仅解锁课程<br/>不获取分销资格"]
+
+    I2 --> J["解锁全部视频<br/>COURSE_VIDEO 完整列表"]
+    I3 --> J
+    I4 --> J
+    J --> K["逐视频学习"]
+    K --> K1["标记学习进度<br/>COURSE_VIDEO 完成状态"]
+    K1 --> L{"全部学完？"}
+    L -->|是| M["USER_COURSE.status → 已完成"]
+    L -->|否| K
+
+    M --> N{"课程到期？<br/>expire_at < now"}
+    N -->|是| O["status → 已过期<br/>视频不可再访问"]
+    N -->|否| P["可继续复习"]
+
+    style A fill:#f5f3ff,stroke:#a78bfa,stroke-width:2px
+    style M fill:#ede9fe,stroke:#8b5cf6,stroke-width:2px
+    style I fill:#f0fdf4
+  </div></div>
+  <div class="note">涉及 4 张表：COURSE + COURSE_VIDEO + USER_COURSE + USER_COMMISSION。课程有效期 365 天，过期后不可访问。免费视频无需购买即可观看。<br>❗ 购买梵优合伙人(¥2999)或梵优主理人(¥5999)课程后自动获取分销资格，基础课(¥399)不含分销资格。梵优城市分公司仅后端手动设置。<br>❗ 注意：当前缺少 USER_COURSE_VIDEO 表记录视频级学习进度，建议后续新增。</div>
+</div>
+
+<!-- ===== Banner 运营流程 ===== -->
+<div class="section" id="banner">
+  <h2><span class="badge badge-blue">运营</span> Banner 轮播运营</h2>
+  <p class="subtitle">配置 → 定时上下线 → 多跳转类型</p>
+  <div class="mermaid-wrap"><div class="mermaid">
+graph TD
+    A["🖼️ 运营后台配置 Banner"] --> B["INSERT/UPDATE BANNER"]
+    B --> B1["title / subtitle 文案"]
+    B --> B2["bg_img 背景图 / bg_color 兜底色"]
+    B --> B3["btn_text / btn_color 按钮样式"]
+    B --> B4["link_type + link_value 跳转配置"]
+    B --> B5["sort_order 轮播顺序"]
+    B --> B6["valid_from → valid_until 展示时段"]
+    B1 --> C["is_active = true"]
+
+    C --> D["⏰ 首页加载时查询"]
+    D --> D1["WHERE is_active = true<br/>AND valid_from ≤ now ≤ valid_until<br/>ORDER BY sort_order"]
+
+    D1 --> E["渲染轮播组件"]
+    E --> F["用户点击 Banner"]
+    F --> G{"link_type 判断"}
+    G -->|product| G1["跳转 PRODUCT 详情<br/>link_value = product_id"]
+    G -->|merchant| G2["跳转 CITY_MERCHANT 详情<br/>link_value = merchant_id"]
+    G -->|page| G3["跳转内部页面<br/>link_value = 路由路径"]
+    G -->|url| G4["打开外部链接<br/>link_value = https://..."]
+    G -->|none| G5["无跳转，仅展示"]
+
+    G1 --> H["📊 记录点击事件"]
+    G2 --> H
+    G3 --> H
+    G4 --> H
+
+    I["valid_until 到期"] --> J["Banner 自动隐藏<br/>不再出现在查询结果"]
+
+    style A fill:#f0f9ff,stroke:#38bdf8,stroke-width:2px
+    style E fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2px
+    style D1 fill:#fef3c7,stroke:#f59e0b
+  </div></div>
+  <div class="note">核心：link_type 枚举（product/merchant/page/url/none）+ link_value 承载跳转目标。定时上下线通过 valid_from/valid_until 控制，无需手动操作。</div>
+</div>
+
+<!-- ===== 商品组合包流程 ===== -->
+<div class="section" id="bundle">
+  <h2><span class="badge badge-orange">商品</span> 组合包（全家桶）流程</h2>
+  <p class="subtitle">选品 → 打包定价 → 上架 → 购买</p>
+  <div class="mermaid-wrap"><div class="mermaid">
+graph TD
+    A["📦 运营后台创建组合包"] --> B["INSERT PRODUCT_BUNDLE<br/>name / cover_img / bundle_price<br/>original_price / description"]
+
+    B --> C["添加组合商品"]
+    C --> C1["INSERT PRODUCT_BUNDLE_ITEM<br/>bundle_id + product_id + qty + sort_order"]
+    C1 --> C2{"继续添加？"}
+    C2 -->|是| C
+    C2 -->|否| D["计算 original_price<br/>= SUM(product.price × qty)"]
+
+    D --> E["设置 bundle_price < original_price<br/>体现优惠力度"]
+    E --> F["is_active = true<br/>sort_order 排列"]
+
+    F --> G["📱 首页/商品页展示组合包"]
+    G --> H["用户点击组合包"]
+    H --> H1["查询 PRODUCT_BUNDLE<br/>+ 所有 PRODUCT_BUNDLE_ITEM"]
+    H1 --> H2["JOIN PRODUCT 获取商品详情"]
+
+    H2 --> I{"用户下单"}
+    I --> I1["商品快照写入 ORDER_ITEM<br/>单价使用 bundle 分摊价"]
+    I1 --> I2["ORDER.original_amount = 单品累加<br/>ORDER.discount_amount = original_amount - bundle_price<br/>ORDER.total_amount = bundle_price"]
+
+    I2 --> J["后续流程同普通订单<br/>支付 → 发货 → 收货"]
+
+    style A fill:#fff7ed,stroke:#f97316,stroke-width:2px
+    style G fill:#fed7aa,stroke:#ea580c,stroke-width:2px
+    style E fill:#fef3c7,stroke:#f59e0b
+  </div></div>
+  <div class="note">涉及 2 张新表：PRODUCT_BUNDLE + PRODUCT_BUNDLE_ITEM。组合价低于单品合计，discount_amount 记录优惠差额。</div>
+</div>
+
+<!-- ===== 限时特供流程 ===== -->
+<div class="section" id="flash">
+  <h2><span class="badge badge-orange">商品</span> 限时特供流程</h2>
+  <p class="subtitle">设置 → 定时开启 → 倒计时展示 → 定时结束</p>
+  <div class="mermaid-wrap"><div class="mermaid">
+graph TD
+    A["⚡ 商家/运营设置限时特供"] --> B["UPDATE PRODUCT<br/>is_flash = true<br/>flash_price = 特供价<br/>flash_start = 开始时间<br/>flash_end = 结束时间"]
+
+    B --> C["⏰ 前端查询展示"]
+    C --> C1["WHERE is_flash = true<br/>AND is_active = true<br/>AND flash_start ≤ now ≤ flash_end<br/>AND stock > 0"]
+
+    C1 --> D["首页「限时特供」专区"]
+    D --> D1["展示特供商品卡片"]
+    D1 --> D2["显示 flash_price 大字号<br/>original_price 划线价"]
+    D2 --> D3["显示倒计时<br/>(flash_end - now)"]
+
+    D3 --> E["用户点击进入详情"]
+    E --> F["下单时使用 flash_price<br/>而非 price"]
+    F --> G["正常走订单流程"]
+
+    H["flash_end 到期"] --> I["商品自动退出特供<br/>恢复普通 price"]
+    H2["库存售罄 stock=0"] --> I
+    H3["商家可提前结束"] --> J1["is_flash = false"]
+    J1 --> I
+
+    H --> H3
+
+    style A fill:#fff7ed,stroke:#f97316,stroke-width:2px
+    style D fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    style B fill:#f0fdf4
+    style I fill:#fee2e2,stroke:#ef4444
+  </div></div>
+  <div class="note">PRODUCT 表 4 个字段控制：is_flash / flash_price / flash_start / flash_end。前端倒计时显示，到期自动恢复原价。flash_price 优先级最高。</div>
+</div>
+
+<!-- ===== 拼团流程 ===== -->
+<div class="section" id="group-buy">
+  <h2><span class="badge badge-orange">商品</span> 拼团流程</h2>
+  <p class="subtitle">发起拼团 → 邀请参团 → 成团 → 下单</p>
+  <div class="mermaid-wrap"><div class="mermaid">
+graph TD
+    A["👤 用户浏览商品详情"] --> B["选择拼团规格<br/>2人/3人/5人/10人"]
+    B --> C{"折扣计算<br/>groupDiscounts"}
+    C --> C1["2人团 省5%"]
+    C --> C2["3人团 省10%"]
+    C --> C3["5人团 省15%"]
+    C --> C4["10人团 省25%"]
+    C1 --> D["发起拼团<br/>INSERT GROUP_BUY<br/>status = pending"]
+    C2 --> D
+    C3 --> D
+    C4 --> D
+
+    D --> E["分享拼团链接"]
+    E --> F["其他用户参团<br/>INSERT GROUP_BUY_MEMBER"]
+    F --> G{"已成团？<br/>joined ≥ size"}
+    G -->|否| H["等待更多人参团<br/>显示倒计时"]
+    G -->|是| I["GROUP_BUY.status → 已成团<br/>触发下单流程"]
+
+    I --> J["拼团价下单<br/>original_amount = 原价<br/>discount_amount = 拼团优惠<br/>total_amount = 拼团价"]
+    J --> K["正常支付 → 发货 → 收货"]
+
+    H --> L{"倒计时结束<br/>未成团？"}
+    L -->|是| M["GROUP_BUY.status → 已失败<br/>自动解散"]
+    L -->|否| F
+
+    N["用户也可加入<br/>已有活跃拼团"] --> F
+
+    style A fill:#fff7ed,stroke:#f97316,stroke-width:2px
+    style K fill:#fed7aa,stroke:#ea580c,stroke-width:2px
+    style D fill:#f0fdf4
+    style M fill:#fee2e2,stroke:#ef4444
+  </div></div>
+  <div class="note">涉及 2 张表：GROUP_BUY（拼团活动）+ GROUP_BUY_MEMBER（参团成员）。拼团折扣率存于 GROUP_BUY.discount_rate，成团后自动触发下单流程。未成团自动解散。</div>
+</div>
+
+<!-- ===== 数据流转总览 ===== -->
+<div class="section" id="overview">
+  <h2><span class="badge badge-green">总览</span> 全模块数据流转总览</h2>
+  <p class="subtitle">一条用户旅程串联所有模块的数据交互</p>
+  <div class="mermaid-wrap"><div class="mermaid">
+graph LR
+    subgraph 用户层 ["👤 用户层"]
+        U["USER<br/>账户/等级/积分"]
+        UP["USER_PET<br/>宠物档案"]
+        UA["USER_ADDRESS<br/>收货地址"]
+    end
+
+    subgraph 交易层 ["🛒 交易层"]
+        P["PRODUCT<br/>商品"]
+        PC["PRODUCT_CATEGORY<br/>分类"]
+        CT["CART<br/>购物车"]
+        O["ORDER<br/>订单"]
+        OI["ORDER_ITEM<br/>订单明细"]
+        PAY["PAYMENT<br/>支付"]
+        RF["REFUND<br/>售后"]
+    end
+
+    subgraph 运营层 ["📢 运营层"]
+        BN["BANNER<br/>轮播"]
+        PB["PRODUCT_BUNDLE<br/>组合包"]
+        PBI["PRODUCT_BUNDLE_ITEM<br/>组合明细"]
+        GB["GROUP_BUY<br/>拼团"]
+        GBM["GROUP_BUY_MEMBER<br/>拼团成员"]
+    end
+
+    subgraph 同城层 ["🏪 同城层"]
+        CM["CITY_MERCHANT<br/>商家"]
+        MA["MERCHANT_APPLY<br/>入驻申请"]
+    end
+
+    subgraph 内容层 ["🎓 内容层"]
+        CS["COURSE<br/>课程"]
+        CV["COURSE_VIDEO<br/>视频"]
+        UC["USER_COURSE<br/>学习记录"]
+        LR["LIVE_ROOM<br/>直播间"]
+    end
+
+    subgraph AI层 ["🤖 AI层"]
+        QR["QUIZ_RECORD<br/>答题记录"]
+        MP["MEAL_PLAN<br/>配餐方案"]
+        MI["MEAL_INGREDIENT<br/>食材"]
+        MO["MEAL_ORDER<br/>配餐订单"]
+    end
+
+    subgraph 资金层 ["💰 资金层"]
+        CTIER["COMMISSION_TIER<br/>分佣等级"]
+        UCOM["USER_COMMISSION<br/>分佣账户"]
+        CLOG["COMMISSION_LOG<br/>佣金流水"]
+        WD["WITHDRAW<br/>提现"]
+        RL["RECHARGE_LOG<br/>充值"]
+        CL["CONSUMPTION_LOG<br/>消费"]
+        PL["POINTS_LOG<br/>积分流水"]
+        ML["MEMBER_LEVEL<br/>会员等级"]
+    end
+
+    U --> UP
+    U --> UA
+    U --> CT
+    U --> O
+    U --> QR
+    U --> MO
+    U --> UC
+
+    BN --> P
+    BN --> CM
+    P --> CT
+    P --> OI
+    PC --> P
+    CM --> P
+    PB --> PBI
+    PBI --> P
+    P --> GB
+    GB --> GBM
+    U --> GBM
+
+    O --> OI
+    O --> PAY
+    O --> RF
+    O --> CLOG
+
+    CS --> CV
+    CS --> UC
+
+    QR --> MO
+    MP --> MI
+    MP --> MO
+
+    CTIER --> UCOM
+    U --> UCOM
+    UCOM --> CLOG
+    UCOM --> WD
+    O --> CLOG
+
+    U --> PL
+    U --> RL
+    U --> CL
+    ML --> U
+
+    style 用户层 fill:#ecfdf5,stroke:#10b981
+    style 交易层 fill:#fff7ed,stroke:#f97316
+    style 运营层 fill:#f0f9ff,stroke:#38bdf8
+    style 同城层 fill:#fef3c7,stroke:#f59e0b
+    style 内容层 fill:#f5f3ff,stroke:#a78bfa
+    style AI层 fill:#fdf2f8,stroke:#f472b6
+    style 资金层 fill:#fffbeb,stroke:#f59e0b
+  </div></div>
+  <div class="note">六大模块数据交互全景：用户层是核心枢纽，交易层产生订单驱动资金层分佣结算，AI层独立闭环，同城层通过 CITY_MERCHANT → PRODUCT 融入交易体系，运营层 Banner/组合包/限时特供增强交易转化。</div>
+</div>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'base',
+    themeVariables: {
+      primaryColor: '#ecfdf5',
+      primaryTextColor: '#065f46',
+      primaryBorderColor: '#10b981',
+      secondaryColor: '#f0fdf4',
+      tertiaryColor: '#ecfdf5',
+      background: '#ffffff',
+      mainBkg: '#ffffff',
+      nodeBorder: '#10b981',
+      clusterBkg: '#f0fdf4',
+      clusterBorder: '#6ee7b7',
+      titleColor: '#065f46',
+      edgeLabelBackground: '#ffffff',
+      lineColor: '#6ee7b7',
+      fontFamily: '-apple-system, BlinkMacSystemFont, PingFang SC, Microsoft YaHei, sans-serif',
+      fontSize: '13px'
+    },
+    flowchart: {
+      htmlLabels: true,
+      curve: 'basis',
+      padding: 16,
+      useMaxWidth: true
+    }
+  });
+</script>
+</body>
+</html>

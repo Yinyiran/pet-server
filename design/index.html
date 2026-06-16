@@ -1,0 +1,2460 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>梵优茗宠 - 爱宠专属好物</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="points.css" />
+    <link rel="stylesheet" href="commission.css" />
+  </head>
+  <body>
+    <div class="app-container">
+      <!-- ==================== 顶部 Header ==================== -->
+      <header class="header">
+        <div class="header-inner">
+          <div class="header-back hidden" id="headerBack" onclick="handleHeaderBack()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </div>
+          <div class="brand-title">
+            <span class="brand-icon">🐾</span>
+            梵优茗宠
+          </div>
+        </div>
+      </header>
+
+      <main class="main-content">
+        <!-- ==================== 首页 ==================== -->
+        <div class="page active" id="homePage">
+          <!-- ==================== Banner 轮播 ==================== -->
+          <div class="banner-section">
+            <div class="banner-track" id="bannerTrack">
+              <!-- 商品 -->
+              <div class="banner-slide banner-slide-1" onclick="openShopPage()">
+                <div class="banner-slide-content">
+                  <div class="banner-slide-tag">🛒 品质甄选</div>
+                  <div class="banner-slide-title">宠物优选商城</div>
+                  <div class="banner-slide-desc">零食·主粮·用品，一站式采购爱宠所需</div>
+                  <div class="banner-slide-btn">
+                    去逛逛
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6" /></svg>
+                  </div>
+                </div>
+                <div class="banner-slide-icon">🛍️</div>
+              </div>
+
+              <!-- 宠物店 -->
+              <div class="banner-slide banner-slide-2" onclick="showToast('查看附近宠物店')">
+                <div class="banner-slide-content">
+                  <div class="banner-slide-tag">🏪 线下体验</div>
+                  <div class="banner-slide-title">合作宠物门店</div>
+                  <div class="banner-slide-desc">洗澡美容·寄养托管，就近预约服务</div>
+                  <div class="banner-slide-btn">
+                    去预约
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6" /></svg>
+                  </div>
+                </div>
+                <div class="banner-slide-icon">✂️</div>
+              </div>
+
+              <!-- 宠物医院 -->
+              <div class="banner-slide banner-slide-3" onclick="showToast('查看附近宠物医院')">
+                <div class="banner-slide-content">
+                  <div class="banner-slide-tag">🏥 健康守护</div>
+                  <div class="banner-slide-title">在线宠物医院</div>
+                  <div class="banner-slide-desc">在线问诊·疫苗预约·体检套餐一站搞定</div>
+                  <div class="banner-slide-btn">
+                    去预约
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6" /></svg>
+                  </div>
+                </div>
+                <div class="banner-slide-icon">💊</div>
+              </div>
+            </div>
+
+            <!-- 圆点指示器 -->
+            <div class="banner-dots" id="bannerDots">
+              <div class="banner-dot active"></div>
+              <div class="banner-dot"></div>
+              <div class="banner-dot"></div>
+            </div>
+          </div>
+
+          <!-- ==================== 信息栏 ==================== -->
+          <div class="stats-bar">
+            <div class="stats-bar-item" onclick="switchTab('city', document.querySelector('.nav-item:nth-child(2)'))">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+              <span class="stats-city-name" id="statsCityName">杭州市</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="stats-arrow">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </div>
+            <div class="stats-bar-divider"></div>
+            <div class="stats-bar-item stats-friends">
+              <span class="stats-friends-label">同城萌友</span>
+              <span class="stats-friends-num" id="statsLocalFriends">8,562</span>
+              <span class="stats-friends-sep">|</span>
+              <span class="stats-friends-label">全国萌友</span>
+              <span class="stats-friends-num" id="statsAllFriends">128,936</span>
+            </div>
+            <div class="stats-bar-divider"></div>
+            <div class="stats-bar-item stats-douyin" onclick="openDouyinCard()">
+              <div class="stats-douyin-icon">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.89a2.89 2.89 0 0 1-2.88 2.59 2.9 2.9 0 0 1-2.89-2.9 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1v-3.53a6.37 6.37 0 0 0-.79-.05A6.38 6.38 0 0 0 3.1 15.6a6.38 6.38 0 0 0 6.38 6.38 6.38 6.38 0 0 0 6.38-6.38V8.67a8.3 8.3 0 0 0 4.84 1.56v-3.45a4.8 4.8 0 0 1-1.11-.09z"
+                  />
+                </svg>
+              </div>
+              <span class="stats-douyin-text">直播中</span>
+              <span class="stats-douyin-dot"></span>
+            </div>
+          </div>
+
+          <!-- ==================== AI定制卡片 ==================== -->
+          <div class="ai-card" onclick="navigateToQuiz()">
+            <div class="ai-card-glow"></div>
+            <div class="ai-card-glow2"></div>
+            <div class="ai-card-title">AI 专属定制</div>
+            <div class="ai-card-subtitle">填写宠物基础信息，AI智能分析爱宠特征，精准推荐最适合的营养配餐方案</div>
+            <div class="ai-card-cta">
+              开始定制
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </div>
+            <div class="ai-card-decor">🤖</div>
+          </div>
+
+          <!-- ==================== 零食全家桶 ==================== -->
+          <div class="section-header">
+            <div class="section-title-group">
+              <div class="section-icon">🎁</div>
+              <span class="section-title">零食全家桶</span>
+            </div>
+          </div>
+          <div class="family-bucket" onclick="openProductDetail('family-bucket')">
+            <div class="family-bucket-imgs">
+              <div class="family-bucket-imgs-item">🍖</div>
+              <div class="family-bucket-imgs-item">🐟</div>
+              <div class="family-bucket-imgs-item">🧀</div>
+              <div class="family-bucket-imgs-item">🥩</div>
+              <div class="family-bucket-imgs-item">🍗</div>
+              <div class="family-bucket-imgs-item">🦴</div>
+              <div class="family-bucket-imgs-item">🐔</div>
+              <div class="family-bucket-imgs-item">🥕</div>
+            </div>
+            <div class="family-bucket-info">
+              <div class="family-bucket-name">超值零食全家桶（8款豪礼）</div>
+              <div class="family-bucket-desc">
+                精选磨牙棒、冻干肉、牛肉粒、芝士饼干、牛骨、鸡肝、蔬菜圈等8大爆款，一次满足爱宠所有口味。优质天然食材，低盐低脂配方，营养全面均衡，好吃更健康
+              </div>
+              <div class="family-bucket-right">
+                <div class="family-bucket-price"><span class="unit">¥</span>80<span class="orig">¥168</span></div>
+                <button
+                  class="family-bucket-btn"
+                  onclick="
+                    event.stopPropagation();
+                    addFamilyBucket();
+                  "
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <circle cx="9" cy="21" r="1" />
+                    <circle cx="20" cy="21" r="1" />
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                  </svg>
+                  立即选购
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ==================== 商品专区 ==================== -->
+          <div class="section-header">
+            <div class="section-title-group">
+              <div class="section-icon">🛍️</div>
+              <span class="section-title">商品专区</span>
+            </div>
+          </div>
+          <div class="shop-cat-tabs">
+            <div class="shop-cat-tab" data-cat="snack" onclick="openShopPage('snack', this)">
+              <div class="shop-cat-tab-icon">🍪</div>
+              <span>手工零食</span>
+            </div>
+            <div class="shop-cat-tab" data-cat="brand" onclick="openShopPage('brand', this)">
+              <div class="shop-cat-tab-icon">🏷️</div>
+              <span>品牌优选</span>
+            </div>
+            <div class="shop-cat-tab" data-cat="clothes" onclick="openShopPage('clothes', this)">
+              <div class="shop-cat-tab-icon">👗</div>
+              <span>服装配饰</span>
+            </div>
+            <div class="shop-cat-tab" data-cat="toy" onclick="openShopPage('toy', this)">
+              <div class="shop-cat-tab-icon">🧸</div>
+              <span>宠物玩具</span>
+            </div>
+          </div>
+
+          <!-- ==================== 限时特供 ==================== -->
+          <div class="section-header">
+            <div class="section-title-group">
+              <div class="section-icon">⚡</div>
+              <span class="section-title">限时特供</span>
+            </div>
+            <div class="section-countdown" id="countdown">
+              <span class="countdown-item" id="cd-h">00</span>
+              <span class="countdown-sep">:</span>
+              <span class="countdown-item" id="cd-m">00</span>
+              <span class="countdown-sep">:</span>
+              <span class="countdown-item" id="cd-s">00</span>
+            </div>
+          </div>
+          <div class="flash-sale-items">
+            <div class="flash-item" onclick="openProductDetail('teeth-stick')">
+              <div class="flash-item-img">🦴</div>
+              <div class="flash-item-name">磨牙洁齿棒</div>
+              <div class="flash-item-price">¥19.9<span class="original">¥39.9</span></div>
+            </div>
+            <div class="flash-item" onclick="openProductDetail('salmon-freeze')">
+              <div class="flash-item-img">🐟</div>
+              <div class="flash-item-name">三文鱼冻干</div>
+              <div class="flash-item-price">¥39.9<span class="original">¥59.9</span></div>
+            </div>
+            <div class="flash-item" onclick="openProductDetail('cheese-biscuit')">
+              <div class="flash-item-img">🧀</div>
+              <div class="flash-item-name">芝士训练饼干</div>
+              <div class="flash-item-price">¥18.9<span class="original">¥29.9</span></div>
+            </div>
+            <div class="flash-item" onclick="openProductDetail('beef-grain')">
+              <div class="flash-item-img">🥩</div>
+              <div class="flash-item-name">牛肉粒零食</div>
+              <div class="flash-item-price">¥32.9<span class="original">¥45.9</span></div>
+            </div>
+          </div>
+          <div style="height: 20px"></div>
+        </div>
+        <!-- /#homePage -->
+
+        <!-- ==================== 同城页 ==================== -->
+        <div class="page" id="cityPage">
+          <div class="city-header" onclick="showToast('切换城市')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+            <span class="city-header-label">当前城市</span>
+            <span class="city-header-name">杭州市</span>
+            <span class="city-header-arrow">›</span>
+          </div>
+
+          <div class="city-filters" id="cityFilters">
+            <div class="city-filter-chip active" data-cat="all" onclick="filterCity('all', this)">全部</div>
+            <div class="city-filter-chip" data-cat="shop" onclick="filterCity('shop', this)">🏪 宠物店</div>
+            <div class="city-filter-chip" data-cat="hospital" onclick="filterCity('hospital', this)">🏥 宠物医院</div>
+            <div class="city-filter-chip" data-cat="beauty" onclick="filterCity('beauty', this)">✂️ 宠物美容</div>
+            <div class="city-filter-chip" data-cat="park" onclick="filterCity('park', this)">🌳 宠物乐园</div>
+            <div class="city-filter-chip" data-cat="party" onclick="filterCity('party', this)">🎉 线下聚会</div>
+          </div>
+
+          <div class="city-list" id="cityList"></div>
+
+          <div class="coop-entry" onclick="openCoopForm()">
+            <div class="coop-entry-icon">🤝</div>
+            <div class="coop-entry-text">
+              <div class="coop-entry-title">申请合作入驻</div>
+              <div class="coop-entry-desc">宠物店、医院、美容院等商家免费入驻</div>
+            </div>
+            <div class="coop-entry-arrow">›</div>
+          </div>
+          <div style="height: 20px"></div>
+        </div>
+        <!-- /#cityPage -->
+
+        <!-- ==================== 轻创页 ==================== -->
+        <div class="page" id="creatorPage">
+          <!-- 项目介绍 -->
+          <div class="creator-hero">
+            <div class="creator-hero-glow"></div>
+            <div class="creator-hero-glow2"></div>
+            <div class="creator-hero-glow3"></div>
+            <div class="creator-hero-decor">🚀</div>
+            <div class="creator-hero-tag">✨ 轻创业项目</div>
+            <div class="creator-hero-title">宠物赛道轻创<br />陪跑计划</div>
+            <div class="creator-hero-desc">零基础也能入局宠物行业。从选品、获客到成交，手把手带你搭建宠物副业体系。</div>
+            <div class="creator-hero-stats">
+              <div class="creator-hero-stat">
+                <div class="creator-hero-stat-num">3000+</div>
+                <div class="creator-hero-stat-label">已加入学员</div>
+              </div>
+              <div class="creator-hero-stat">
+                <div class="creator-hero-stat-num">98%</div>
+                <div class="creator-hero-stat-label">好评率</div>
+              </div>
+              <div class="creator-hero-stat">
+                <div class="creator-hero-stat-num">1v1</div>
+                <div class="creator-hero-stat-label">导师陪跑</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 三档课程 -->
+          <div class="course-cards">
+            <div class="course-card basic" onclick="openCourseDetail('basic')">
+              <div class="course-card-icon">📱</div>
+              <div class="course-card-info">
+                <div class="course-card-tag">入门首选</div>
+                <div class="course-card-name">线上录播课</div>
+                <div class="course-card-features">
+                  <span class="course-card-feature">32节视频</span>
+                  <span class="course-card-feature">社群答疑</span>
+                  <span class="course-card-feature">1年回看</span>
+                </div>
+                <div class="course-card-price"><span class="unit">¥</span>399</div>
+              </div>
+              <div class="course-card-arrow">›</div>
+            </div>
+
+            <div class="course-card pro" onclick="openCourseDetail('pro')">
+              <div class="course-card-icon">👨‍🏫</div>
+              <div class="course-card-info">
+                <div class="course-card-tag">🔥 热门推荐</div>
+                <div class="course-card-name">梵优合伙人</div>
+                <div class="course-card-features">
+                  <span class="course-card-feature">1v1指导</span>
+                  <span class="course-card-feature">90天陪跑</span>
+                  <span class="course-card-feature">供货对接</span>
+                  <span class="course-card-feature">流量扶持</span>
+                  <span class="course-card-feature">🟢 分销资格 佣金9%</span>
+                </div>
+                <div class="course-card-price"><span class="unit">¥</span>2,999</div>
+              </div>
+              <div class="course-card-arrow">›</div>
+            </div>
+
+            <div class="course-card partner" onclick="openCourseDetail('partner')">
+              <div class="course-card-icon">💎</div>
+              <div class="course-card-info">
+                <div class="course-card-tag">👑 高阶权益</div>
+                <div class="course-card-name">梵优主理人</div>
+                <div class="course-card-features">
+                  <span class="course-card-feature">全年陪跑</span>
+                  <span class="course-card-feature">区域代理</span>
+                  <span class="course-card-feature">分红权益</span>
+                  <span class="course-card-feature">私董会</span>
+                  <span class="course-card-feature">🟢 分销资格 佣金15%</span>
+                </div>
+                <div class="course-card-price"><span class="unit">¥</span>5,999</div>
+              </div>
+              <div class="course-card-arrow">›</div>
+            </div>
+          </div>
+        </div>
+        <!-- /#creatorPage -->
+
+        <!-- ==================== 购物车页 ==================== -->
+        <div class="page" id="cartPage">
+          <div class="cart-page-inner">
+            <div class="cart-empty" id="cartEmpty">
+              <div class="cart-empty-icon">🛒</div>
+              <div class="cart-empty-title">购物车是空的</div>
+              <div class="cart-empty-desc">快去挑选心仪的宠物好物吧</div>
+              <button class="cart-empty-btn" onclick="switchTab('home', document.querySelector('.nav-item'))">去逛逛</button>
+            </div>
+            <div id="cartContent" style="display: none; flex: 1; overflow: auto">
+              <!-- 收货地址栏 -->
+              <div class="cart-address-bar" id="cartAddressBar" onclick="openCartAddressList()">
+                <div class="cart-address-bar-icon">📍</div>
+                <div class="cart-address-bar-info" id="cartAddressInfo">
+                  <div class="cart-address-bar-text">请选择收货地址</div>
+                </div>
+                <div class="cart-address-bar-arrow">›</div>
+              </div>
+              <div class="cart-store">
+                <div id="cartItems"></div>
+              </div>
+            </div>
+
+            <div class="cart-bottom" id="cartBottom">
+              <label class="cart-bottom-check"> <input type="checkbox" id="cartCheckAll2" onchange="toggleCheckAll()" checked /> 全选 </label>
+              <div class="cart-bottom-total">
+                <div class="cart-bottom-total-label"><span id="cartShippingLabel">含运费¥10.00</span> 合计</div>
+                <div class="cart-bottom-total-price"><span class="unit">¥</span><span id="cartTotalPrice">0</span></div>
+              </div>
+              <button class="cart-bottom-btn" id="cartSubmitBtn" onclick="submitCart()">结算</button>
+            </div>
+          </div>
+        </div>
+        <!-- /#cartPage -->
+
+        <!-- ==================== AI答题页 ==================== -->
+        <div class="page" id="quizPage">
+          <div class="quiz-page-container">
+            <div class="quiz-page-header">
+              <div class="quiz-page-title">AI 宠物配餐</div>
+              <div class="quiz-page-subtitle">智能分析爱宠特征，精准推荐最适合的营养配餐方案</div>
+            </div>
+
+            <div class="quiz-progress">
+              <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quizProgressFill" style="width: 0%"></div></div>
+              <div class="quiz-progress-text" id="quizProgressText">0/16</div>
+            </div>
+
+            <!-- 题目区域（一次显示一题） -->
+            <div class="quiz-questions-area" id="quizQuestionsArea">
+              <!-- 宠物类型选择 -->
+              <div class="quiz-field quiz-field-pet-type">
+                <div class="quiz-field-label">
+                  <span class="q-num">🐾</span>请选择宠物类型
+                  <span class="type-badge single">单选</span>
+                </div>
+                <div class="quiz-radio-group quiz-radio-group-pet" data-name="petType">
+                  <div class="quiz-radio quiz-radio-pet" data-value="猫" onclick="selectRadio(this)">
+                    <span class="r-dot"></span>
+                    <span class="quiz-pet-icon">🐱</span>
+                    <span class="quiz-pet-label">猫猫</span>
+                  </div>
+                  <div class="quiz-radio quiz-radio-pet" data-value="狗" onclick="selectRadio(this)">
+                    <span class="r-dot"></span>
+                    <span class="quiz-pet-icon">🐶</span>
+                    <span class="quiz-pet-label">狗狗</span>
+                  </div>
+                </div>
+              </div>
+              <!-- 推荐商品滑动卡片 -->
+              <div class="quiz-product-slider" id="quizProductSlider">
+                <div class="quiz-product-slider-header">
+                  <span class="quiz-product-slider-title">🔥 热销推荐</span>
+                  <span class="quiz-product-slider-hint">← 左右滑动查看 →</span>
+                </div>
+                <div class="quiz-product-track" id="quizProductTrack">
+                  <!-- JS 动态渲染 -->
+                </div>
+                <div class="quiz-product-dots" id="quizProductDots"></div>
+              </div>
+
+              <!-- ============ 猫咪题目 ============ -->
+              <div id="catQuestions" class="hidden">
+                <!-- CQ1 猫咪品种【单选题】 -->
+                <div class="quiz-field" data-q="1">
+                  <div class="quiz-field-label">
+                    <span class="q-num">1</span>猫咪品种
+                    <span class="type-badge single">单选</span>
+                  </div>
+                  <div class="quiz-radio-group" data-name="breed">
+                    <div class="quiz-radio" data-value="英短" onclick="selectRadio(this)"><span class="r-dot"></span>英短</div>
+                    <div class="quiz-radio" data-value="美短" onclick="selectRadio(this)"><span class="r-dot"></span>美短</div>
+                    <div class="quiz-radio" data-value="布偶" onclick="selectRadio(this)"><span class="r-dot"></span>布偶</div>
+                    <div class="quiz-radio" data-value="德文卷毛" onclick="selectRadio(this)"><span class="r-dot"></span>德文卷毛</div>
+                    <div class="quiz-radio" data-value="暹罗" onclick="selectRadio(this)"><span class="r-dot"></span>暹罗</div>
+                    <div class="quiz-radio" data-value="蓝猫" onclick="selectRadio(this)"><span class="r-dot"></span>蓝猫</div>
+                    <div class="quiz-radio" data-value="加菲" onclick="selectRadio(this)"><span class="r-dot"></span>加菲</div>
+                    <div class="quiz-radio" data-value="缅因" onclick="selectRadio(this)"><span class="r-dot"></span>缅因</div>
+                    <div class="quiz-radio" data-value="阿比西尼亚" onclick="selectRadio(this)"><span class="r-dot"></span>阿比西尼亚</div>
+                    <div class="quiz-radio" data-value="其他" onclick="selectRadio(this)"><span class="r-dot"></span>其他</div>
+                  </div>
+                </div>
+
+                <!-- CQ2 其他品种【填空题】 -->
+                <div class="quiz-field hidden" data-q="2" id="q2Field">
+                  <div class="quiz-field-label">
+                    <span class="q-num">2</span>其他品种
+                    <span class="type-badge fill">填空</span>
+                  </div>
+                  <div class="quiz-input-wrap">
+                    <input class="quiz-input" type="text" id="q2Input" placeholder="请输入猫咪品种" oninput="onQuizInput(this)" />
+                  </div>
+                </div>
+
+                <!-- CQ3 宠物昵称【填空题】 -->
+                <div class="quiz-field" data-q="3">
+                  <div class="quiz-field-label">
+                    <span class="q-num">3</span>宠物昵称
+                    <span class="type-badge fill">填空</span>
+                  </div>
+                  <div class="quiz-input-wrap">
+                    <input class="quiz-input" type="text" id="q3Input" placeholder="请输入爱宠昵称" oninput="onQuizInput(this)" maxlength="20" />
+                  </div>
+                </div>
+
+                <!-- CQ4 性别【单选题】 -->
+                <div class="quiz-field" data-q="4">
+                  <div class="quiz-field-label">
+                    <span class="q-num">4</span>性别
+                    <span class="type-badge single">单选</span>
+                  </div>
+                  <div class="quiz-radio-group" data-name="gender">
+                    <div class="quiz-radio" data-value="公" onclick="selectRadio(this)"><span class="r-dot"></span>弟弟(公)</div>
+                    <div class="quiz-radio" data-value="母" onclick="selectRadio(this)"><span class="r-dot"></span>妹妹(母)</div>
+                  </div>
+                </div>
+
+                <!-- CQ5 年龄段【单选题】 -->
+                <div class="quiz-field" data-q="5">
+                  <div class="quiz-field-label">
+                    <span class="q-num">5</span>年龄段
+                    <span class="type-badge single">单选</span>
+                  </div>
+                  <div class="quiz-radio-group" data-name="age">
+                    <div class="quiz-radio" data-value="幼猫" onclick="selectRadio(this)"><span class="r-dot"></span>幼猫(0～12月)</div>
+                    <div class="quiz-radio" data-value="成猫" onclick="selectRadio(this)"><span class="r-dot"></span>成猫(1～7岁)</div>
+                    <div class="quiz-radio" data-value="老年猫" onclick="selectRadio(this)"><span class="r-dot"></span>老年猫(7岁+)</div>
+                  </div>
+                </div>
+
+                <!-- CQ6 绝育情况【单选题】 -->
+                <div class="quiz-field" data-q="6">
+                  <div class="quiz-field-label">
+                    <span class="q-num">6</span>绝育情况
+                    <span class="type-badge single">单选</span>
+                  </div>
+                  <div class="quiz-radio-group" data-name="neuter">
+                    <div class="quiz-radio" data-value="已绝育" onclick="selectRadio(this)"><span class="r-dot"></span>已绝育</div>
+                    <div class="quiz-radio" data-value="未绝育" onclick="selectRadio(this)"><span class="r-dot"></span>未绝育</div>
+                  </div>
+                </div>
+
+                <!-- CQ7 体重(kg)【填空题】 -->
+                <div class="quiz-field" data-q="7">
+                  <div class="quiz-field-label">
+                    <span class="q-num">7</span>体重(kg)
+                    <span class="type-badge fill">填空</span>
+                  </div>
+                  <div class="quiz-input-wrap">
+                    <input
+                      class="quiz-input"
+                      type="number"
+                      id="q7Input"
+                      placeholder="请输入体重（kg）"
+                      oninput="onQuizInput(this)"
+                      min="0.1"
+                      max="30"
+                      step="0.1"
+                    />
+                  </div>
+                </div>
+
+                <!-- CQ8 日常活动量【单选题】 -->
+                <div class="quiz-field" data-q="8">
+                  <div class="quiz-field-label">
+                    <span class="q-num">8</span>日常活动量
+                    <span class="type-badge single">单选</span>
+                  </div>
+                  <div class="quiz-radio-group" data-name="activity">
+                    <div class="quiz-radio" data-value="低" onclick="selectRadio(this)"><span class="r-dot"></span>低（大部分时间睡觉）</div>
+                    <div class="quiz-radio" data-value="中" onclick="selectRadio(this)"><span class="r-dot"></span>中（每天少量玩耍）</div>
+                    <div class="quiz-radio" data-value="高" onclick="selectRadio(this)"><span class="r-dot"></span>高（精力旺盛爱跑酷）</div>
+                  </div>
+                </div>
+
+                <!-- CQ9 饲养模式【单选题】 -->
+                <div class="quiz-field" data-q="9">
+                  <div class="quiz-field-label">
+                    <span class="q-num">9</span>饲养模式
+                    <span class="type-badge single">单选</span>
+                  </div>
+                  <div class="quiz-radio-group" data-name="mode">
+                    <div class="quiz-radio" data-value="单宠" onclick="selectRadio(this)"><span class="r-dot"></span>单宠饲养</div>
+                    <div class="quiz-radio" data-value="多宠" onclick="selectRadio(this)"><span class="r-dot"></span>多宠饲养</div>
+                  </div>
+                </div>
+
+                <!-- CQ10 多宠数量【填空题】 -->
+                <div class="quiz-field hidden" data-q="10" id="q10Field">
+                  <div class="quiz-field-label">
+                    <span class="q-num">10</span>多宠数量
+                    <span class="type-badge fill">填空</span>
+                  </div>
+                  <div class="quiz-input-wrap">
+                    <input
+                      class="quiz-input"
+                      type="number"
+                      id="q10Input"
+                      placeholder="请输入宠物总数"
+                      oninput="onQuizInput(this)"
+                      min="2"
+                      max="50"
+                      step="1"
+                    />
+                  </div>
+                </div>
+
+                <!-- CQ11 每日陪伴时长【单选题】 -->
+                <div class="quiz-field" data-q="11">
+                  <div class="quiz-field-label">
+                    <span class="q-num">11</span>每日陪伴时长
+                    <span class="type-badge single">单选</span>
+                  </div>
+                  <div class="quiz-radio-group" data-name="company">
+                    <div class="quiz-radio" data-value="无陪伴" onclick="selectRadio(this)"><span class="r-dot"></span>无陪伴（整日独处）</div>
+                    <div class="quiz-radio" data-value="少量陪伴" onclick="selectRadio(this)">
+                      <span class="r-dot"></span>少量陪伴（白天独处，夜间短时）
+                    </div>
+                    <div class="quiz-radio" data-value="充足陪伴" onclick="selectRadio(this)">
+                      <span class="r-dot"></span>充足陪伴（白天互动，夜间同处）
+                    </div>
+                  </div>
+                </div>
+
+                <!-- CQ12 肠胃健康【多选题】 -->
+                <div class="quiz-field" data-q="12">
+                  <div class="quiz-field-label">
+                    <span class="q-num">12</span>肠胃健康
+                    <span class="type-badge multi">多选</span>
+                  </div>
+                  <div class="quiz-checkbox-group" data-name="stomach">
+                    <div class="quiz-checkbox" data-value="软便" onclick="toggleCheckbox(this)"><span class="c-box">✓</span>软便</div>
+                    <div class="quiz-checkbox" data-value="便秘" onclick="toggleCheckbox(this)"><span class="c-box">✓</span>便秘</div>
+                    <div class="quiz-checkbox" data-value="频繁呕吐" onclick="toggleCheckbox(this)"><span class="c-box">✓</span>频繁呕吐</div>
+                    <div class="quiz-checkbox" data-value="肠胃健康" onclick="toggleCheckbox(this)"><span class="c-box">✓</span>肠胃健康</div>
+                  </div>
+                </div>
+
+                <!-- CQ13 皮毛健康【多选题】 -->
+                <div class="quiz-field" data-q="13">
+                  <div class="quiz-field-label">
+                    <span class="q-num">13</span>皮毛健康
+                    <span class="type-badge multi">多选</span>
+                  </div>
+                  <div class="quiz-checkbox-group" data-name="skin">
+                    <div class="quiz-checkbox" data-value="掉毛重" onclick="toggleCheckbox(this)"><span class="c-box">✓</span>掉毛重</div>
+                    <div class="quiz-checkbox" data-value="皮屑瘙痒" onclick="toggleCheckbox(this)"><span class="c-box">✓</span>皮屑瘙痒</div>
+                    <div class="quiz-checkbox" data-value="毛发干枯" onclick="toggleCheckbox(this)"><span class="c-box">✓</span>毛发干枯</div>
+                    <div class="quiz-checkbox" data-value="皮肤健康" onclick="toggleCheckbox(this)"><span class="c-box">✓</span>皮肤健康</div>
+                  </div>
+                </div>
+
+                <!-- CQ14 泌尿健康【多选题】 -->
+                <div class="quiz-field" data-q="14">
+                  <div class="quiz-field-label">
+                    <span class="q-num">14</span>泌尿健康
+                    <span class="type-badge multi">多选</span>
+                  </div>
+                  <div class="quiz-checkbox-group" data-name="urinary">
+                    <div class="quiz-checkbox" data-value="尿频上火" onclick="toggleCheckbox(this)"><span class="c-box">✓</span>尿频上火</div>
+                    <div class="quiz-checkbox" data-value="泪痕重" onclick="toggleCheckbox(this)"><span class="c-box">✓</span>泪痕重</div>
+                    <div class="quiz-checkbox" data-value="泌尿健康" onclick="toggleCheckbox(this)"><span class="c-box">✓</span>泌尿健康</div>
+                  </div>
+                </div>
+
+                <!-- CQ15 关节健康【多选题】 -->
+                <div class="quiz-field" data-q="15">
+                  <div class="quiz-field-label">
+                    <span class="q-num">15</span>关节健康
+                    <span class="type-badge multi">多选</span>
+                  </div>
+                  <div class="quiz-checkbox-group" data-name="joint">
+                    <div class="quiz-checkbox" data-value="关节老化" onclick="toggleCheckbox(this)"><span class="c-box">✓</span>关节老化</div>
+                    <div class="quiz-checkbox" data-value="关节健康" onclick="toggleCheckbox(this)"><span class="c-box">✓</span>关节健康</div>
+                  </div>
+                </div>
+
+                <!-- CQ16 过敏情况【多选题】 -->
+                <div class="quiz-field" data-q="16">
+                  <div class="quiz-field-label">
+                    <span class="q-num">16</span>过敏情况
+                    <span class="type-badge multi">多选</span>
+                  </div>
+                  <div class="quiz-checkbox-group" data-name="allergy">
+                    <div class="quiz-checkbox" data-value="肉类过敏" onclick="toggleCheckbox(this)"><span class="c-box">✓</span>肉类过敏</div>
+                    <div class="quiz-checkbox" data-value="谷物过敏" onclick="toggleCheckbox(this)"><span class="c-box">✓</span>谷物过敏</div>
+                    <div class="quiz-checkbox" data-value="无过敏" onclick="toggleCheckbox(this)"><span class="c-box">✓</span>无过敏</div>
+                  </div>
+                </div>
+              </div>
+              <!-- /#catQuestions -->
+
+              <!-- ============ 狗狗题目 ============ -->
+              <div id="dogQuestions" class="hidden">
+                <!-- DQ1 狗狗品种【单选题】 -->
+                <div class="quiz-field" data-q="1">
+                  <div class="quiz-field-label">
+                    <span class="q-num">1</span>狗狗品种
+                    <span class="type-badge single">单选</span>
+                  </div>
+                  <div class="quiz-radio-group" data-name="dBreed">
+                    <div class="quiz-radio" data-value="泰迪" onclick="selectRadio(this)"><span class="r-dot"></span>泰迪</div>
+                    <div class="quiz-radio" data-value="比熊" onclick="selectRadio(this)"><span class="r-dot"></span>比熊</div>
+                    <div class="quiz-radio" data-value="吉娃娃" onclick="selectRadio(this)"><span class="r-dot"></span>吉娃娃</div>
+                    <div class="quiz-radio" data-value="博美" onclick="selectRadio(this)"><span class="r-dot"></span>博美</div>
+                    <div class="quiz-radio" data-value="约克夏" onclick="selectRadio(this)"><span class="r-dot"></span>约克夏</div>
+                    <div class="quiz-radio" data-value="马尔济斯" onclick="selectRadio(this)"><span class="r-dot"></span>马尔济斯</div>
+                    <div class="quiz-radio" data-value="雪纳瑞" onclick="selectRadio(this)"><span class="r-dot"></span>雪纳瑞</div>
+                    <div class="quiz-radio" data-value="柴犬" onclick="selectRadio(this)"><span class="r-dot"></span>柴犬</div>
+                    <div class="quiz-radio" data-value="柯基" onclick="selectRadio(this)"><span class="r-dot"></span>柯基</div>
+                    <div class="quiz-radio" data-value="其他" onclick="selectRadio(this)"><span class="r-dot"></span>其他</div>
+                  </div>
+                </div>
+
+                <!-- DQ2 其他品种【填空题】 -->
+                <div class="quiz-field hidden" data-q="2" id="dQ2Field">
+                  <div class="quiz-field-label">
+                    <span class="q-num">2</span>其他品种
+                    <span class="type-badge fill">填空</span>
+                  </div>
+                  <div class="quiz-input-wrap">
+                    <input class="quiz-input" type="text" id="dQ2Input" placeholder="请输入狗狗品种" oninput="onQuizInput(this)" />
+                  </div>
+                </div>
+
+                <!-- DQ3 宠物昵称【填空题】 -->
+                <div class="quiz-field" data-q="3">
+                  <div class="quiz-field-label">
+                    <span class="q-num">3</span>宠物昵称
+                    <span class="type-badge fill">填空</span>
+                  </div>
+                  <div class="quiz-input-wrap">
+                    <input class="quiz-input" type="text" id="dQ3Input" placeholder="请输入爱宠昵称" oninput="onQuizInput(this)" maxlength="20" />
+                  </div>
+                </div>
+
+                <!-- DQ4 性别【单选题】 -->
+                <div class="quiz-field" data-q="4">
+                  <div class="quiz-field-label">
+                    <span class="q-num">4</span>性别
+                    <span class="type-badge single">单选</span>
+                  </div>
+                  <div class="quiz-radio-group" data-name="dGender">
+                    <div class="quiz-radio" data-value="公" onclick="selectRadio(this)"><span class="r-dot"></span>弟弟(公)</div>
+                    <div class="quiz-radio" data-value="母" onclick="selectRadio(this)"><span class="r-dot"></span>妹妹(母)</div>
+                  </div>
+                </div>
+
+                <!-- DQ5 年龄段【单选题】 -->
+                <div class="quiz-field" data-q="5">
+                  <div class="quiz-field-label">
+                    <span class="q-num">5</span>年龄段
+                    <span class="type-badge single">单选</span>
+                  </div>
+                  <div class="quiz-radio-group" data-name="dAge">
+                    <div class="quiz-radio" data-value="幼犬" onclick="selectRadio(this)"><span class="r-dot"></span>幼犬(0～12月)</div>
+                    <div class="quiz-radio" data-value="成犬" onclick="selectRadio(this)"><span class="r-dot"></span>成犬(1～8岁)</div>
+                    <div class="quiz-radio" data-value="老年犬" onclick="selectRadio(this)"><span class="r-dot"></span>老年犬(8岁+)</div>
+                  </div>
+                </div>
+
+                <!-- DQ6 绝育情况【单选题】 -->
+                <div class="quiz-field" data-q="6">
+                  <div class="quiz-field-label">
+                    <span class="q-num">6</span>绝育情况
+                    <span class="type-badge single">单选</span>
+                  </div>
+                  <div class="quiz-radio-group" data-name="dNeuter">
+                    <div class="quiz-radio" data-value="已绝育" onclick="selectRadio(this)"><span class="r-dot"></span>已绝育</div>
+                    <div class="quiz-radio" data-value="未绝育" onclick="selectRadio(this)"><span class="r-dot"></span>未绝育</div>
+                  </div>
+                </div>
+
+                <!-- DQ7 体重(kg)【填空题】 -->
+                <div class="quiz-field" data-q="7">
+                  <div class="quiz-field-label">
+                    <span class="q-num">7</span>体重(kg)
+                    <span class="type-badge fill">填空</span>
+                  </div>
+                  <div class="quiz-input-wrap">
+                    <input
+                      class="quiz-input"
+                      type="number"
+                      id="dQ7Input"
+                      placeholder="请输入体重（kg）"
+                      oninput="onQuizInput(this)"
+                      min="0.1"
+                      max="80"
+                      step="0.1"
+                    />
+                  </div>
+                </div>
+
+                <!-- DQ8 日常活动量【单选题】 -->
+                <div class="quiz-field" data-q="8">
+                  <div class="quiz-field-label">
+                    <span class="q-num">8</span>日常活动量
+                    <span class="type-badge single">单选</span>
+                  </div>
+                  <div class="quiz-radio-group" data-name="dActivity">
+                    <div class="quiz-radio" data-value="低" onclick="selectRadio(this)"><span class="r-dot"></span>低（大部分时间在家）</div>
+                    <div class="quiz-radio" data-value="中" onclick="selectRadio(this)"><span class="r-dot"></span>中（每天短时间活动）</div>
+                    <div class="quiz-radio" data-value="高" onclick="selectRadio(this)"><span class="r-dot"></span>高（每天大量运动）</div>
+                  </div>
+                </div>
+
+                <!-- DQ9 饲养模式【单选题】 -->
+                <div class="quiz-field" data-q="9">
+                  <div class="quiz-field-label">
+                    <span class="q-num">9</span>饲养模式
+                    <span class="type-badge single">单选</span>
+                  </div>
+                  <div class="quiz-radio-group" data-name="dMode">
+                    <div class="quiz-radio" data-value="单宠" onclick="selectRadio(this)"><span class="r-dot"></span>单宠饲养</div>
+                    <div class="quiz-radio" data-value="多宠" onclick="selectRadio(this)"><span class="r-dot"></span>多宠饲养</div>
+                  </div>
+                </div>
+
+                <!-- DQ10 多宠数量【填空题】 -->
+                <div class="quiz-field hidden" data-q="10" id="dQ10Field">
+                  <div class="quiz-field-label">
+                    <span class="q-num">10</span>多宠数量
+                    <span class="type-badge fill">填空</span>
+                  </div>
+                  <div class="quiz-input-wrap">
+                    <input
+                      class="quiz-input"
+                      type="number"
+                      id="dQ10Input"
+                      placeholder="请输入宠物总数"
+                      oninput="onQuizInput(this)"
+                      min="2"
+                      max="50"
+                      step="1"
+                    />
+                  </div>
+                </div>
+
+                <!-- DQ11 每周遛弯次数【单选题】 -->
+                <div class="quiz-field" data-q="11">
+                  <div class="quiz-field-label">
+                    <span class="q-num">11</span>每周遛弯次数
+                    <span class="type-badge single">单选</span>
+                  </div>
+                  <div class="quiz-radio-group" data-name="dWalk">
+                    <div class="quiz-radio" data-value="＜1次" onclick="selectRadio(this)"><span class="r-dot"></span>＜1次</div>
+                    <div class="quiz-radio" data-value="1～2次" onclick="selectRadio(this)"><span class="r-dot"></span>1～2次</div>
+                    <div class="quiz-radio" data-value="3～5次" onclick="selectRadio(this)"><span class="r-dot"></span>3～5次</div>
+                    <div class="quiz-radio" data-value="每天1次以上" onclick="selectRadio(this)"><span class="r-dot"></span>每天1次以上</div>
+                  </div>
+                </div>
+
+                <!-- DQ12 肠胃健康【多选题】 -->
+                <div class="quiz-field" data-q="12">
+                  <div class="quiz-field-label">
+                    <span class="q-num">12</span>肠胃健康
+                    <span class="type-badge multi">多选</span>
+                  </div>
+                  <div class="quiz-checkbox-group" data-name="dStomach">
+                    <div class="quiz-checkbox" data-value="拉稀" onclick="toggleCheckbox(this)"><span class="c-box">✓</span>拉稀</div>
+                    <div class="quiz-checkbox" data-value="挑食" onclick="toggleCheckbox(this)"><span class="c-box">✓</span>挑食</div>
+                    <div class="quiz-checkbox" data-value="积食" onclick="toggleCheckbox(this)"><span class="c-box">✓</span>积食</div>
+                    <div class="quiz-checkbox" data-value="肠胃健康" onclick="toggleCheckbox(this)"><span class="c-box">✓</span>肠胃健康</div>
+                  </div>
+                </div>
+
+                <!-- DQ13 皮肤健康【多选题】 -->
+                <div class="quiz-field" data-q="13">
+                  <div class="quiz-field-label">
+                    <span class="q-num">13</span>皮肤健康
+                    <span class="type-badge multi">多选</span>
+                  </div>
+                  <div class="quiz-checkbox-group" data-name="dSkin">
+                    <div class="quiz-checkbox" data-value="异位性皮炎" onclick="toggleCheckbox(this)"><span class="c-box">✓</span>异位性皮炎</div>
+                    <div class="quiz-checkbox" data-value="季节性脱毛" onclick="toggleCheckbox(this)"><span class="c-box">✓</span>季节性脱毛</div>
+                    <div class="quiz-checkbox" data-value="瘙痒泛红" onclick="toggleCheckbox(this)"><span class="c-box">✓</span>瘙痒泛红</div>
+                    <div class="quiz-checkbox" data-value="皮肤健康" onclick="toggleCheckbox(this)"><span class="c-box">✓</span>皮肤健康</div>
+                  </div>
+                </div>
+
+                <!-- DQ14 泪痕情况【多选题】 -->
+                <div class="quiz-field" data-q="14">
+                  <div class="quiz-field-label">
+                    <span class="q-num">14</span>泪痕情况
+                    <span class="type-badge multi">多选</span>
+                  </div>
+                  <div class="quiz-checkbox-group" data-name="dTear">
+                    <div class="quiz-checkbox" data-value="顽固泪痕" onclick="toggleCheckbox(this)"><span class="c-box">✓</span>顽固泪痕</div>
+                    <div class="quiz-checkbox" data-value="易上火" onclick="toggleCheckbox(this)"><span class="c-box">✓</span>易上火</div>
+                    <div class="quiz-checkbox" data-value="无异常" onclick="toggleCheckbox(this)"><span class="c-box">✓</span>无异常</div>
+                  </div>
+                </div>
+
+                <!-- DQ15 关节健康【多选题】 -->
+                <div class="quiz-field" data-q="15">
+                  <div class="quiz-field-label">
+                    <span class="q-num">15</span>关节健康
+                    <span class="type-badge multi">多选</span>
+                  </div>
+                  <div class="quiz-checkbox-group" data-name="dJoint">
+                    <div class="quiz-checkbox" data-value="髌骨不良" onclick="toggleCheckbox(this)"><span class="c-box">✓</span>髌骨不良</div>
+                    <div class="quiz-checkbox" data-value="关节老化" onclick="toggleCheckbox(this)"><span class="c-box">✓</span>关节老化</div>
+                    <div class="quiz-checkbox" data-value="关节健康" onclick="toggleCheckbox(this)"><span class="c-box">✓</span>关节健康</div>
+                  </div>
+                </div>
+
+                <!-- DQ16 代谢情况【多选题】 -->
+                <div class="quiz-field" data-q="16">
+                  <div class="quiz-field-label">
+                    <span class="q-num">16</span>代谢情况
+                    <span class="type-badge multi">多选</span>
+                  </div>
+                  <div class="quiz-checkbox-group" data-name="dMetabolism">
+                    <div class="quiz-checkbox" data-value="肥胖高血脂" onclick="toggleCheckbox(this)"><span class="c-box">✓</span>肥胖高血脂</div>
+                    <div class="quiz-checkbox" data-value="胰腺敏感" onclick="toggleCheckbox(this)"><span class="c-box">✓</span>胰腺敏感</div>
+                    <div class="quiz-checkbox" data-value="代谢正常" onclick="toggleCheckbox(this)"><span class="c-box">✓</span>代谢正常</div>
+                  </div>
+                </div>
+
+                <!-- DQ17 过敏情况【多选题】 -->
+                <div class="quiz-field" data-q="17">
+                  <div class="quiz-field-label">
+                    <span class="q-num">17</span>过敏情况
+                    <span class="type-badge multi">多选</span>
+                  </div>
+                  <div class="quiz-checkbox-group" data-name="dAllergy">
+                    <div class="quiz-checkbox" data-value="肉类过敏" onclick="toggleCheckbox(this)"><span class="c-box">✓</span>肉类过敏</div>
+                    <div class="quiz-checkbox" data-value="谷物过敏" onclick="toggleCheckbox(this)"><span class="c-box">✓</span>谷物过敏</div>
+                    <div class="quiz-checkbox" data-value="无过敏" onclick="toggleCheckbox(this)"><span class="c-box">✓</span>无过敏</div>
+                  </div>
+                </div>
+              </div>
+              <!-- /#dogQuestions -->
+            </div>
+            <!-- /quizQuestionsArea -->
+
+            <!-- 导航按钮 -->
+            <div class="quiz-nav" id="quizNav">
+              <button class="quiz-nav-btn quiz-nav-prev hidden" id="quizPrevBtn" onclick="goToPrevQuestion()">
+                <span class="nav-arrow">‹</span>上一题
+              </button>
+              <button class="quiz-nav-btn quiz-nav-next hidden" id="quizNextBtn" onclick="goToNextQuestion()">
+                下一题<span class="nav-arrow">›</span>
+              </button>
+            </div>
+
+            <!-- 提交按钮 -->
+            <div class="quiz-submit-wrap hidden" id="quizSubmitWrap">
+              <button class="quiz-submit-btn" id="quizSubmitBtn" onclick="submitQuiz()">提交，开始AI配餐</button>
+            </div>
+          </div>
+        </div>
+        <!-- /#quizPage -->
+
+        <!-- ==================== AI配餐海报页 ==================== -->
+        <div class="page" id="posterPage">
+          <div class="poster-scroll">
+            <div class="poster-header">
+              <div class="poster-label">✨ AI 智能配餐方案</div>
+              <div class="poster-subtitle">根据您的爱宠信息，为您定制专属营养配方</div>
+            </div>
+
+            <div class="poster-info-card" id="posterPetInfo"></div>
+
+            <div class="poster-hero" id="posterHero">
+              <div class="poster-hero-img"></div>
+              <div class="poster-hero-content" id="posterHeroContent">
+                <div class="constitution-header">
+                  <div class="constitution-badge">
+                    <span class="badge-emoji">🐱</span>
+                    <span class="badge-label">健康活力型</span>
+                  </div>
+                </div>
+                <div class="constitution-desc">爱宠各方面指标都很健康，继续保持科学喂养，适当预防即可。</div>
+              </div>
+            </div>
+
+            <div class="poster-meals">
+              <div class="poster-meals-title">🍽️ 营养方案：<span id="nutritionContent"></span></div>
+              <div class="poster-meals-list" id="posterMealList"></div>
+            </div>
+
+            <div class="poster-footer">
+              <div class="poster-footer-left">
+                <div class="poster-brand">梵优茗宠</div>
+                <div class="poster-slogan">扫码了解更多专属配餐</div>
+              </div>
+              <div class="poster-qr" id="posterQr">二维码</div>
+            </div>
+
+            <div style="height: 50px"></div>
+          </div>
+
+          <!-- 海报生成预览弹窗 -->
+          <div class="poster-preview-overlay hidden" id="posterPreviewOverlay" onclick="closePosterPreview(event)">
+            <div class="poster-preview-card">
+              <div class="poster-preview-header">
+                <span class="preview-title">长按保存海报</span>
+                <button class="preview-close-btn" onclick="document.getElementById('posterPreviewOverlay').classList.add('hidden')">✕</button>
+              </div>
+              <div class="poster-preview-body" id="posterPreviewBody">
+                <img class="poster-preview-img" id="posterPreviewImg" src="" alt="配餐海报" />
+              </div>
+              <div class="poster-preview-actions">
+                <button class="preview-action-btn outline" onclick="downloadPosterImage()">保存到相册</button>
+                <button class="preview-action-btn primary" onclick="sharePosterImage()">分享给好友</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="poster-buy-bar">
+            <div class="poster-buy-info">
+              <div class="poster-buy-price" id="posterBuyPrice">¥89<span>/月起</span></div>
+            </div>
+            <div class="poster-buy-actions">
+              <button class="poster-action-btn poster-action-outline" onclick="generatePosterImage()">生成海报</button>
+              <button class="poster-action-btn poster-action-outline" onclick="sharePoster()">分享</button>
+              <button class="poster-action-btn poster-action-primary" onclick="openPurchaseOptions()">立即购买</button>
+            </div>
+          </div>
+        </div>
+        <!-- /#posterPage -->
+
+        <!-- ==================== 商品详情页 ==================== -->
+        <div class="page" id="detailPage">
+          <div class="detail-scroll" id="detailScroll">
+            <!-- 图片轮播 -->
+            <div class="detail-gallery-wrap">
+              <div class="detail-gallery-track" id="detailGalleryTrack"></div>
+              <div class="detail-gallery-dots" id="detailGalleryDots"></div>
+              <div class="detail-gallery-back" onclick="navigateBackFromDetail()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6" /></svg>
+              </div>
+              <div class="detail-gallery-share" onclick="shareProduct()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="18" cy="5" r="3" />
+                  <circle cx="6" cy="12" r="3" />
+                  <circle cx="18" cy="19" r="3" />
+                  <path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98" />
+                </svg>
+              </div>
+            </div>
+
+            <!-- 视频区域 -->
+            <div class="detail-video-wrap hidden" id="detailVideoWrap">
+              <div class="detail-video-bg" id="detailVideoBg" onclick="playDetailVideo()">
+                <div class="detail-video-play">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="8 5 19 12 8 19 8 5" /></svg>
+                </div>
+              </div>
+              <video id="detailVideoEl" controls playsinline style="display: none" class="detail-video-el" onended="onDetailVideoEnded()"></video>
+              <div class="detail-video-label">📹 实物展示视频</div>
+            </div>
+
+            <!-- 商品基础信息 -->
+            <div class="detail-info-card">
+              <div class="detail-price-row">
+                <span class="detail-price-current"><span class="unit">¥</span><span id="detailPrice"></span></span>
+                <span class="detail-price-original" id="detailPriceOriginal"></span>
+                <span class="detail-tag" id="detailTag"></span>
+              </div>
+              <div class="detail-name" id="detailName"></div>
+              <div class="detail-sold">已售 <span id="detailSold"></span> 件</div>
+            </div>
+
+            <!-- ==================== 拼团区域 ==================== -->
+            <div class="group-buy-card">
+              <div class="group-buy-header">
+                <div class="group-buy-header-left">
+                  <span class="group-buy-icon">👥</span>
+                  <span class="group-buy-title">拼团优惠</span>
+                </div>
+                <div class="group-buy-header-right">拼团享折扣，人越多越便宜</div>
+              </div>
+
+              <!-- 参团人数规格 -->
+              <div class="group-spec-section">
+                <div class="group-spec-label">选择拼团规格</div>
+                <div class="group-spec-chips" id="groupSpecChips">
+                  <div class="group-spec-chip" data-size="2" onclick="selectGroupSize(2, this)">
+                    <div class="chip-size">2人团</div>
+                    <div class="chip-discount">省5%</div>
+                  </div>
+                  <div class="group-spec-chip" data-size="3" onclick="selectGroupSize(3, this)">
+                    <div class="chip-size">3人团</div>
+                    <div class="chip-discount">省10%</div>
+                  </div>
+                  <div class="group-spec-chip active" data-size="5" onclick="selectGroupSize(5, this)">
+                    <div class="chip-size">5人团</div>
+                    <div class="chip-discount">省15%</div>
+                  </div>
+                  <div class="group-spec-chip" data-size="10" onclick="selectGroupSize(10, this)">
+                    <div class="chip-size">10人团</div>
+                    <div class="chip-discount">省25%</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 自定义人数 -->
+              <div class="group-custom-wrap hidden" id="groupCustomWrap">
+                <span class="group-custom-label">自定义人数</span>
+                <input
+                  class="group-custom-input"
+                  type="number"
+                  id="groupCustomInput"
+                  placeholder="3~310"
+                  min="3"
+                  max="310"
+                  oninput="onCustomGroupSize()"
+                />
+                <span class="group-custom-unit">人</span>
+                <span class="group-custom-discount" id="groupCustomDiscount">省10%</span>
+              </div>
+
+              <!-- 折扣差异配置展示 -->
+              <div class="group-discount-table">
+                <div class="gdt-row gdt-header">
+                  <div class="gdt-cell">参团人数</div>
+                  <div class="gdt-cell">拼团价</div>
+                  <div class="gdt-cell">优惠</div>
+                  <div class="gdt-cell">操作</div>
+                </div>
+                <div class="gdt-row" id="gdtRow2">
+                  <div class="gdt-cell">2 人</div>
+                  <div class="gdt-cell price-cell" id="gdtPrice2">¥0</div>
+                  <div class="gdt-cell discount-cell">省 5%</div>
+                  <div class="gdt-cell"><div class="gdt-btn" onclick="selectGroupSize(2)">去参团</div></div>
+                </div>
+                <div class="gdt-row" id="gdtRow3">
+                  <div class="gdt-cell">3 人</div>
+                  <div class="gdt-cell price-cell" id="gdtPrice3">¥0</div>
+                  <div class="gdt-cell discount-cell">省 10%</div>
+                  <div class="gdt-cell"><div class="gdt-btn" onclick="selectGroupSize(3)">去参团</div></div>
+                </div>
+                <div class="gdt-row highlight" id="gdtRow5">
+                  <div class="gdt-cell">5 人</div>
+                  <div class="gdt-cell price-cell" id="gdtPrice5">¥0</div>
+                  <div class="gdt-cell discount-cell">省 15%</div>
+                  <div class="gdt-cell"><div class="gdt-btn active" onclick="selectGroupSize(5)">去参团</div></div>
+                </div>
+                <div class="gdt-row" id="gdtRow10">
+                  <div class="gdt-cell">10 人</div>
+                  <div class="gdt-cell price-cell" id="gdtPrice10">¥0</div>
+                  <div class="gdt-cell discount-cell">省 25%</div>
+                  <div class="gdt-cell"><div class="gdt-btn" onclick="selectGroupSize(10)">去参团</div></div>
+                </div>
+              </div>
+
+              <!-- 当前拼团状态 -->
+              <div class="group-active-section hidden" id="groupActiveSection">
+                <div class="group-active-divider">
+                  <span>当前拼团</span>
+                </div>
+                <div class="group-active-card">
+                  <div class="group-active-info">
+                    <div class="group-active-size" id="groupActiveSize">5人团</div>
+                    <div class="group-active-price" id="groupActivePrice">¥0</div>
+                    <div class="group-active-countdown">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <polyline points="12 6 12 12 16 14" />
+                      </svg>
+                      <span id="groupActiveCountdown">剩余 23:59:59</span>
+                    </div>
+                  </div>
+                  <div class="group-active-members">
+                    <div class="group-members-label">已成团 <span id="groupJoinedCount">1</span>/<span id="groupTotalCount">5</span> 人</div>
+                    <div class="group-members-avatars" id="groupMemberAvatars">
+                      <!-- 已加入成员头像 -->
+                      <div class="gma-avatar" style="background: linear-gradient(135deg, #ff9a9e, #fad0c4)">👤</div>
+                      <div class="gma-avatar placeholder" id="gmaPlaceholder1">?</div>
+                      <div class="gma-avatar placeholder" id="gmaPlaceholder2">?</div>
+                      <div class="gma-avatar placeholder" id="gmaPlaceholder3">?</div>
+                      <div class="gma-avatar placeholder" id="gmaPlaceholder4">?</div>
+                    </div>
+                  </div>
+                  <button class="group-active-join-btn" id="groupActiveJoinBtn" onclick="handleGroupJoin()">立即参团</button>
+                </div>
+              </div>
+
+              <!-- 发起拼团按钮 -->
+              <button class="group-initiate-btn" id="groupInitiateBtn" onclick="initiateGroup()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
+                发起拼团
+              </button>
+            </div>
+
+            <!-- 商品详情 -->
+            <div class="detail-desc-card">
+              <div class="detail-desc-title">📋 商品详情</div>
+              <div class="detail-desc-content" id="detailDescContent"></div>
+            </div>
+
+            <div class="detail-specs-card">
+              <div class="detail-desc-title">📦 规格参数</div>
+              <div class="detail-specs-list" id="detailSpecsList"></div>
+            </div>
+
+            <div style="height: 90px"></div>
+          </div>
+
+          <!-- 底部固定栏 -->
+          <div class="detail-bottom-bar">
+            <div class="detail-bottom-left">
+              <div class="detail-bottom-action" onclick="showToast('客服功能开发中')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                </svg>
+                <span>客服</span>
+              </div>
+              <div class="detail-bottom-action" onclick="shareProduct()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="18" cy="5" r="3" />
+                  <circle cx="6" cy="12" r="3" />
+                  <circle cx="18" cy="19" r="3" />
+                  <path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98" />
+                </svg>
+                <span>分享</span>
+              </div>
+            </div>
+            <div class="detail-bottom-right">
+              <div class="detail-bottom-price">
+                <span class="dbp-current" id="dbpCurrent">¥0</span>
+                <span class="dbp-original" id="dbpOriginal">¥0</span>
+              </div>
+              <button class="detail-bottom-cart-btn" onclick="addDetailToCart()">加入购物车</button>
+              <button class="detail-bottom-buy-btn" onclick="buyNow()">立即购买</button>
+            </div>
+          </div>
+        </div>
+        <!-- /#detailPage -->
+
+        <!-- ==================== 商品列表页 ==================== -->
+        <div class="page" id="shopPage">
+          <!-- 搜索栏 -->
+          <div class="shop-search-bar">
+            <div class="shop-search-input-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+              <input class="shop-search-input" type="text" placeholder="搜索商品..." id="shopSearchInput" oninput="filterShopProducts()" />
+              <span class="shop-search-clear hidden" id="shopSearchClear" onclick="clearShopSearch()">✕</span>
+            </div>
+          </div>
+
+          <!-- 筛选标签 -->
+          <div class="shop-filter-row">
+            <div class="shop-filter-chip active" data-filter="default" onclick="setShopFilter('default', this)">综合</div>
+            <div class="shop-filter-chip" data-filter="sales" onclick="setShopFilter('sales', this)">销量</div>
+            <div class="shop-filter-chip" data-filter="price-asc" onclick="setShopFilter('price-asc', this)">价格↑</div>
+            <div class="shop-filter-chip" data-filter="price-desc" onclick="setShopFilter('price-desc', this)">价格↓</div>
+          </div>
+
+          <!-- 主体：左分类 + 右列表 -->
+          <div class="shop-main">
+            <!-- 左侧分类 -->
+            <div class="shop-sidebar" id="shopSidebar">
+              <div class="shop-sidebar-item active" data-cat="all" onclick="switchShopCategory('all', this)">
+                <span class="shop-sidebar-dot"></span>全部
+              </div>
+              <div class="shop-sidebar-item" data-cat="snack" onclick="switchShopCategory('snack', this)">
+                <span class="shop-sidebar-dot"></span>手工零食
+              </div>
+              <div class="shop-sidebar-item" data-cat="brand" onclick="switchShopCategory('brand', this)">
+                <span class="shop-sidebar-dot"></span>品牌优选
+              </div>
+              <div class="shop-sidebar-item" data-cat="clothes" onclick="switchShopCategory('clothes', this)">
+                <span class="shop-sidebar-dot"></span>服装配饰
+              </div>
+              <div class="shop-sidebar-item" data-cat="toy" onclick="switchShopCategory('toy', this)">
+                <span class="shop-sidebar-dot"></span>宠物玩具
+              </div>
+              <div class="shop-sidebar-item" data-cat="staple" onclick="switchShopCategory('staple', this)">
+                <span class="shop-sidebar-dot"></span>主粮罐头
+              </div>
+              <div class="shop-sidebar-item" data-cat="clean" onclick="switchShopCategory('clean', this)">
+                <span class="shop-sidebar-dot"></span>清洁洗护
+              </div>
+              <div class="shop-sidebar-item" data-cat="health" onclick="switchShopCategory('health', this)">
+                <span class="shop-sidebar-dot"></span>保健营养
+              </div>
+            </div>
+
+            <!-- 右侧商品列表 -->
+            <div class="shop-list" id="shopList"></div>
+          </div>
+        </div>
+        <!-- /#shopPage -->
+
+        <!-- 拼团通知弹窗 -->
+        <div class="group-notify-overlay hidden" id="groupNotifyOverlay" onclick="closeGroupNotify()">
+          <div class="group-notify-card" id="groupNotifyCard" onclick="event.stopPropagation()">
+            <div class="group-notify-icon" id="groupNotifyIcon">🎉</div>
+            <div class="group-notify-title" id="groupNotifyTitle">拼团成功</div>
+            <div class="group-notify-desc" id="groupNotifyDesc"></div>
+            <button class="group-notify-btn" onclick="closeGroupNotify()">知道了</button>
+          </div>
+        </div>
+
+        <!-- 购买选项弹窗 -->
+        <div class="purchase-overlay hidden" id="purchaseOverlay" onclick="closePurchaseOptions(event)">
+          <div class="purchase-sheet" onclick="event.stopPropagation()">
+            <div class="purchase-handle"></div>
+            <div class="purchase-title">选择配餐方案</div>
+
+            <div class="purchase-section">
+              <div class="purchase-section-label">每日餐次</div>
+              <div class="purchase-chips" data-name="mealFreq">
+                <div class="purchase-chip selected" data-value="1" onclick="selectPurchaseOption(this)">一日一次餐</div>
+                <div class="purchase-chip" data-value="2" onclick="selectPurchaseOption(this)">一日两次餐</div>
+              </div>
+            </div>
+
+            <div class="purchase-section">
+              <div class="purchase-section-label">配餐周期</div>
+              <div class="purchase-chips" data-name="mealDays">
+                <div class="purchase-chip selected" data-value="30" onclick="selectPurchaseOption(this)">30天餐食</div>
+                <div class="purchase-chip" data-value="60" onclick="selectPurchaseOption(this)">60天餐食</div>
+              </div>
+            </div>
+
+            <div class="purchase-total">
+              <span class="purchase-total-label">合计</span>
+              <span class="purchase-total-price" id="purchaseTotalPrice">¥89</span>
+            </div>
+
+            <button class="purchase-confirm-btn" onclick="confirmPurchase()">确认下单</button>
+            <button class="purchase-back-btn" onclick="closePurchaseOptions()">返回海报</button>
+          </div>
+        </div>
+
+        <!-- ==================== 我的页 ==================== -->
+        <div class="page" id="profilePage">
+          <div class="profile-scroll">
+            <!-- 用户信息卡片 -->
+            <div class="profile-user-card" onclick="openProfileDetail()">
+              <div
+                class="profile-user-avatar"
+                id="profileAvatar"
+                onclick="
+                  event.stopPropagation();
+                  openAvatarPicker();
+                "
+              >
+                <span>🐱</span>
+              </div>
+              <div class="profile-user-info">
+                <div class="profile-user-name" id="profileUserName">毛毛家长</div>
+                <div class="profile-user-phone" id="profileUserPhone">电话：156****8888</div>
+                <div class="profile-user-level">
+                  <span class="profile-level-tag" id="profileLevelTag">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14">
+                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                    </svg>
+                    <span id="profileLevelText">梵优合伙人</span>
+                  </span>
+                  <span class="profile-member-badge" id="profileMemberBadge">🥈 银牌会员</span>
+                </div>
+              </div>
+              <div class="profile-user-actions">
+                <button
+                  class="profile-edit-btn"
+                  onclick="
+                    event.stopPropagation();
+                    openProfileEdit();
+                  "
+                >
+                  编辑
+                </button>
+              </div>
+            </div>
+
+            <!-- ========== 宠物档案 ========== -->
+            <div class="profile-menu-item pet-archive-item">
+              <span class="profile-menu-icon">🐾</span>
+              <span class="profile-menu-label">宠物档案</span>
+              <button
+                class="pet-list-add-btn"
+                onclick="
+                  event.stopPropagation();
+                  openPetForm();
+                "
+              >
+                + 添加宠物
+              </button>
+            </div>
+            <div class="pet-list-inline-body" id="petListInlineBody">
+              <!-- 宠物卡片动态渲染 -->
+            </div>
+            <div class="pet-list-inline-empty hidden" id="petListInlineEmpty">
+              <span class="pet-list-inline-empty-text">还没有添加宠物，点击上方按钮添加</span>
+            </div>
+
+            <!-- ========== 我的积分 ========== -->
+            <div class="profile-menu-item" onclick="openPointsLogPopup()">
+              <span class="profile-menu-icon">⭐</span>
+              <span class="profile-menu-label">我的积分</span>
+              <div
+                class="integral-action-btn"
+                onclick="
+                  event.stopPropagation();
+                  openPointsExchangePopup();
+                "
+              >
+                🎁兑换
+              </div>
+              <span class="profile-menu-value" id="profilePointsValue">0</span>
+              <!-- <div class="integral-text-btn" onclick="openPointsLogPopup()">明细</div> -->
+              <span class="profile-menu-arrow">›</span>
+            </div>
+            <!-- ========== 分佣系统 ========== -->
+            <div class="profile-menu-item commission-menu-entry" onclick="openCommissionOverview()">
+              <span class="profile-menu-icon">💸</span>
+              <span class="profile-menu-label">分佣收益</span>
+              <div
+                class="integral-action-btn"
+                onclick="
+                  event.stopPropagation();
+                  openWithdrawPopup();
+                "
+              >
+                💳 提现
+              </div>
+              <span class="commission-menu-value" id="commissionMenuValue">¥0.00</span>
+              <span class="profile-menu-arrow">›</span>
+            </div>
+
+            <!-- ========== 我的团队 ========== -->
+            <div class="profile-menu-item" onclick="openInviteDetail()">
+              <span class="profile-menu-icon">👥</span>
+              <span class="profile-menu-label">我的团队</span>
+              <span class="profile-menu-badge" id="profileInviteBadge">35</span>
+              <span class="profile-menu-arrow">›</span>
+            </div>
+
+            <!-- ========== 充值管理 ========== -->
+            <div class="profile-menu-item" onclick="openRechargeDetail()">
+              <span class="profile-menu-icon">💰</span>
+              <span class="profile-menu-label">充值管理</span>
+              <span class="profile-menu-arrow">›</span>
+            </div>
+
+            <!-- ========== 我的订单 ========== -->
+            <div class="profile-menu-item" onclick="openOrderListPopup()">
+              <span class="profile-menu-icon">📦</span>
+              <span class="profile-menu-label">我的订单</span>
+              <span class="profile-menu-badge hidden" id="orderCountBadge">0</span>
+              <span class="profile-menu-arrow">›</span>
+            </div>
+
+            <div style="height: 20px"></div>
+          </div>
+        </div>
+        <!-- /#profilePage -->
+      </main>
+
+      <!-- ==================== 客服悬浮按钮 ==================== -->
+      <div class="cs-float-btn" id="csFloatBtn" onclick="openCustomerService()">客服</div>
+
+      <!-- ==================== 底部导航栏 ==================== -->
+      <nav class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('home', this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+            <polyline points="9 22 9 12 15 12 15 22" />
+          </svg>
+          首页
+        </div>
+        <div class="nav-item" onclick="switchTab('city', this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+            <circle cx="12" cy="10" r="3" />
+          </svg>
+          同城
+        </div>
+        <div class="nav-item-creator" id="navCreator" onclick="switchTab('creator', this)">
+          <div class="nav-creator-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+            </svg>
+          </div>
+          <div class="nav-creator-label">轻创</div>
+        </div>
+        <div class="nav-item" style="position: relative" onclick="switchTab('cart', this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="9" cy="21" r="1" />
+            <circle cx="20" cy="21" r="1" />
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+          </svg>
+          <span class="nav-badge hidden" id="cartBadge">0</span>
+          购物车
+        </div>
+        <div class="nav-item" onclick="switchTab('profile', this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
+          我的
+        </div>
+      </nav>
+
+      <!-- ==================== AI答题弹窗 ==================== -->
+      <div class="quiz-overlay hidden" id="quizOverlay" onclick="closeQuiz(event)">
+        <div class="quiz-modal" onclick="event.stopPropagation()">
+          <!-- 步骤指示器 -->
+          <div class="quiz-step-indicator" id="stepIndicator">
+            <div class="quiz-step-dot active"></div>
+            <div class="quiz-step-dot"></div>
+            <div class="quiz-step-dot"></div>
+            ·
+          </div>
+
+          <!-- 题目内容 -->
+          <div class="quiz-question" id="quizQuestion">您的爱宠是什么类型？</div>
+
+          <div class="quiz-options" id="quizOptions"></div>
+
+          <!-- 结果页（初始隐藏） -->
+          <div class="quiz-result hidden" id="quizResult"></div>
+        </div>
+      </div>
+
+      <!-- ==================== 同城详情弹窗 ==================== -->
+      <div class="city-detail-overlay hidden" id="cityDetailOverlay" onclick="closeCityDetail(event)">
+        <div class="city-detail-sheet" id="cityDetailSheet" onclick="event.stopPropagation()">
+          <div class="city-detail-handle"></div>
+          <div class="city-detail-hero" id="detailHero"></div>
+          <div class="city-detail-body">
+            <div class="city-detail-products-title" id="detailProductsTitle"></div>
+            <div class="city-detail-meta">
+              <span class="city-detail-score" id="detailScore"></span>
+              <span class="city-detail-dist" id="detailDist"></span>
+              <span class="city-detail-tel" id="detailTel" onclick="copyDetailTel()"></span>
+            </div>
+            <div class="city-detail-desc" id="detailDesc"></div>
+            <div class="city-detail-addr" id="detailAddr"></div>
+          </div>
+          <div class="city-detail-products hidden" id="detailProductsWrap">
+            <div class="city-detail-products-grid" id="detailProducts"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== 申请合作表单弹窗 ==================== -->
+      <div class="coop-overlay hidden" id="coopOverlay" onclick="closeCoopForm(event)">
+        <div class="coop-sheet" onclick="event.stopPropagation()">
+          <div class="coop-handle"></div>
+          <div class="coop-form">
+            <div class="coop-form-title">申请合作入驻</div>
+            <div class="coop-form-desc">填写以下信息，我们将在1-3个工作日内与您联系确认</div>
+
+            <div class="coop-field">
+              <label class="coop-label">商户类型<span class="required">*</span></label>
+              <select class="coop-select" id="coopType">
+                <option value="">请选择商户类型</option>
+                <option value="shop">宠物店（用品/活体）</option>
+                <option value="hospital">宠物医院</option>
+                <option value="beauty">宠物美容</option>
+                <option value="park">宠物乐园</option>
+                <option value="party">线下聚会/社群</option>
+                <option value="other">其他</option>
+              </select>
+            </div>
+
+            <div class="coop-field">
+              <label class="coop-label">商户名称<span class="required">*</span></label>
+              <input class="coop-input" id="coopName" placeholder="请输入商户名称" maxlength="30" />
+            </div>
+
+            <div class="coop-field">
+              <label class="coop-label">联系人<span class="required">*</span></label>
+              <input class="coop-input" id="coopContact" placeholder="请输入联系人姓名" maxlength="10" />
+            </div>
+
+            <div class="coop-field">
+              <label class="coop-label">联系电话<span class="required">*</span></label>
+              <input class="coop-input" id="coopPhone" type="tel" placeholder="请输入手机号码" maxlength="11" />
+            </div>
+
+            <div class="coop-field">
+              <label class="coop-label">所在城市<span class="required">*</span></label>
+              <input class="coop-input" id="coopCity" placeholder="请输入所在城市" maxlength="15" value="杭州市" />
+            </div>
+
+            <div class="coop-field">
+              <label class="coop-label">详细地址<span class="required">*</span></label>
+              <input class="coop-input" id="coopAddr" placeholder="请输入详细地址" maxlength="60" />
+            </div>
+
+            <div class="coop-field">
+              <label class="coop-label">商户简介</label>
+              <textarea class="coop-textarea" id="coopDesc" placeholder="请简要介绍您的商户，包括主营业务、特色服务等" maxlength="200"></textarea>
+            </div>
+
+            <div class="coop-field">
+              <label class="coop-label">微信号（选填）</label>
+              <input class="coop-input" id="coopWechat" placeholder="请输入微信号，方便我们联系您" />
+            </div>
+
+            <button class="coop-submit" id="coopSubmitBtn" onclick="submitCoop()">提交申请</button>
+
+            <div style="text-align: center; margin-top: 10px; font-size: 11px; color: var(--text-light)">
+              提交即表示同意《商户合作协议》与《隐私政策》
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== 宠物表单弹窗 ==================== -->
+      <div class="pet-form-overlay hidden" style="z-index: 300" id="petFormOverlay" onclick="closePetForm(event)">
+        <div class="pet-form-sheet" onclick="event.stopPropagation()">
+          <div class="pet-form-handle"></div>
+          <div class="pet-form-title" id="petFormTitle">添加宠物</div>
+          <div class="pet-form-body">
+            <div class="pet-form-field">
+              <label>宠物类型<span class="required">*</span></label>
+              <div class="pet-type-chips" id="petTypeChips">
+                <div class="pet-type-chip" data-type="cat" onclick="selectPetType('cat', this)"><span>🐱</span> 猫咪</div>
+                <div class="pet-type-chip" data-type="dog" onclick="selectPetType('dog', this)"><span>🐶</span> 狗狗</div>
+                <div class="pet-type-chip" data-type="other" onclick="selectPetType('other', this)"><span>🐰</span> 其他</div>
+              </div>
+            </div>
+            <div class="pet-form-field">
+              <label>宠物名称<span class="required">*</span></label>
+              <input class="pet-form-input" id="petNameInput" placeholder="给爱宠取个名字" maxlength="10" />
+            </div>
+            <div class="pet-form-field">
+              <label>品种<span class="required">*</span></label>
+              <input class="pet-form-input" id="petBreedInput" placeholder="如：英短、泰迪" maxlength="15" />
+            </div>
+            <div class="pet-form-field">
+              <label>体重(kg)</label>
+              <input class="pet-form-input" type="number" id="petWeightInput" placeholder="如：5.5" min="0.1" max="100" step="0.1" />
+            </div>
+            <div class="pet-form-field">
+              <label>生日</label>
+              <input class="pet-form-input" type="date" id="petBirthdayInput" />
+            </div>
+            <div class="pet-form-actions">
+              <button class="pet-form-btn cancel" id="petFormCancel" onclick="closePetForm()">取消</button>
+              <button class="pet-form-btn confirm" onclick="savePet()">保存</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== 宠物列表弹窗 ==================== -->
+      <div class="pet-form-overlay hidden" id="petListOverlay" onclick="closePetListPopup(event)">
+        <div class="pet-list-sheet" onclick="event.stopPropagation()">
+          <div class="pet-form-handle"></div>
+          <div class="pet-list-header">
+            <div class="pet-list-title">🐾 宠物档案</div>
+            <button class="pet-list-add-btn" onclick="openPetForm()">+ 添加宠物</button>
+          </div>
+          <div class="pet-list-body" id="petListPopupBody">
+            <!-- 宠物卡片动态渲染 -->
+          </div>
+          <div class="pet-list-empty hidden" id="petListPopupEmpty">
+            <div class="profile-empty-icon">🐾</div>
+            <div class="profile-empty-text">还没有添加宠物，点击上方按钮添加</div>
+          </div>
+          <button class="pet-list-close-btn" onclick="closePetListPopup()">关闭</button>
+        </div>
+      </div>
+
+      <!-- ==================== 地址表单弹窗 ==================== -->
+      <div class="pet-form-overlay hidden" style="z-index: 300" id="addressFormOverlay" onclick="closeAddressForm(event)">
+        <div class="pet-form-sheet" onclick="event.stopPropagation()">
+          <div class="pet-form-handle"></div>
+          <div class="pet-form-title" id="addressFormTitle">添加收货地址</div>
+          <div class="pet-form-body">
+            <div class="pet-form-field">
+              <label>收货人<span class="required">*</span></label>
+              <input class="pet-form-input" id="addrNameInput" placeholder="请输入收货人姓名" maxlength="15" />
+            </div>
+            <div class="pet-form-field">
+              <label>联系电话<span class="required">*</span></label>
+              <input class="pet-form-input" type="tel" id="addrPhoneInput" placeholder="请输入手机号码" maxlength="11" />
+            </div>
+            <div class="pet-form-field">
+              <label>所在地区<span class="required">*</span></label>
+              <input class="pet-form-input" id="addrRegionInput" placeholder="省/市/区" maxlength="30" />
+            </div>
+            <div class="pet-form-field">
+              <label>详细地址<span class="required">*</span></label>
+              <input class="pet-form-input" id="addrDetailInput" placeholder="街道/门牌号" maxlength="80" />
+            </div>
+            <div class="pet-form-field addr-default-row">
+              <label> <input type="checkbox" id="addrDefaultCheck" /> 设为默认地址 </label>
+            </div>
+            <div class="pet-form-actions">
+              <button class="pet-form-btn cancel" onclick="closeAddressForm()">取消</button>
+              <button class="pet-form-btn confirm" onclick="saveAddress()">保存</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== 地址列表弹窗 ==================== -->
+      <div class="pet-form-overlay hidden" id="addressListOverlay" onclick="closeAddressListPopup(event)">
+        <div class="address-list-sheet" onclick="event.stopPropagation()">
+          <div class="pet-form-handle"></div>
+          <div class="address-list-header">
+            <div class="address-list-title">📍 收货地址</div>
+            <button class="address-list-add-btn" onclick="openAddressForm()">+ 添加地址</button>
+          </div>
+          <div class="address-list-body" id="addressListPopupBody">
+            <!-- 地址卡片动态渲染 -->
+          </div>
+          <div class="address-list-empty hidden" id="addressListPopupEmpty">
+            <div class="profile-empty-icon">📍</div>
+            <div class="profile-empty-text">还没有收货地址，点击上方按钮添加</div>
+          </div>
+          <button class="address-list-close-btn" onclick="closeAddressListPopup()">关闭</button>
+        </div>
+      </div>
+
+      <!-- ==================== 订单详情弹窗 ==================== -->
+      <div class="pet-form-overlay hidden" style="z-index: 300" id="orderDetailOverlay" onclick="closeOrderDetail(event)">
+        <div class="order-detail-sheet" onclick="event.stopPropagation()">
+          <div class="pet-form-handle"></div>
+          <div class="order-detail-header">
+            <div class="order-detail-status" id="orderDetailStatus">待发货</div>
+            <div class="order-detail-no">订单号：<span id="orderDetailNo"></span></div>
+          </div>
+          <div class="order-detail-body">
+            <div class="order-detail-items" id="orderDetailItems"></div>
+            <div class="order-detail-divider"></div>
+            <div class="order-detail-row"><span>商品原价</span><span id="orderDetailOriginalTotal"></span></div>
+            <div class="order-detail-row"><span>运费</span><span id="orderDetailShipping">含运费¥10.00</span></div>
+            <div class="order-detail-row order-detail-discount"><span>优惠减免</span><span id="orderDetailDiscount"></span></div>
+            <div class="order-detail-row bold"><span>实付金额</span><span class="order-detail-price" id="orderDetailPay"></span></div>
+            <div class="order-detail-pay-breakdown" id="orderDetailPayBreakdown"></div>
+
+            <!-- 物流信息 -->
+            <div class="order-detail-logistics hidden" id="orderLogisticsSection">
+              <div class="order-detail-divider"></div>
+              <div class="order-detail-label">📮 物流信息</div>
+              <div class="order-detail-row"><span>快递公司</span><span id="orderLogisticsCompany">顺丰速运</span></div>
+              <div class="order-detail-row"><span>运单号</span><span class="order-logistics-no" id="orderLogisticsNo">SF1234567890</span></div>
+            </div>
+
+            <!-- 上传物流单号 -->
+            <div class="order-detail-upload hidden" id="orderUploadSection">
+              <div class="order-detail-divider"></div>
+              <div class="order-detail-label">📤 上传物流信息</div>
+              <div class="order-upload-form">
+                <input class="pet-form-input" id="orderLogisticsInput" placeholder="请输入物流单号" maxlength="30" />
+                <button class="order-upload-btn" onclick="confirmShipment()">确认发货</button>
+              </div>
+            </div>
+
+            <!-- 售后 -->
+            <div class="order-detail-aftersale hidden" id="orderAfterSaleSection">
+              <div class="order-detail-divider"></div>
+              <div class="order-detail-label">🔄 售后服务</div>
+              <div class="order-aftersale-actions">
+                <div class="order-aftersale-btn" onclick="applyAfterSale('refund')"><span>💰</span> 申请退款</div>
+                <div class="order-aftersale-btn" onclick="applyAfterSale('exchange')"><span>📦</span> 申请换货</div>
+              </div>
+            </div>
+          </div>
+          <div class="order-detail-footer">
+            <button class="order-detail-close-btn" onclick="closeOrderDetail()">关闭</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== 账户充值详情弹窗 ==================== -->
+      <div class="pet-form-overlay hidden" id="rechargeDetailOverlay" onclick="closeRechargeDetail(event)">
+        <div class="recharge-detail-sheet" onclick="event.stopPropagation()">
+          <div class="pet-form-handle"></div>
+          <div class="recharge-detail-header">
+            <div class="recharge-detail-title">💰 充值管理</div>
+            <div class="recharge-detail-sub">多充多送，会员升级更划算</div>
+            <div class="recharge-total-amount" id="rechargeDetailBalance">当前余额：¥128.50</div>
+            <div class="recharge-detail-balance" id="rechargeTotalAmount">累计充值：¥128.50</div>
+          </div>
+          <div class="recharge-detail-body">
+            <div class="profile-recharge-grid">
+              <div class="profile-recharge-card" onclick="handleRechargeFromSheet(100)">
+                <div class="profile-recharge-amount">¥100</div>
+                <div class="profile-recharge-gift hidden">送5元</div>
+              </div>
+              <div class="profile-recharge-card" onclick="handleRechargeFromSheet(300)">
+                <div class="profile-recharge-amount">¥300</div>
+                <div class="profile-recharge-gift">送15元</div>
+              </div>
+              <div class="profile-recharge-card hot" onclick="handleRechargeFromSheet(500)">
+                <div class="profile-recharge-amount">¥500</div>
+                <div class="profile-recharge-gift">送40元</div>
+                <span class="profile-recharge-tag">🔥 热门</span>
+              </div>
+              <div class="profile-recharge-card" onclick="handleRechargeFromSheet(1000)">
+                <div class="profile-recharge-amount">¥1000</div>
+                <div class="profile-recharge-gift">送100元</div>
+              </div>
+            </div>
+            <div class="profile-recharge-custom" onclick="openCustomRecharge()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+              自定义金额
+            </div>
+          </div>
+
+          <!-- 消费记录 / 充值记录 -->
+          <div class="consumption-section" id="consumptionSection">
+            <!-- Tab 切换栏 -->
+            <div class="consumption-tabs">
+              <div class="consumption-tab active" id="consumptionTabConsume" onclick="switchConsumptionTab('consume')">消费记录</div>
+              <div class="consumption-tab" id="consumptionTabRecharge" onclick="switchConsumptionTab('recharge')">充值记录</div>
+            </div>
+
+            <!-- 消费记录面板 -->
+            <div class="consumption-panel" id="consumptionPanelConsume">
+              <div class="consumption-section-header">
+                <span class="consumption-section-title">📋 消费记录</span>
+                <span class="consumption-section-count" id="consumptionCount">共 0 笔</span>
+              </div>
+              <div class="consumption-list" id="consumptionList">
+                <!-- JS 动态渲染 -->
+              </div>
+              <div class="consumption-empty hidden" id="consumptionEmpty">
+                <span class="consumption-empty-icon">📭</span>
+                <div class="consumption-empty-text">暂无消费记录</div>
+              </div>
+            </div>
+
+            <!-- 充值记录面板 -->
+            <div class="consumption-panel hidden" id="consumptionPanelRecharge">
+              <div class="recharge-log-list" id="rechargeLogList">
+                <!-- JS 动态渲染 -->
+              </div>
+              <div class="consumption-empty hidden" id="rechargeLogEmpty">
+                <span class="consumption-empty-icon">📭</span>
+                <div class="consumption-empty-text">暂无充值记录</div>
+              </div>
+            </div>
+          </div>
+
+          <button class="order-list-close-btn" onclick="closeRechargeDetail()">关闭</button>
+        </div>
+      </div>
+
+      <!-- ==================== 自定义充值弹窗 ==================== -->
+      <div class="pet-form-overlay hidden" id="customRechargeOverlay" onclick="closeCustomRecharge(event)">
+        <div class="custom-recharge-sheet" onclick="event.stopPropagation()">
+          <div class="pet-form-handle"></div>
+          <div class="custom-recharge-title">💰 自定义充值</div>
+          <div class="custom-recharge-input-wrap">
+            <span class="custom-recharge-prefix">¥</span>
+            <input class="custom-recharge-input" type="number" id="customRechargeAmount" placeholder="请输入充值金额" min="1" max="99999" />
+          </div>
+          <div class="custom-recharge-tips">
+            <div class="custom-recharge-tip" onclick="setCustomRecharge(50)">¥50</div>
+            <div class="custom-recharge-tip" onclick="setCustomRecharge(200)">¥200</div>
+            <div class="custom-recharge-tip" onclick="setCustomRecharge(800)">¥800</div>
+            <div class="custom-recharge-tip" onclick="setCustomRecharge(2000)">¥2000</div>
+          </div>
+          <div class="pet-form-actions">
+            <button class="pet-form-btn cancel" onclick="closeCustomRecharge()">取消</button>
+            <button class="pet-form-btn confirm" onclick="confirmCustomRecharge()">确认充值</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== 头像选择弹窗 ==================== -->
+      <div class="pet-form-overlay hidden" id="avatarPickerOverlay" onclick="closeAvatarPicker(event)">
+        <div class="avatar-picker-sheet" onclick="event.stopPropagation()">
+          <div class="pet-form-handle"></div>
+          <div class="avatar-picker-title">选择头像</div>
+          <div class="avatar-picker-grid" id="avatarPickerGrid">
+            <div class="avatar-option" data-emoji="🐱" onclick="selectAvatar('🐱')">🐱</div>
+            <div class="avatar-option" data-emoji="🐶" onclick="selectAvatar('🐶')">🐶</div>
+            <div class="avatar-option" data-emoji="🐰" onclick="selectAvatar('🐰')">🐰</div>
+            <div class="avatar-option" data-emoji="🐹" onclick="selectAvatar('🐹')">🐹</div>
+            <div class="avatar-option" data-emoji="🐼" onclick="selectAvatar('🐼')">🐼</div>
+            <div class="avatar-option" data-emoji="🐨" onclick="selectAvatar('🐨')">🐨</div>
+            <div class="avatar-option" data-emoji="🦊" onclick="selectAvatar('🦊')">🦊</div>
+            <div class="avatar-option" data-emoji="🐯" onclick="selectAvatar('🐯')">🐯</div>
+            <div class="avatar-option" data-emoji="🐮" onclick="selectAvatar('🐮')">🐮</div>
+            <div class="avatar-option" data-emoji="🐷" onclick="selectAvatar('🐷')">🐷</div>
+            <div class="avatar-option" data-emoji="🐸" onclick="selectAvatar('🐸')">🐸</div>
+            <div class="avatar-option" data-emoji="🐙" onclick="selectAvatar('🐙')">🐙</div>
+          </div>
+          <button class="avatar-picker-close" onclick="closeAvatarPicker()">关闭</button>
+        </div>
+      </div>
+
+      <!-- ==================== 订单列表弹窗 ==================== -->
+      <div class="pet-form-overlay hidden" id="orderListOverlay" onclick="closeOrderListPopup(event)">
+        <div class="order-list-sheet" onclick="event.stopPropagation()">
+          <div class="pet-form-handle"></div>
+          <div class="order-list-header">
+            <div class="order-list-title">📦 我的订单</div>
+          </div>
+          <!-- 订单状态Tabs -->
+          <div class="order-list-tabs" id="orderListPopupTabs">
+            <div class="order-list-tab active" data-tab="all" onclick="switchOrderListTab('all', this)">全部</div>
+            <div class="order-list-tab" data-tab="pendingPay" onclick="switchOrderListTab('pendingPay', this)">待付款</div>
+            <div class="order-list-tab" data-tab="pendingShip" onclick="switchOrderListTab('pendingShip', this)">待发货</div>
+            <div class="order-list-tab" data-tab="shipped" onclick="switchOrderListTab('shipped', this)">已发货</div>
+            <div class="order-list-tab" data-tab="completed" onclick="switchOrderListTab('completed', this)">已完成</div>
+          </div>
+          <!-- 订单列表 -->
+          <div class="order-list-body" id="orderListPopupBody"></div>
+          <div class="order-list-empty hidden" id="orderListPopupEmpty">
+            <div class="profile-empty-icon">📦</div>
+            <div class="profile-empty-text" id="orderListPopupEmptyText">暂无订单</div>
+          </div>
+          <button class="order-list-close-btn" onclick="closeOrderListPopup()">关闭</button>
+        </div>
+      </div>
+
+      <!-- ==================== 售后表单弹窗 ==================== -->
+      <div class="pet-form-overlay hidden" id="afterSaleOverlay" onclick="closeAfterSaleForm(event)">
+        <div class="pet-form-sheet" onclick="event.stopPropagation()">
+          <div class="pet-form-handle"></div>
+          <div class="pet-form-title" id="afterSaleTitle">申请退款</div>
+          <div class="pet-form-body">
+            <div class="pet-form-field">
+              <label>售后原因<span class="required">*</span></label>
+              <select class="pet-form-select" id="afterSaleReason">
+                <option value="">请选择原因</option>
+                <option value="notWant">不想要了</option>
+                <option value="quality">质量问题</option>
+                <option value="wrong">发错货/漏发</option>
+                <option value="damage">快递破损</option>
+                <option value="other">其他</option>
+              </select>
+            </div>
+            <div class="pet-form-field">
+              <label>详细说明</label>
+              <textarea class="pet-form-textarea" id="afterSaleDesc" placeholder="请描述您遇到的问题" maxlength="200"></textarea>
+            </div>
+            <div class="pet-form-actions">
+              <button class="pet-form-btn cancel" onclick="closeAfterSaleForm()">取消</button>
+              <button class="pet-form-btn confirm" onclick="submitAfterSale()">提交申请</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== 用户详情弹窗 ==================== -->
+      <div class="pet-form-overlay hidden" id="profileDetailOverlay" onclick="closeProfileDetail(event)">
+        <div class="profile-detail-sheet" onclick="event.stopPropagation()">
+          <div class="pet-form-handle"></div>
+          <div class="profile-detail-header">
+            <div class="profile-detail-avatar" id="profileDetailAvatar">🐱</div>
+            <div class="profile-detail-info">
+              <div class="profile-detail-name" id="profileDetailName">毛毛家长</div>
+              <div class="profile-detail-phone" id="profileDetailPhone">电话：156****8888</div>
+            </div>
+          </div>
+          <div class="profile-detail-tags">
+            <span class="profile-detail-level-tag" id="profileDetailLevelTag">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+              </svg>
+              <span id="profileDetailLevel">梵优合伙人</span>
+            </span>
+            <span class="profile-detail-member-badge" id="profileDetailMemberBadge">🥈 银牌会员</span>
+          </div>
+
+          <!-- ========== 会员权益（整合在个人详情中）========== -->
+          <!-- 当前会员信息 -->
+          <div class="member-progress-text" id="memberProgressText">还需消费 ¥500 升级金牌会员</div>
+
+          <!-- 会员等级轮播 -->
+          <div class="member-levels-track" id="memberLevelsTrack">
+            <div class="member-level-card silver" data-level="silver">
+              <div class="member-level-icon">🥈</div>
+              <div class="member-level-name">银牌会员</div>
+              <div class="member-level-threshold">累计充值或消费 ¥500+</div>
+              <div class="member-level-benefits">
+                <div class="member-benefit">✓ 全场9.8折</div>
+                <div class="member-benefit">✓ 积分加速1.1倍</div>
+                <div class="member-benefit">✓ 生日礼包一份</div>
+              </div>
+            </div>
+            <div class="member-level-card gold" data-level="gold">
+              <div class="member-level-icon">🥇</div>
+              <div class="member-level-name">金牌会员</div>
+              <div class="member-level-threshold">累计充值或消费 ¥1,000+</div>
+              <div class="member-level-benefits">
+                <div class="member-benefit">✓ 全场9.6折</div>
+                <div class="member-benefit">✓ 积分加速1.3倍</div>
+                <div class="member-benefit">✓ 生日礼包一份（2年）</div>
+              </div>
+            </div>
+            <div class="member-level-card diamond" data-level="diamond">
+              <div class="member-level-icon">💎</div>
+              <div class="member-level-name">黑钻会员</div>
+              <div class="member-level-threshold">累计充值或消费 ¥3,000+</div>
+              <div class="member-level-benefits">
+                <div class="member-benefit">✓ 全场9.3折</div>
+                <div class="member-benefit">✓ 积分加速1.5倍</div>
+                <div class="member-benefit">✓ 生日礼包一份（终身）</div>
+              </div>
+            </div>
+          </div>
+          <div class="member-level-dots" id="memberLevelDots">
+            <div class="member-dot active" data-index="0" onclick="goToMemberLevel(0)"></div>
+            <div class="member-dot" data-index="1" onclick="goToMemberLevel(1)"></div>
+            <div class="member-dot" data-index="2" onclick="goToMemberLevel(2)"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== 个人信息编辑弹窗 ==================== -->
+      <div class="pet-form-overlay hidden" id="profileEditOverlay" onclick="closeProfileEdit(event)">
+        <div class="pet-form-sheet" onclick="event.stopPropagation()">
+          <div class="pet-form-handle"></div>
+          <div class="pet-form-title">编辑个人信息</div>
+          <div class="pet-form-body">
+            <div class="pet-form-field">
+              <label>昵称</label>
+              <input class="pet-form-input" id="profileNameInput" placeholder="请输入昵称" maxlength="15" />
+            </div>
+            <div class="pet-form-field">
+              <label>手机号</label>
+              <input class="pet-form-input" type="tel" id="profilePhoneInput" placeholder="请输入手机号" maxlength="11" />
+            </div>
+            <div class="pet-form-actions">
+              <button class="pet-form-btn cancel" onclick="closeProfileEdit()">取消</button>
+              <button class="pet-form-btn confirm" onclick="saveProfile()">保存</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== 轻创课程详情弹窗 ==================== -->
+      <div class="course-detail-overlay hidden" id="courseDetailOverlay" onclick="closeCourseDetail(event)">
+        <div class="course-detail-sheet" onclick="event.stopPropagation()">
+          <div class="course-detail-handle"></div>
+          <div class="course-detail-hero" id="courseDetailHero"></div>
+          <div class="course-detail-body">
+            <div class="course-detail-tag" id="courseDetailTag"></div>
+            <div class="course-detail-name" id="courseDetailName"></div>
+            <div class="course-detail-price" id="courseDetailPrice"></div>
+            <div class="course-detail-desc" id="courseDetailDesc"></div>
+            <div class="course-detail-list" id="courseDetailList"></div>
+            <button class="course-detail-btn" id="courseDetailBtn" onclick="buyCourse()">立即报名</button>
+            <!-- 视频区域 -->
+            <div class="video-section">
+              <div class="video-player-wrap">
+                <div class="video-placeholder" id="videoPlaceholder"></div>
+                <video id="videoEl" controls playsinline style="display: none" onended="onVideoEnded()"></video>
+              </div>
+              <div class="video-list" id="videoList"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 抖音直播间介绍弹窗 ==================== -->
+    <div class="douyin-overlay hidden" id="douyinOverlay" onclick="closeDouyinCard(event)">
+      <div class="douyin-card">
+        <div class="douyin-card-handle"></div>
+        <div class="douyin-card-hero">
+          <div class="douyin-card-hero-badge">🔴 直播中</div>
+          <div class="douyin-card-hero-title">梵优茗宠 抖音直播间</div>
+          <div class="douyin-card-hero-desc">每日 19:00-22:00 直播 · AI定制配餐专场</div>
+        </div>
+        <div class="douyin-card-body">
+          <div class="douyin-card-section">
+            <div class="douyin-card-section-icon">🤖</div>
+            <div class="douyin-card-section-info">
+              <div class="douyin-card-section-title">AI 专属定制配餐</div>
+              <div class="douyin-card-section-desc">
+                填写猫咪/狗狗基础信息，AI 智能分析爱宠年龄、品种、体重、健康状态， 精准推荐最适合的营养配餐方案，科学搭配、告别盲目选粮。
+              </div>
+            </div>
+          </div>
+          <div class="douyin-card-section">
+            <div class="douyin-card-section-icon">🎁</div>
+            <div class="douyin-card-section-info">
+              <div class="douyin-card-section-title">直播间专属福利</div>
+              <div class="douyin-card-section-desc">
+                每日直播抽取 3 名幸运萌友，免费获得 AI 定制配餐方案！ 关注直播间还可领取专属优惠券，限时福利不容错过。
+              </div>
+            </div>
+          </div>
+          <div class="douyin-card-section">
+            <div class="douyin-card-section-icon">📱</div>
+            <div class="douyin-card-section-info">
+              <div class="douyin-card-section-title">如何参与</div>
+              <div class="douyin-card-section-desc">复制下方抖音号，打开抖音搜索关注，开播时会收到提醒， 不错过每一场 AI 定制配餐干货分享！</div>
+            </div>
+          </div>
+        </div>
+        <div class="douyin-card-footer">
+          <div class="douyin-card-id">
+            <span class="douyin-card-id-label">抖音号</span>
+            <span class="douyin-card-id-value" id="douyinIdText">FanYouMingChong</span>
+          </div>
+          <button class="douyin-card-copy-btn" onclick="copyDouyinId(event)">复制抖音号</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="js/city.js"></script>
+    <script src="js/shop.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/meal-data.js"></script>
+    <script src="js/quiz.js"></script>
+    <script src="js/course.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/detail-data.js"></script>
+    <script src="js/detail-gallery.js"></script>
+    <script src="js/detail-group.js"></script>
+    <script src="js/detail-page.js"></script>
+    <script src="js/profile.js"></script>
+    <script src="js/points.js"></script>
+    <script src="js/commission.js"></script>
+
+    <!-- ==================== 积分明细弹窗 ==================== -->
+    <div class="points-log-overlay hidden" id="pointsLogOverlay" onclick="closePointsLogPopup(event)">
+      <div class="points-log-sheet" onclick="event.stopPropagation()">
+        <div class="points-log-handle"></div>
+        <div class="points-log-header">
+          <div class="points-log-title">📋 积分明细</div>
+          <div class="points-log-close" onclick="closePointsLogPopup()">✕</div>
+        </div>
+        <!-- 积分统计 -->
+        <div class="points-log-stats">
+          <div class="points-log-stat">
+            <div class="points-log-stat-num" id="pointsLogBalance">0</div>
+            <div class="points-log-stat-label">当前积分</div>
+          </div>
+          <div class="points-log-stat-divider"></div>
+          <div class="points-log-stat">
+            <div class="points-log-stat-num" id="pointsLogTotalEarned">0</div>
+            <div class="points-log-stat-label">累计获得</div>
+          </div>
+          <div class="points-log-stat-divider"></div>
+          <div class="points-log-stat">
+            <div class="points-log-stat-num" id="pointsLogTotalUsed">0</div>
+            <div class="points-log-stat-label">累计使用</div>
+          </div>
+        </div>
+        <!-- 会员积分倍率 -->
+        <div class="points-multiplier-card" id="pointsMultiplierCard">
+          <div class="points-multiplier-header">
+            <span class="points-multiplier-label">🏅 会员积分倍率</span>
+            <span class="points-multiplier-badge" id="pointsMultiplierBadge">银牌会员</span>
+          </div>
+          <div class="points-multiplier-body">
+            <div class="points-multiplier-row">
+              <span class="points-multiplier-key">当前倍率</span>
+              <span class="points-multiplier-val" id="pointsMultiplierVal">×1.3</span>
+            </div>
+            <div class="points-multiplier-row">
+              <span class="points-multiplier-key">消费积分计算</span>
+              <span class="points-multiplier-val" id="pointsMultiplierCalc">1元 = 1.3积分</span>
+            </div>
+          </div>
+          <div class="points-multiplier-example" id="pointsMultiplierExample">示例：消费100元 → 100×1.3 = <strong>130积分</strong></div>
+        </div>
+        <!-- 操作按钮 -->
+        <div class="points-log-actions">
+          <div
+            class="points-log-action-btn primary"
+            onclick="
+              event.stopPropagation();
+              openPointsExchangePopup();
+            "
+          >
+            🎁 积分兑换
+          </div>
+        </div>
+        <!-- 明细列表 -->
+        <div class="points-log-list" id="pointsLogList">
+          <div class="points-log-empty hidden" id="pointsLogEmpty">暂无积分明细</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 积分兑换弹窗 ==================== -->
+    <div class="points-exchange-overlay hidden" id="pointsExchangeOverlay" onclick="closePointsExchangePopup(event)">
+      <div class="points-exchange-sheet" onclick="event.stopPropagation()">
+        <div class="points-exchange-handle"></div>
+        <div class="points-exchange-header">
+          <div class="points-exchange-title">🎁 积分兑换</div>
+          <div class="points-exchange-close" onclick="closePointsExchangePopup()">✕</div>
+        </div>
+        <!-- 当前积分 -->
+        <div class="points-exchange-balance">当前积分：<span id="pointsExchangeBalance">0</span></div>
+        <!-- 兑换商品列表 -->
+        <div class="points-exchange-list" id="pointsExchangeList"></div>
+      </div>
+    </div>
+
+    <!-- ==================== 分佣概览弹窗 ==================== -->
+    <div class="commission-overlay hidden" id="commissionOverlay" onclick="closeCommissionOverview(event)">
+      <div class="commission-sheet" onclick="event.stopPropagation()">
+        <div class="commission-handle"></div>
+        <div class="commission-header">
+          <div class="commission-title">💸 分佣收益</div>
+          <div class="commission-close" onclick="closeCommissionOverview()">✕</div>
+        </div>
+
+        <!-- 等级卡片 -->
+        <div class="commission-tier-card" id="commissionTierCard">
+          <div class="tier-card-glow"></div>
+          <div class="tier-card-header">
+            <span class="tier-card-icon" id="tierCardIcon">🌟</span>
+            <div class="tier-card-header-text">
+              <span class="tier-card-name" id="tierCardName">梵优合伙人</span>
+              <span class="tier-card-subtitle" id="tierCardSubtitle"></span>
+            </div>
+            <span class="tier-card-total-rate" id="tierCardTotalRate">9%</span>
+          </div>
+        </div>
+
+        <!-- 收益统计 -->
+        <div class="commission-stats">
+          <div class="commission-stat">
+            <div class="commission-stat-num" id="commTotalEarned">¥0.00</div>
+            <div class="commission-stat-label">累计收益</div>
+          </div>
+          <div class="commission-stat-divider"></div>
+          <div class="commission-stat">
+            <div class="commission-stat-num pending" id="commPendingAmount">¥0.00</div>
+            <div class="commission-stat-label">待结算</div>
+          </div>
+          <div class="commission-stat-divider"></div>
+          <div class="commission-stat">
+            <div class="commission-stat-num available" id="commAvailableBalance">¥0.00</div>
+            <div class="commission-stat-label">可提现</div>
+          </div>
+        </div>
+
+        <!-- 快捷操作 -->
+        <div class="commission-actions">
+          <div
+            class="commission-action-btn primary"
+            onclick="
+              event.stopPropagation();
+              openWithdrawPopup();
+            "
+          >
+            💳 立即提现
+          </div>
+        </div>
+
+        <!-- 最近收益 -->
+        <div class="commission-section-title">
+          <span>📋 最近收益</span>
+          <span
+            class="commission-section-more"
+            onclick="
+              event.stopPropagation();
+              openCommissionDetail();
+            "
+            >查看全部 ›</span
+          >
+        </div>
+        <div class="commission-log-list" id="commissionLogList"></div>
+      </div>
+    </div>
+
+    <!-- ==================== 收益明细弹窗 ==================== -->
+    <div class="commission-detail-overlay hidden" id="commissionDetailOverlay" onclick="closeCommissionDetail(event)">
+      <div class="commission-detail-sheet" onclick="event.stopPropagation()">
+        <div class="commission-handle"></div>
+        <div class="commission-header">
+          <div class="commission-title">📋 收益明细</div>
+          <div class="commission-close" onclick="closeCommissionDetail()">✕</div>
+        </div>
+
+        <!-- 统计 -->
+        <div class="commission-stats">
+          <div class="commission-stat">
+            <div class="commission-stat-num" id="commDetailTotalEarned">¥0.00</div>
+            <div class="commission-stat-label">累计收益</div>
+          </div>
+          <div class="commission-stat-divider"></div>
+          <div class="commission-stat">
+            <div class="commission-stat-num pending" id="commDetailPending">¥0.00</div>
+            <div class="commission-stat-label">待结算</div>
+          </div>
+          <div class="commission-stat-divider"></div>
+          <div class="commission-stat">
+            <div class="commission-stat-num available" id="commDetailAvailable">¥0.00</div>
+            <div class="commission-stat-label">可提现</div>
+          </div>
+        </div>
+
+        <!-- Tab 切换 -->
+        <div class="commission-detail-tabs" id="commissionDetailTabs">
+          <div class="commission-detail-tab active" data-tab="all" onclick="switchCommissionDetailTab('all', this)">全部</div>
+          <div class="commission-detail-tab" data-tab="settled" onclick="switchCommissionDetailTab('settled', this)">已结算</div>
+          <div class="commission-detail-tab" data-tab="pending" onclick="switchCommissionDetailTab('pending', this)">待结算</div>
+          <div class="commission-detail-tab" data-tab="withdraw" onclick="switchCommissionDetailTab('withdraw', this)">提现记录</div>
+        </div>
+
+        <!-- 明细列表 -->
+        <div class="commission-log-list" id="commissionDetailList"></div>
+      </div>
+    </div>
+
+    <!-- ==================== 收益详情弹窗（点击明细条目） ==================== -->
+    <div class="commission-log-detail-overlay hidden" id="commissionLogDetailOverlay" onclick="closeCommissionLogDetail(event)">
+      <div class="commission-log-detail-sheet" onclick="event.stopPropagation()">
+        <div class="commission-handle"></div>
+        <div class="commission-header">
+          <div class="commission-title" id="commLogDetailTitle">收益详情</div>
+          <div class="commission-close" onclick="closeCommissionLogDetail()">✕</div>
+        </div>
+
+        <!-- 金额区 -->
+        <div class="comm-log-detail-amount-area">
+          <div class="comm-log-detail-row">
+            <span class="comm-log-detail-label">支付金额</span>
+            <span class="comm-log-detail-value" id="commLogDetailOrderAmount">¥0.00</span>
+          </div>
+          <div class="comm-log-detail-formula" id="commLogDetailFormula">¥0 × 0% = ¥0</div>
+          <div class="comm-log-detail-row">
+            <span class="comm-log-detail-label">收益金额</span>
+            <span class="comm-log-detail-earned" id="commLogDetailEarned">+0.00</span>
+          </div>
+        </div>
+
+        <!-- 状态 + 时间 -->
+        <div class="comm-log-detail-meta-bar">
+          <span class="comm-log-detail-status settled" id="commLogDetailStatus">已结算</span>
+          <span class="comm-log-detail-time" id="commLogDetailTime">2026-01-01 00:00</span>
+        </div>
+
+        <!-- 商品列表 -->
+        <div class="comm-log-detail-items-title">🛒 购买商品</div>
+        <div class="comm-log-detail-items" id="commLogDetailItems"></div>
+      </div>
+    </div>
+
+    <!-- ==================== 提现弹窗 ==================== -->
+    <div class="withdraw-overlay hidden" id="withdrawOverlay" onclick="closeWithdrawPopup(event)">
+      <div class="withdraw-sheet" onclick="event.stopPropagation()">
+        <div class="commission-handle"></div>
+        <div class="commission-header">
+          <div class="commission-title">💳 申请提现</div>
+          <div class="commission-close" onclick="closeWithdrawPopup()">✕</div>
+        </div>
+
+        <!-- 可提现余额 -->
+        <div class="withdraw-balance-card">
+          <div class="withdraw-balance-label">可提现余额</div>
+          <div class="withdraw-balance-num" id="withdrawBalance">¥0.00</div>
+        </div>
+
+        <!-- 提现表单 -->
+        <div class="withdraw-form">
+          <div class="withdraw-form-group">
+            <label class="withdraw-form-label">提现金额</label>
+            <input
+              type="number"
+              class="withdraw-form-input"
+              id="withdrawAmountInput"
+              placeholder="请输入提现金额"
+              oninput="onWithdrawAmountInput(this)"
+            />
+            <div class="withdraw-form-hint" id="withdrawMinHint">最低提现金额 ¥10</div>
+          </div>
+
+          <!-- 快捷金额 -->
+          <div class="withdraw-amount-presets" id="withdrawPresets">
+            <div class="withdraw-amount-preset" data-amount="50" onclick="selectWithdrawPreset('50', this)">¥50</div>
+            <div class="withdraw-amount-preset" data-amount="100" onclick="selectWithdrawPreset('100', this)">¥100</div>
+            <div class="withdraw-amount-preset" data-amount="200" onclick="selectWithdrawPreset('200', this)">¥200</div>
+            <div class="withdraw-amount-preset" data-amount="500" onclick="selectWithdrawPreset('500', this)">¥500</div>
+            <div class="withdraw-amount-preset" data-amount="1000" onclick="selectWithdrawPreset('1000', this)">¥1000</div>
+          </div>
+
+          <div class="withdraw-form-group">
+            <label class="withdraw-form-label">提现方式</label>
+            <select class="withdraw-form-input" id="withdrawMethodSelect" onchange="onWithdrawMethodChange(this)">
+              <option value="微信零钱">微信零钱</option>
+              <option value="银行卡">银行卡</option>
+            </select>
+          </div>
+
+          <!-- 到账预览 -->
+          <div class="withdraw-form-hint" id="withdrawPreview" style="text-align: center; font-size: 13px; margin-bottom: 14px">请输入提现金额</div>
+
+          <!-- 提交 -->
+          <button class="withdraw-submit-btn" id="withdrawSubmitBtn" disabled onclick="submitWithdraw()">确认提现</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 邀请明细弹窗 ==================== -->
+    <div class="invite-overlay hidden" id="inviteOverlay" onclick="closeInviteDetail(event)">
+      <div class="invite-sheet" onclick="event.stopPropagation()">
+        <div class="commission-handle"></div>
+        <div class="commission-header">
+          <div class="commission-title">👥 我的团队</div>
+          <div class="commission-close" onclick="closeInviteDetail()">✕</div>
+        </div>
+
+        <!-- 邀请分享卡片 -->
+        <div class="invite-share-card">
+          <div class="invite-share-title">🎉 邀请好友</div>
+          <div class="invite-share-subtitle">好友注册即可获得专属权益，一起给宠物囤好物</div>
+          <div class="invite-share-actions">
+            <button class="invite-share-btn link" onclick="shareInviteLink()">🔗 分享链接</button>
+          </div>
+        </div>
+
+        <!-- Tab 切换 + 统计 -->
+        <div class="invite-tabs" id="inviteDetailTabs">
+          <div class="invite-tab active" data-tab="total" onclick="switchInviteTab('total', this)">
+            邀请总数 <span class="invite-tab-count" id="inviteTotalCount">0</span>
+          </div>
+          <div class="invite-tab" data-tab="views" onclick="switchInviteTab('views', this)">
+            浏览量 <span class="invite-tab-count" id="inviteViewsCount">0</span>
+          </div>
+        </div>
+
+        <!-- 等级筛选 -->
+        <div class="invite-level-filter" id="inviteLevelFilter">
+          <span class="invite-level-chip active" data-level="all" onclick="filterInviteByLevel('all', this)">全部</span>
+          <span class="invite-level-chip" data-level="普通用户" onclick="filterInviteByLevel('普通用户', this)">普通用户</span>
+          <span class="invite-level-chip" data-level="梵优合伙人" onclick="filterInviteByLevel('梵优合伙人', this)">梵优合伙人</span>
+          <span class="invite-level-chip" data-level="梵优主理人" onclick="filterInviteByLevel('梵优主理人', this)">梵优主理人</span>
+          <!-- 城市分公司筛选标签：默认隐藏，可通过 COMMISSION_CONFIG.enableCityBranch 开启 -->
+          <!-- <span class="invite-level-chip" data-level="梵优城市分公司" onclick="filterInviteByLevel('梵优城市分公司', this)">梵优城市分公司</span> -->
+        </div>
+
+        <!-- 邀请列表 -->
+        <div class="invite-list" id="inviteList"></div>
+      </div>
+    </div>
+
+    <!-- ==================== 邀请用户详情弹窗 ==================== -->
+    <div class="invite-user-overlay hidden" id="inviteUserOverlay" onclick="closeInviteUserDetail(event)">
+      <div class="invite-user-sheet" onclick="event.stopPropagation()">
+        <div class="commission-handle"></div>
+        <div class="commission-header">
+          <div class="commission-title">👤 用户详情</div>
+          <div class="commission-close" onclick="closeInviteUserDetail()">✕</div>
+        </div>
+        <div class="invite-user-content">
+          <div class="invite-user-avatar" id="inviteUserAvatar">🐶</div>
+          <div class="invite-user-name" id="inviteUserName">用户名</div>
+          <span class="invite-item-role" id="inviteUserRole">用户</span>
+          <div class="invite-user-detail-list">
+            <div class="invite-user-detail-item">
+              <span class="invite-user-detail-label">等级</span>
+              <span class="invite-user-detail-value" id="inviteUserLevel">普通用户</span>
+            </div>
+            <div class="invite-user-detail-item">
+              <span class="invite-user-detail-label">注册日期</span>
+              <span class="invite-user-detail-value" id="inviteUserJoinTime">-</span>
+            </div>
+            <div class="invite-user-detail-item">
+              <span class="invite-user-detail-label">团队人数</span>
+              <span class="invite-user-detail-value" id="inviteUserTeamSize">0人</span>
+            </div>
+            <div class="invite-user-detail-item">
+              <span class="invite-user-detail-label">消费状态</span>
+              <span class="invite-user-detail-value" id="inviteUserConsumeStatus">未消费</span>
+            </div>
+            <div class="invite-user-detail-item">
+              <span class="invite-user-detail-label">状态</span>
+              <span class="invite-user-detail-value" id="inviteUserStatus">-</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
