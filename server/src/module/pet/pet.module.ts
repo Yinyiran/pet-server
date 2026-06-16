@@ -8,8 +8,9 @@ import { BundleModule } from './bundle/bundle.module';
 import { MerchantModule } from './merchant/merchant.module';
 import { OrderModule } from './order/order.module';
 import { RefundModule } from './refund/refund.module';
+import { CourseModule } from './course/course.module';
 
 @Module({
-  imports: [PetUserModule, MemberLevelModule, ProductCategoryModule, BannerModule, ProductModule, BundleModule, MerchantModule, OrderModule, RefundModule],
+  imports: [PetUserModule, MemberLevelModule, ProductCategoryModule, BannerModule, ProductModule, BundleModule, MerchantModule, OrderModule, RefundModule, CourseModule],
 })
 export class PetModule {}
