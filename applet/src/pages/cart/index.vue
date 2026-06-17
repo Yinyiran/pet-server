@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useCartStore } from '@/store'
 import { orderApi } from '@/api'
 import { checkLogin } from '@/utils/auth'
@@ -44,7 +44,6 @@ async function submitOrder() {
   }
 }
 
-import { ref, onMounted } from 'vue'
 onMounted(loadCart)
 </script>
 

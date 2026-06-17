@@ -30,11 +30,30 @@ export const useCartStore = defineStore('cart', () => {
     }
   }
 
-  /** 加入购物车 */
+  /** 加入购物车（API调用） */
   async function addToCart(productId: number, quantity = 1) {
     await http.post('/app/order/cart', { productId, quantity })
     uni.showToast({ title: '已加入购物车', icon: 'success' })
     await fetchCart()
+  }
+
+  /** 本地添加购物车（无需 API，用于快速原型） */
+  function add(item: { productId: number; name: string; image: string; price: number; quantity: number }) {
+    const existing = items.value.find(i => i.productId === item.productId)
+    if (existing) {
+      existing.quantity += item.quantity
+    } else {
+      items.value.push({
+        id: Date.now(),
+        productId: item.productId,
+        productName: item.name,
+        productImage: item.image,
+        price: item.price,
+        originalPrice: 0,
+        quantity: item.quantity,
+        checked: true,
+      })
+    }
   }
 
   /** 更新数量 */
@@ -62,6 +81,6 @@ export const useCartStore = defineStore('cart', () => {
 
   return {
     items, totalCount, checkedCount, checkedTotal, isAllChecked,
-    fetchCart, addToCart, updateQuantity, removeItems, toggleAll, toggleItem,
+    fetchCart, addToCart, add, updateQuantity, removeItems, toggleAll, toggleItem,
   }
 })
