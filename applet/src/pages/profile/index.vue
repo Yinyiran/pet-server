@@ -105,23 +105,36 @@ onMounted(async () => {
       <view v-else class="pet-empty"><text>还没有添加宠物</text></view>
 
       <!-- 菜单列表 -->
-      <view class="menu-item" @tap="navigateTo('/pages/quiz/index')">
-        <text class="menu-icon">⭐</text><text class="menu-label">我的积分</text>
-        <text class="menu-value">{{ userStore.points }}</text><text class="menu-arrow">›</text>
+      <view class="menu-group">
+        <view class="menu-item first" @tap="navigateTo('/pages/points/index')">
+          <text class="menu-icon">⭐</text><text class="menu-label">我的积分</text>
+          <text class="menu-value">{{ userStore.points }}</text><text class="menu-arrow">›</text>
+        </view>
+        <view class="menu-item" @tap="navigateTo('/pages/points-exchange/index')">
+          <text class="menu-icon">🎁</text><text class="menu-label">积分兑换</text>
+          <text class="menu-arrow">›</text>
+        </view>
+        <view class="menu-item" @tap="navigateTo('/pages/commission/index')">
+          <text class="menu-icon">💸</text><text class="menu-label">分佣收益</text>
+          <text class="menu-value">¥0.00</text><text class="menu-arrow">›</text>
+        </view>
+        <view class="menu-item" @tap="navigateTo('/pages/withdraw/index')">
+          <text class="menu-icon">💳</text><text class="menu-label">申请提现</text>
+          <text class="menu-arrow">›</text>
+        </view>
+        <view class="menu-item last" @tap="navigateTo('/pages/team/index')">
+          <text class="menu-icon">👥</text><text class="menu-label">我的团队</text>
+          <text class="menu-value">{{ userStore.profile?.inviteCount || 0 }}</text><text class="menu-arrow">›</text>
+        </view>
       </view>
-      <view class="menu-item">
-        <text class="menu-icon">💸</text><text class="menu-label">分佣收益</text>
-        <text class="menu-value">¥0.00</text><text class="menu-arrow">›</text>
-      </view>
-      <view class="menu-item">
-        <text class="menu-icon">👥</text><text class="menu-label">我的团队</text>
-        <text class="menu-value">{{ userStore.profile?.inviteCount || 0 }}</text><text class="menu-arrow">›</text>
-      </view>
-      <view class="menu-item">
-        <text class="menu-icon">💰</text><text class="menu-label">充值管理</text><text class="menu-arrow">›</text>
-      </view>
-      <view class="menu-item">
-        <text class="menu-icon">📦</text><text class="menu-label">我的订单</text><text class="menu-arrow">›</text>
+
+      <view class="menu-group">
+        <view class="menu-item first" @tap="navigateTo('/pages/recharge/index')">
+          <text class="menu-icon">💰</text><text class="menu-label">充值管理</text><text class="menu-arrow">›</text>
+        </view>
+        <view class="menu-item last" @tap="navigateTo('/pages/order/index')">
+          <text class="menu-icon">📦</text><text class="menu-label">我的订单</text><text class="menu-arrow">›</text>
+        </view>
       </view>
 
       <view style="height: 40rpx" />
@@ -155,10 +168,16 @@ onMounted(async () => {
 .edit-btn { font-size: 22rpx; padding: 8rpx 20rpx; }
 
 .menu-item {
-  display: flex; align-items: center; background: $card-bg; margin: 0 24rpx 2rpx;
+  display: flex; align-items: center; background: $card-bg; margin: 0 24rpx;
   padding: 28rpx 24rpx; gap: 16rpx;
+  border-bottom: 1rpx solid $border;
   &:first-of-type { border-radius: $radius-lg $radius-lg 0 0; margin-top: 20rpx; }
-  &:last-of-type { border-radius: 0 0 $radius-lg $radius-lg; margin-bottom: 20rpx; }
+}
+.menu-group {
+  margin-bottom: 20rpx;
+  .menu-item.first { border-radius: $radius-lg $radius-lg 0 0; margin-top: 20rpx; }
+  .menu-item.last { border-radius: 0 0 $radius-lg $radius-lg; border-bottom: none; }
+  .menu-item:only-child { border-radius: $radius-lg; border-bottom: none; }
 }
 .pet-menu { border-radius: $radius-lg $radius-lg 0 0 !important; margin-top: 20rpx; }
 .menu-icon { font-size: 32rpx; }

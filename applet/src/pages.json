@@ -115,6 +115,62 @@
         "navigationStyle": "custom",
         "navigationBarTitleText": "海报预览"
       }
+    },
+    {
+      "path": "pages/points/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "我的积分"
+      }
+    },
+    {
+      "path": "pages/points-exchange/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "积分兑换"
+      }
+    },
+    {
+      "path": "pages/commission/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "分佣收益"
+      }
+    },
+    {
+      "path": "pages/withdraw/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "申请提现"
+      }
+    },
+    {
+      "path": "pages/team/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "我的团队"
+      }
+    },
+    {
+      "path": "pages/recharge/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "充值管理"
+      }
+    },
+    {
+      "path": "pages/order/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "我的订单"
+      }
+    },
+    {
+      "path": "pages/order-detail/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "订单详情"
+      }
     }
   ],
   "globalStyle": {
