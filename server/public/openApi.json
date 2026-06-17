@@ -6792,6 +6792,46 @@
         ]
       }
     },
+    "/app/order/pay": {
+      "post": {
+        "operationId": "AppOrderController_pay",
+        "summary": "支付订单",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "小程序-购物车与订单"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/app/order/payNotify": {
+      "post": {
+        "operationId": "AppOrderController_payNotify",
+        "summary": "支付回调(模拟)",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "小程序-购物车与订单"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
     "/app/order/list": {
       "get": {
         "operationId": "AppOrderController_getList",
@@ -6891,6 +6931,521 @@
         },
         "tags": [
           "小程序-购物车与订单"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/pet/commission-tier/list": {
+      "get": {
+        "operationId": "TierController_findList",
+        "summary": "等级列表",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "业务-分佣等级"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/pet/commission-tier": {
+      "post": {
+        "operationId": "TierController_create",
+        "summary": "新增等级",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTierDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "业务-分佣等级"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      },
+      "put": {
+        "operationId": "TierController_update",
+        "summary": "更新等级",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTierDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "业务-分佣等级"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/pet/commission-account/list": {
+      "get": {
+        "operationId": "AccountController_findList",
+        "summary": "账户列表",
+        "parameters": [
+          {
+            "name": "pageNum",
+            "required": true,
+            "in": "query",
+            "description": "当前分页",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": true,
+            "in": "query",
+            "description": "每页数量",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "orderByColumn",
+            "required": false,
+            "in": "query",
+            "description": "排序字段",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isAsc",
+            "required": false,
+            "in": "query",
+            "description": "排序规则",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "tierId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "业务-分佣账户"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/pet/commission-log/list": {
+      "get": {
+        "operationId": "LogController_findList",
+        "summary": "流水列表",
+        "parameters": [
+          {
+            "name": "pageNum",
+            "required": true,
+            "in": "query",
+            "description": "当前分页",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": true,
+            "in": "query",
+            "description": "每页数量",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "orderByColumn",
+            "required": false,
+            "in": "query",
+            "description": "排序字段",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isAsc",
+            "required": false,
+            "in": "query",
+            "description": "排序规则",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "业务-佣金流水"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/pet/commission-invite/list": {
+      "get": {
+        "operationId": "InviteController_findList",
+        "summary": "邀请列表",
+        "parameters": [
+          {
+            "name": "pageNum",
+            "required": true,
+            "in": "query",
+            "description": "当前分页",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": true,
+            "in": "query",
+            "description": "每页数量",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "orderByColumn",
+            "required": false,
+            "in": "query",
+            "description": "排序字段",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isAsc",
+            "required": false,
+            "in": "query",
+            "description": "排序规则",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "parentId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "userId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "业务-邀请关系"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/pet/commission-withdraw/list": {
+      "get": {
+        "operationId": "WithdrawController_findList",
+        "summary": "提现列表",
+        "parameters": [
+          {
+            "name": "pageNum",
+            "required": true,
+            "in": "query",
+            "description": "当前分页",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": true,
+            "in": "query",
+            "description": "每页数量",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "orderByColumn",
+            "required": false,
+            "in": "query",
+            "description": "排序字段",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isAsc",
+            "required": false,
+            "in": "query",
+            "description": "排序规则",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "业务-提现审核"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/pet/commission-withdraw/{id}/audit": {
+      "put": {
+        "operationId": "WithdrawController_audit",
+        "summary": "审核提现",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuditWithdrawDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "业务-提现审核"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/app/commission/account": {
+      "get": {
+        "operationId": "AppCommissionController_getAccount",
+        "summary": "我的分佣账户",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "小程序-分佣"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/app/commission/logs": {
+      "get": {
+        "operationId": "AppCommissionController_getLogs",
+        "summary": "佣金流水",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "小程序-分佣"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/app/commission/invites": {
+      "get": {
+        "operationId": "AppCommissionController_getInvites",
+        "summary": "邀请列表",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "小程序-分佣"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/app/commission/withdraw": {
+      "post": {
+        "operationId": "AppCommissionController_apply",
+        "summary": "申请提现",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApplyWithdrawDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "小程序-分佣"
         ],
         "security": [
           {
@@ -7857,521 +8412,6 @@
         },
         "tags": [
           "小程序-直播间"
-        ],
-        "security": [
-          {
-            "Authorization": []
-          }
-        ]
-      }
-    },
-    "/pet/commission-tier/list": {
-      "get": {
-        "operationId": "TierController_findList",
-        "summary": "等级列表",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "业务-分佣等级"
-        ],
-        "security": [
-          {
-            "Authorization": []
-          }
-        ]
-      }
-    },
-    "/pet/commission-tier": {
-      "post": {
-        "operationId": "TierController_create",
-        "summary": "新增等级",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateTierDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "业务-分佣等级"
-        ],
-        "security": [
-          {
-            "Authorization": []
-          }
-        ]
-      },
-      "put": {
-        "operationId": "TierController_update",
-        "summary": "更新等级",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateTierDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "业务-分佣等级"
-        ],
-        "security": [
-          {
-            "Authorization": []
-          }
-        ]
-      }
-    },
-    "/pet/commission-account/list": {
-      "get": {
-        "operationId": "AccountController_findList",
-        "summary": "账户列表",
-        "parameters": [
-          {
-            "name": "pageNum",
-            "required": true,
-            "in": "query",
-            "description": "当前分页",
-            "schema": {
-              "default": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "pageSize",
-            "required": true,
-            "in": "query",
-            "description": "每页数量",
-            "schema": {
-              "default": 10,
-              "type": "number"
-            }
-          },
-          {
-            "name": "orderByColumn",
-            "required": false,
-            "in": "query",
-            "description": "排序字段",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "isAsc",
-            "required": false,
-            "in": "query",
-            "description": "排序规则",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "userId",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "number"
-            }
-          },
-          {
-            "name": "tierId",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "业务-分佣账户"
-        ],
-        "security": [
-          {
-            "Authorization": []
-          }
-        ]
-      }
-    },
-    "/pet/commission-log/list": {
-      "get": {
-        "operationId": "LogController_findList",
-        "summary": "流水列表",
-        "parameters": [
-          {
-            "name": "pageNum",
-            "required": true,
-            "in": "query",
-            "description": "当前分页",
-            "schema": {
-              "default": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "pageSize",
-            "required": true,
-            "in": "query",
-            "description": "每页数量",
-            "schema": {
-              "default": 10,
-              "type": "number"
-            }
-          },
-          {
-            "name": "orderByColumn",
-            "required": false,
-            "in": "query",
-            "description": "排序字段",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "isAsc",
-            "required": false,
-            "in": "query",
-            "description": "排序规则",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "userId",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "number"
-            }
-          },
-          {
-            "name": "type",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "status",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "业务-佣金流水"
-        ],
-        "security": [
-          {
-            "Authorization": []
-          }
-        ]
-      }
-    },
-    "/pet/commission-invite/list": {
-      "get": {
-        "operationId": "InviteController_findList",
-        "summary": "邀请列表",
-        "parameters": [
-          {
-            "name": "pageNum",
-            "required": true,
-            "in": "query",
-            "description": "当前分页",
-            "schema": {
-              "default": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "pageSize",
-            "required": true,
-            "in": "query",
-            "description": "每页数量",
-            "schema": {
-              "default": 10,
-              "type": "number"
-            }
-          },
-          {
-            "name": "orderByColumn",
-            "required": false,
-            "in": "query",
-            "description": "排序字段",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "isAsc",
-            "required": false,
-            "in": "query",
-            "description": "排序规则",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "parentId",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "number"
-            }
-          },
-          {
-            "name": "userId",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "业务-邀请关系"
-        ],
-        "security": [
-          {
-            "Authorization": []
-          }
-        ]
-      }
-    },
-    "/pet/commission-withdraw/list": {
-      "get": {
-        "operationId": "WithdrawController_findList",
-        "summary": "提现列表",
-        "parameters": [
-          {
-            "name": "pageNum",
-            "required": true,
-            "in": "query",
-            "description": "当前分页",
-            "schema": {
-              "default": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "pageSize",
-            "required": true,
-            "in": "query",
-            "description": "每页数量",
-            "schema": {
-              "default": 10,
-              "type": "number"
-            }
-          },
-          {
-            "name": "orderByColumn",
-            "required": false,
-            "in": "query",
-            "description": "排序字段",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "isAsc",
-            "required": false,
-            "in": "query",
-            "description": "排序规则",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "userId",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "number"
-            }
-          },
-          {
-            "name": "status",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "业务-提现审核"
-        ],
-        "security": [
-          {
-            "Authorization": []
-          }
-        ]
-      }
-    },
-    "/pet/commission-withdraw/{id}/audit": {
-      "put": {
-        "operationId": "WithdrawController_audit",
-        "summary": "审核提现",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AuditWithdrawDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "业务-提现审核"
-        ],
-        "security": [
-          {
-            "Authorization": []
-          }
-        ]
-      }
-    },
-    "/app/commission/account": {
-      "get": {
-        "operationId": "AppCommissionController_getAccount",
-        "summary": "我的分佣账户",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "小程序-分佣"
-        ],
-        "security": [
-          {
-            "Authorization": []
-          }
-        ]
-      }
-    },
-    "/app/commission/logs": {
-      "get": {
-        "operationId": "AppCommissionController_getLogs",
-        "summary": "佣金流水",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "小程序-分佣"
-        ],
-        "security": [
-          {
-            "Authorization": []
-          }
-        ]
-      }
-    },
-    "/app/commission/invites": {
-      "get": {
-        "operationId": "AppCommissionController_getInvites",
-        "summary": "邀请列表",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "小程序-分佣"
-        ],
-        "security": [
-          {
-            "Authorization": []
-          }
-        ]
-      }
-    },
-    "/app/commission/withdraw": {
-      "post": {
-        "operationId": "AppCommissionController_apply",
-        "summary": "申请提现",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ApplyWithdrawDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "小程序-分佣"
         ],
         "security": [
           {
@@ -11089,6 +11129,118 @@
           "logisticsNo"
         ]
       },
+      "CreateTierDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "level": {
+            "type": "number"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "commissionRate": {
+            "type": "number"
+          },
+          "rates": {
+            "type": "string"
+          },
+          "upgradeCondition": {
+            "type": "string"
+          },
+          "qualification": {
+            "type": "string"
+          },
+          "isHidden": {
+            "type": "number"
+          },
+          "color": {
+            "type": "string"
+          },
+          "isActive": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "UpdateTierDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "level": {
+            "type": "number"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "commissionRate": {
+            "type": "number"
+          },
+          "rates": {
+            "type": "string"
+          },
+          "upgradeCondition": {
+            "type": "string"
+          },
+          "qualification": {
+            "type": "string"
+          },
+          "isHidden": {
+            "type": "number"
+          },
+          "color": {
+            "type": "string"
+          },
+          "isActive": {
+            "type": "number"
+          },
+          "id": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "name",
+          "id"
+        ]
+      },
+      "AuditWithdrawDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "auditRemark": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "ApplyWithdrawDto": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number"
+          },
+          "method": {
+            "type": "string"
+          },
+          "accountInfo": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "amount",
+          "method"
+        ]
+      },
       "AuditRefundDto": {
         "type": "object",
         "properties": {
@@ -11330,118 +11482,6 @@
         "required": [
           "name",
           "id"
-        ]
-      },
-      "CreateTierDto": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "level": {
-            "type": "number"
-          },
-          "icon": {
-            "type": "string"
-          },
-          "commissionRate": {
-            "type": "number"
-          },
-          "rates": {
-            "type": "string"
-          },
-          "upgradeCondition": {
-            "type": "string"
-          },
-          "qualification": {
-            "type": "string"
-          },
-          "isHidden": {
-            "type": "number"
-          },
-          "color": {
-            "type": "string"
-          },
-          "isActive": {
-            "type": "number"
-          }
-        },
-        "required": [
-          "name"
-        ]
-      },
-      "UpdateTierDto": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "level": {
-            "type": "number"
-          },
-          "icon": {
-            "type": "string"
-          },
-          "commissionRate": {
-            "type": "number"
-          },
-          "rates": {
-            "type": "string"
-          },
-          "upgradeCondition": {
-            "type": "string"
-          },
-          "qualification": {
-            "type": "string"
-          },
-          "isHidden": {
-            "type": "number"
-          },
-          "color": {
-            "type": "string"
-          },
-          "isActive": {
-            "type": "number"
-          },
-          "id": {
-            "type": "number"
-          }
-        },
-        "required": [
-          "name",
-          "id"
-        ]
-      },
-      "AuditWithdrawDto": {
-        "type": "object",
-        "properties": {
-          "status": {
-            "type": "string"
-          },
-          "auditRemark": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "status"
-        ]
-      },
-      "ApplyWithdrawDto": {
-        "type": "object",
-        "properties": {
-          "amount": {
-            "type": "number"
-          },
-          "method": {
-            "type": "string"
-          },
-          "accountInfo": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "amount",
-          "method"
         ]
       },
       "CreateMealPlanDto": {

@@ -71,6 +71,16 @@ export class AppOrderController {
   @Post()
   create(@Req() req: any, @Body() body: any) { return this.service.createOrder(req.user?.userId, body); }
 
+  @ApiOperation({ summary: '支付订单' })
+  @Post('pay')
+  pay(@Req() req: any, @Body() body: { orderNo: string; method: string }) {
+    return this.service.payOrder(req.user?.userId, body.orderNo, body.method || 'wechat');
+  }
+
+  @ApiOperation({ summary: '支付回调(模拟)' })
+  @Post('payNotify')
+  payNotify(@Body('orderNo') orderNo: string) { return this.service.onPaymentSuccess(orderNo); }
+
   @ApiOperation({ summary: '我的订单列表' })
   @Get('list')
   getList(@Req() req: any, @Query() query: any) { return this.service.getAppOrders(req.user?.userId, query); }

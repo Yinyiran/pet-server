@@ -5,6 +5,7 @@ import { ResultData } from 'src/common/utils/result';
 import { PointsLogEntity } from './entities/points-log.entity';
 import { RechargeLogEntity } from './entities/recharge-log.entity';
 import { ConsumptionLogEntity } from './entities/consumption-log.entity';
+import { PetUserEntity } from '../user/entities/user.entity';
 import { ListPointsLogDto, ListRechargeLogDto, ListConsumptionLogDto } from './dto/index';
 
 @Injectable()
@@ -13,6 +14,7 @@ export class FinanceService {
     @InjectRepository(PointsLogEntity) private readonly pointsRepo: Repository<PointsLogEntity>,
     @InjectRepository(RechargeLogEntity) private readonly rechargeRepo: Repository<RechargeLogEntity>,
     @InjectRepository(ConsumptionLogEntity) private readonly consumptionRepo: Repository<ConsumptionLogEntity>,
+    @InjectRepository(PetUserEntity) private readonly userRepo: Repository<PetUserEntity>,
   ) {}
 
   // ====== 积分流水 ======
@@ -80,9 +82,15 @@ export class FinanceService {
     if (exists && exists.createdAt >= today && exists.createdAt < tomorrow) {
       return ResultData.fail(500, '今日已签到');
     }
-    const lastLog = await this.pointsRepo.findOne({ where: { userId }, order: { createdAt: 'DESC' } });
-    const balanceAfter = (lastLog ? lastLog.balanceAfter : 0) + 10;
-    await this.pointsRepo.save({ userId, type: 'earn', source: 'sign_in', changeValue: 10, balanceAfter, remark: '每日签到' });
-    return ResultData.ok({ points: 10, balance: balanceAfter });
+    const user = await this.userRepo.findOne({ where: { id: userId } });
+    const currentPoints = user ? (user.points || 0) : 0;
+    const pointsToAdd = 10;
+    const balanceAfter = currentPoints + pointsToAdd;
+    await this.pointsRepo.save({ userId, type: 'earn', source: 'sign_in', changeValue: pointsToAdd, balanceAfter, remark: '每日签到' });
+    // 同步更新 USER.points
+    if (user) {
+      await this.userRepo.update(userId, { points: balanceAfter });
+    }
+    return ResultData.ok({ points: pointsToAdd, balance: balanceAfter });
   }
 }

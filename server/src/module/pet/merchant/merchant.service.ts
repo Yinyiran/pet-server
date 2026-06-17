@@ -70,7 +70,23 @@ export class MerchantService {
   }
 
   async reviewApply(id: number, status: string, reviewerId?: number) {
+    const apply = await this.applyRepo.findOne({ where: { id } });
+    if (!apply) return ResultData.fail(500, '申请不存在');
+
     await this.applyRepo.update(id, { status, reviewerId });
+
+    // 审核通过：自动创建商家
+    if (status === 'approved') {
+      await this.merchantRepo.save({
+        name: apply.name,
+        type: apply.merchantType || 'shop',
+        description: apply.description,
+        address: apply.address,
+        phone: apply.phone,
+        status: 'active',
+      });
+    }
+
     return ResultData.ok();
   }
 

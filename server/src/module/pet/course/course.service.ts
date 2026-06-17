@@ -5,6 +5,8 @@ import { ResultData } from 'src/common/utils/result';
 import { CourseEntity } from './entities/course.entity';
 import { CourseVideoEntity } from './entities/course-video.entity';
 import { UserCourseEntity } from './entities/user-course.entity';
+import { PetUserEntity } from '../user/entities/user.entity';
+import { CommissionService } from '../commission/commission.service';
 import { CreateCourseDto, UpdateCourseDto, ListCourseDto, CreateVideoDto, UpdateVideoDto, ListStudentDto } from './dto/index';
 
 @Injectable()
@@ -13,6 +15,8 @@ export class CourseService {
     @InjectRepository(CourseEntity) private readonly courseRepo: Repository<CourseEntity>,
     @InjectRepository(CourseVideoEntity) private readonly videoRepo: Repository<CourseVideoEntity>,
     @InjectRepository(UserCourseEntity) private readonly ucRepo: Repository<UserCourseEntity>,
+    @InjectRepository(PetUserEntity) private readonly userRepo: Repository<PetUserEntity>,
+    private readonly commissionService: CommissionService,
   ) {}
 
   // ====== 课程管理 ======
@@ -102,7 +106,34 @@ export class CourseService {
   async purchaseCourse(userId: number, courseId: number) {
     const exists = await this.ucRepo.findOne({ where: { userId, courseId } });
     if (exists) return ResultData.fail(500, '已购买该课程');
-    await this.ucRepo.save({ userId, courseId, status: 'active', paidAt: new Date() });
+
+    const course = await this.courseRepo.findOne({ where: { id: courseId } });
+    if (!course) return ResultData.fail(500, '课程不存在');
+
+    // 设置课程到期时间（365天）
+    const expireAt = new Date();
+    expireAt.setFullYear(expireAt.getFullYear() + 1);
+
+    await this.ucRepo.save({ userId, courseId, status: 'active', paidAt: new Date(), expireAt });
+
+    // 根据课程 tier 触发分佣资格
+    // pro(梵优合伙人 2999) → 9%佣金, partner(梵优主理人 5999) → 15%佣金
+    if (course.tier === 'pro' || course.tier === 'partner') {
+      // 查找对应的分佣等级（按 name 匹配）
+      const tierName = course.tier === 'pro' ? '梵优合伙人' : '梵优主理人';
+      const tiers = await this.commissionService.findTiers();
+      const tierData = tiers.data?.find((t: any) => t.name === tierName);
+
+      // 设置用户等级
+      const levelName = course.tier === 'pro' ? '梵优合伙人' : '梵优主理人';
+      await this.userRepo.update(userId, { level: levelName });
+
+      // 创建/更新分佣账户
+      if (tierData) {
+        await this.commissionService.ensureCommissionAccount(userId, tierData.id);
+      }
+    }
+
     return ResultData.ok();
   }
 
