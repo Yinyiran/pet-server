@@ -34,23 +34,6 @@ function setFilter(key: string) {
   loadMerchants()
 }
 
-const showCoopForm = ref(false)
-const coopData = ref({ type: '', name: '', contact: '', phone: '', city: '杭州市', address: '', desc: '', wechat: '' })
-
-async function submitCoop() {
-  if (!coopData.value.type || !coopData.value.name || !coopData.value.contact || !coopData.value.phone) {
-    uni.showToast({ title: '请填写必填项', icon: 'none' })
-    return
-  }
-  try {
-    await merchantApi.apply(coopData.value)
-    uni.showToast({ title: '提交成功', icon: 'success' })
-    showCoopForm.value = false
-  } catch (e) {
-    console.error(e)
-  }
-}
-
 onMounted(loadMerchants)
 </script>
 
@@ -97,7 +80,7 @@ onMounted(loadMerchants)
       </view>
 
       <!-- 合作入驻入口 -->
-      <view class="coop-entry card" @tap="showCoopForm = true">
+      <view class="coop-entry card" @tap="uni.navigateTo({ url: '/pages/coop-apply/index' })">
         <text class="coop-icon">🤝</text>
         <view class="coop-text">
           <text class="coop-title">申请合作入驻</text>
@@ -108,37 +91,6 @@ onMounted(loadMerchants)
 
       <view style="height: 40rpx" />
     </scroll-view>
-
-    <!-- 合作表单弹窗 -->
-    <uni-popup ref="coopPopup" type="bottom" :is-mask-click="true" @change="(v: boolean) => showCoopForm = v" v-if="showCoopForm">
-      <view class="coop-sheet">
-        <view class="sheet-handle" />
-        <view class="sheet-title">申请合作入驻</view>
-        <view class="form-field">
-          <text class="form-label">商户类型 *</text>
-          <picker :range="['宠物店','宠物医院','宠物美容','宠物乐园','线下聚会','其他']" @change="(e: any) => coopData.type = e.detail.value">
-            <view class="form-input">{{ coopData.type || '请选择' }}</view>
-          </picker>
-        </view>
-        <view class="form-field">
-          <text class="form-label">商户名称 *</text>
-          <input class="form-input" v-model="coopData.name" placeholder="请输入商户名称" />
-        </view>
-        <view class="form-field">
-          <text class="form-label">联系人 *</text>
-          <input class="form-input" v-model="coopData.contact" placeholder="请输入联系人" />
-        </view>
-        <view class="form-field">
-          <text class="form-label">联系电话 *</text>
-          <input class="form-input" v-model="coopData.phone" type="number" placeholder="请输入手机号" maxlength="11" />
-        </view>
-        <view class="form-field">
-          <text class="form-label">商户简介</text>
-          <textarea class="form-textarea" v-model="coopData.desc" placeholder="简要介绍您的商户" maxlength="200" />
-        </view>
-        <button class="btn-primary" style="width: 100%; margin-top: 24rpx" @tap="submitCoop">提交申请</button>
-      </view>
-    </uni-popup>
   </view>
 </template>
 
@@ -208,48 +160,4 @@ onMounted(loadMerchants)
 .coop-title { font-size: 28rpx; font-weight: 600; display: block; }
 .coop-desc { font-size: 22rpx; color: $text-secondary; }
 .coop-arrow { font-size: 32rpx; color: $text-light; }
-
-.coop-sheet {
-  background: $card-bg;
-  border-radius: 32rpx 32rpx 0 0;
-  padding: 32rpx;
-  max-height: 80vh;
-  overflow-y: auto;
-}
-.sheet-handle {
-  width: 60rpx;
-  height: 8rpx;
-  background: $border;
-  border-radius: 4rpx;
-  margin: 0 auto 24rpx;
-}
-.sheet-title {
-  font-size: 32rpx;
-  font-weight: 700;
-  text-align: center;
-  margin-bottom: 32rpx;
-}
-.form-field {
-  margin-bottom: 24rpx;
-}
-.form-label {
-  font-size: 26rpx;
-  color: $text-secondary;
-  margin-bottom: 8rpx;
-  display: block;
-}
-.form-input {
-  background: $bg;
-  padding: 20rpx 24rpx;
-  border-radius: $radius;
-  font-size: 28rpx;
-}
-.form-textarea {
-  background: $bg;
-  padding: 20rpx 24rpx;
-  border-radius: $radius;
-  font-size: 28rpx;
-  width: 100%;
-  height: 160rpx;
-}
 </style>

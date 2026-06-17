@@ -3,8 +3,6 @@ import { ref, onMounted } from 'vue'
 import { courseApi } from '@/api'
 
 const courseList = ref<any[]>([])
-const showDetail = ref(false)
-const currentCourse = ref<any>(null)
 
 const courses = [
   { key: 'basic', icon: '📱', tag: '入门首选', name: '线上录播课', features: ['32节视频', '社群答疑', '1年回看'], price: 399 },
@@ -12,27 +10,8 @@ const courses = [
   { key: 'partner', icon: '💎', tag: '👑 高阶权益', name: '梵优主理人', features: ['全年陪跑', '区域代理', '分红权益', '私董会', '🟢 分销资格 佣金15%'], price: 5999 },
 ]
 
-async function openDetail(key: string) {
-  try {
-    const list = await courseApi.getList()
-    const found = (list || []).find((c: any) => c.level === key)
-    currentCourse.value = found || courses.find(c => c.key === key)
-    showDetail.value = true
-  } catch (e) {
-    currentCourse.value = courses.find(c => c.key === key)
-    showDetail.value = true
-  }
-}
-
-async function buyCourse() {
-  if (!currentCourse.value) return
-  try {
-    await courseApi.purchase(currentCourse.value.id)
-    uni.showToast({ title: '报名成功', icon: 'success' })
-    showDetail.value = false
-  } catch (e) {
-    console.error(e)
-  }
+function openDetail(key: string) {
+  uni.navigateTo({ url: `/pages/course-detail/index?key=${key}` })
 }
 
 onMounted(async () => {
@@ -99,22 +78,6 @@ onMounted(async () => {
 
       <view style="height: 40rpx" />
     </scroll-view>
-
-    <!-- 课程详情弹窗 -->
-    <uni-popup v-if="showDetail" type="bottom" @change="(v: boolean) => showDetail = v">
-      <view class="detail-sheet">
-        <view class="sheet-handle" />
-        <view v-if="currentCourse" class="detail-body">
-          <text class="detail-tag">{{ currentCourse.tag }}</text>
-          <text class="detail-name">{{ currentCourse.name }}</text>
-          <view class="detail-price"><text class="unit">¥</text>{{ currentCourse.price?.toLocaleString() }}</view>
-          <view class="detail-features">
-            <text v-for="f in currentCourse.features" :key="f" class="detail-feature">✓ {{ f }}</text>
-          </view>
-          <button class="btn-primary" style="width: 100%" @tap="buyCourse">立即报名</button>
-        </view>
-      </view>
-    </uni-popup>
   </view>
 </template>
 
@@ -180,20 +143,4 @@ onMounted(async () => {
   .unit { font-size: 24rpx; }
 }
 .course-arrow { font-size: 36rpx; color: $text-light; flex-shrink: 0; }
-
-.detail-sheet {
-  background: $card-bg;
-  border-radius: 32rpx 32rpx 0 0;
-  padding: 32rpx;
-  max-height: 70vh;
-}
-.sheet-handle { width: 60rpx; height: 8rpx; background: $border; border-radius: 4rpx; margin: 0 auto 24rpx; }
-.detail-body { text-align: center; }
-.detail-tag { font-size: 22rpx; background: $primary-light; color: $primary; padding: 6rpx 20rpx; border-radius: 20rpx; display: inline-block; margin-bottom: 16rpx; }
-.detail-name { font-size: 36rpx; font-weight: 700; display: block; margin-bottom: 16rpx; }
-.detail-price { font-size: 48rpx; font-weight: 700; color: $primary; margin-bottom: 24rpx;
-  .unit { font-size: 28rpx; }
-}
-.detail-features { text-align: left; margin-bottom: 32rpx; }
-.detail-feature { display: block; font-size: 28rpx; color: $text-secondary; padding: 8rpx 0; }
 </style>

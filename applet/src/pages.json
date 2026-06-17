@@ -73,6 +73,48 @@
         "navigationStyle": "custom",
         "navigationBarTitleText": "登录"
       }
+    },
+    {
+      "path": "pages/pet-edit/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "宠物档案"
+      }
+    },
+    {
+      "path": "pages/profile-edit/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "编辑个人信息"
+      }
+    },
+    {
+      "path": "pages/avatar-pick/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "选择头像"
+      }
+    },
+    {
+      "path": "pages/coop-apply/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "合作入驻"
+      }
+    },
+    {
+      "path": "pages/course-detail/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "课程详情"
+      }
+    },
+    {
+      "path": "pages/poster-preview/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "海报预览"
+      }
     }
   ],
   "globalStyle": {

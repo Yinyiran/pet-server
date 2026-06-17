@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { onShow } from '@dcloudio/uni-app'
 import { useUserStore } from '@/store'
 import { userApi } from '@/api'
 import { maskPhone } from '@/utils'
@@ -9,42 +10,10 @@ const userStore = useUserStore()
 
 /** 宠物列表 */
 const petList = ref<any[]>([])
-const showPetForm = ref(false)
-const petForm = ref({ type: 'cat', name: '', breed: '', weight: '', birthday: '' })
-const editingPetId = ref<number | null>(null)
 
 async function loadPets() {
   if (!isLoggedIn()) return
   try { petList.value = await userApi.getPets() || [] } catch (e) { /* */ }
-}
-
-function selectPetType(type: string) { petForm.value.type = type }
-
-async function savePet() {
-  if (!petForm.value.name || !petForm.value.breed) {
-    uni.showToast({ title: '请填写必填项', icon: 'none' }); return
-  }
-  try {
-    if (editingPetId.value) {
-      await userApi.updatePet({ id: editingPetId.value, ...petForm.value })
-    } else {
-      await userApi.createPet(petForm.value)
-    }
-    uni.showToast({ title: '保存成功', icon: 'success' })
-    showPetForm.value = false
-    loadPets()
-  } catch (e) { /* */ }
-}
-
-function openPetForm(pet?: any) {
-  if (pet) {
-    editingPetId.value = pet.id
-    petForm.value = { type: pet.type, name: pet.name, breed: pet.breed, weight: String(pet.weight || ''), birthday: pet.birthday || '' }
-  } else {
-    editingPetId.value = null
-    petForm.value = { type: 'cat', name: '', breed: '', weight: '', birthday: '' }
-  }
-  showPetForm.value = true
 }
 
 async function deletePet(id: number) {
@@ -60,33 +29,28 @@ async function deletePet(id: number) {
   })
 }
 
-/** 个人资料编辑 */
-const showProfileEdit = ref(false)
-const profileForm = ref({ nickName: '', phone: '' })
-function openProfileEdit() {
-  profileForm.value = { nickName: userStore.profile?.nickName || '', phone: userStore.profile?.phone || '' }
-  showProfileEdit.value = true
-}
-async function saveProfile() {
-  try {
-    await userStore.updateProfile(profileForm.value)
-    uni.showToast({ title: '保存成功', icon: 'success' })
-    showProfileEdit.value = false
-  } catch (e) { /* */ }
+function addPet() {
+  if (!checkLogin()) return
+  uni.navigateTo({ url: '/pages/pet-edit/index' })
 }
 
-/** 头像选择 */
-const showAvatarPicker = ref(false)
-const avatarOptions = ['🐱','🐶','🐰','🐹','🐼','🐨','🦊','🐯','🐮','🐷','🐸','🐙']
-async function selectAvatar(emoji: string) {
-  await userStore.updateProfile({ avatar: emoji })
-  showAvatarPicker.value = false
+function editPet(pet: any) {
+  if (!checkLogin()) return
+  const petJson = encodeURIComponent(JSON.stringify(pet))
+  uni.navigateTo({ url: `/pages/pet-edit/index?pet=${petJson}` })
 }
 
 function navigateTo(url: string) {
   if (!checkLogin()) return
   uni.navigateTo({ url })
 }
+
+/** 返回后自动刷新 */
+onShow(async () => {
+  if (isLoggedIn()) {
+    await loadPets()
+  }
+})
 
 onMounted(async () => {
   if (isLoggedIn()) {
@@ -104,8 +68,8 @@ onMounted(async () => {
 
     <scroll-view scroll-y class="scroll-content">
       <!-- 用户信息卡片 -->
-      <view class="user-card card" @tap="openProfileEdit">
-        <view class="user-avatar" @tap.stop="showAvatarPicker = true">
+      <view class="user-card card" @tap="navigateTo('/pages/profile-edit/index')">
+        <view class="user-avatar" @tap.stop="navigateTo('/pages/avatar-pick/index')">
           <text>{{ userStore.avatar }}</text>
         </view>
         <view class="user-info">
@@ -116,14 +80,14 @@ onMounted(async () => {
             <text class="member-badge">{{ userStore.profile?.memberLevel || '🥈 银牌会员' }}</text>
           </view>
         </view>
-        <button class="btn-outline edit-btn" @tap.stop="openProfileEdit">编辑</button>
+        <button class="btn-outline edit-btn" @tap.stop="navigateTo('/pages/profile-edit/index')">编辑</button>
       </view>
 
       <!-- 宠物档案 -->
       <view class="menu-item pet-menu">
         <text class="menu-icon">🐾</text>
         <text class="menu-label">宠物档案</text>
-        <button class="btn-outline add-pet-btn" @tap="openPetForm()">+ 添加宠物</button>
+        <button class="btn-outline add-pet-btn" @tap="addPet">+ 添加宠物</button>
       </view>
       <view class="pet-list" v-if="petList.length">
         <view class="pet-card" v-for="pet in petList" :key="pet.id">
@@ -133,7 +97,7 @@ onMounted(async () => {
             <text class="pet-breed">{{ pet.breed }} · {{ pet.weight }}kg</text>
           </view>
           <view class="pet-actions">
-            <text @tap="openPetForm(pet)">编辑</text>
+            <text @tap="editPet(pet)">编辑</text>
             <text @tap="deletePet(pet.id)">删除</text>
           </view>
         </view>
@@ -162,75 +126,6 @@ onMounted(async () => {
 
       <view style="height: 40rpx" />
     </scroll-view>
-
-    <!-- 宠物表单弹窗 -->
-    <uni-popup v-if="showPetForm" type="bottom" @change="(v: boolean) => showPetForm = v">
-      <view class="sheet">
-        <view class="sheet-handle" />
-        <view class="sheet-title">{{ editingPetId ? '编辑宠物' : '添加宠物' }}</view>
-        <view class="form-field">
-          <text class="form-label">宠物类型 *</text>
-          <view class="type-chips">
-            <view class="type-chip" :class="{ active: petForm.type === 'cat' }" @tap="selectPetType('cat')">🐱 猫咪</view>
-            <view class="type-chip" :class="{ active: petForm.type === 'dog' }" @tap="selectPetType('dog')">🐶 狗狗</view>
-            <view class="type-chip" :class="{ active: petForm.type === 'other' }" @tap="selectPetType('other')">🐰 其他</view>
-          </view>
-        </view>
-        <view class="form-field">
-          <text class="form-label">宠物名称 *</text>
-          <input class="form-input" v-model="petForm.name" placeholder="给爱宠取个名字" maxlength="10" />
-        </view>
-        <view class="form-field">
-          <text class="form-label">品种 *</text>
-          <input class="form-input" v-model="petForm.breed" placeholder="如：英短、泰迪" maxlength="15" />
-        </view>
-        <view class="form-field">
-          <text class="form-label">体重(kg)</text>
-          <input class="form-input" v-model="petForm.weight" type="digit" placeholder="如：5.5" />
-        </view>
-        <view class="form-field">
-          <text class="form-label">生日</text>
-          <picker mode="date" @change="(e: any) => petForm.birthday = e.detail.value">
-            <view class="form-input">{{ petForm.birthday || '请选择日期' }}</view>
-          </picker>
-        </view>
-        <view class="form-actions">
-          <button class="btn-outline" @tap="showPetForm = false">取消</button>
-          <button class="btn-primary" @tap="savePet">保存</button>
-        </view>
-      </view>
-    </uni-popup>
-
-    <!-- 头像选择弹窗 -->
-    <uni-popup v-if="showAvatarPicker" type="bottom" @change="(v: boolean) => showAvatarPicker = v">
-      <view class="sheet">
-        <view class="sheet-handle" />
-        <view class="sheet-title">选择头像</view>
-        <view class="avatar-grid">
-          <view v-for="a in avatarOptions" :key="a" class="avatar-option" @tap="selectAvatar(a)">{{ a }}</view>
-        </view>
-      </view>
-    </uni-popup>
-
-    <!-- 个人资料编辑弹窗 -->
-    <uni-popup v-if="showProfileEdit" type="bottom" @change="(v: boolean) => showProfileEdit = v">
-      <view class="sheet">
-        <view class="sheet-handle" />
-        <view class="sheet-title">编辑个人信息</view>
-        <view class="form-field">
-          <text class="form-label">昵称</text>
-          <input class="form-input" v-model="profileForm.nickName" placeholder="请输入昵称" maxlength="15" />
-        </view>
-        <view class="form-field">
-          <text class="form-label">手机号</text>
-          <input class="form-input" v-model="profileForm.phone" type="number" placeholder="请输入手机号" maxlength="11" />
-        </view>
-        <view class="form-actions">
-          <button class="btn-outline" @tap="showProfileEdit = false">取消</button>
-          <button class="btn-primary" @tap="saveProfile">保存</button>
-        </view>
-      </view>
-    </uni-popup>
   </view>
 </template>
 
@@ -269,7 +164,6 @@ onMounted(async () => {
 .menu-icon { font-size: 32rpx; }
 .menu-label { flex: 1; font-size: 28rpx; }
 .menu-value { font-size: 26rpx; color: $primary; font-weight: 600; }
-.menu-badge { font-size: 22rpx; background: $danger; color: #fff; padding: 2rpx 12rpx; border-radius: 20rpx; }
 .menu-arrow { font-size: 28rpx; color: $text-light; }
 .add-pet-btn { font-size: 22rpx; padding: 8rpx 16rpx; }
 
@@ -283,30 +177,4 @@ onMounted(async () => {
 .pet-breed { font-size: 22rpx; color: $text-secondary; }
 .pet-actions { display: flex; gap: 24rpx; font-size: 24rpx; color: $primary; }
 .pet-empty { background: $card-bg; margin: 0 24rpx; padding: 40rpx; text-align: center; color: $text-light; border-radius: 0 0 $radius-lg $radius-lg; }
-
-.sheet {
-  background: $card-bg; border-radius: 32rpx 32rpx 0 0; padding: 32rpx; max-height: 80vh; overflow-y: auto;
-}
-.sheet-handle { width: 60rpx; height: 8rpx; background: $border; border-radius: 4rpx; margin: 0 auto 24rpx; }
-.sheet-title { font-size: 32rpx; font-weight: 700; text-align: center; margin-bottom: 32rpx; }
-.form-field { margin-bottom: 24rpx; }
-.form-label { font-size: 26rpx; color: $text-secondary; margin-bottom: 8rpx; display: block; }
-.form-input { background: $bg; padding: 20rpx 24rpx; border-radius: $radius; font-size: 28rpx; width: 100%; }
-.type-chips { display: flex; gap: 16rpx; }
-.type-chip {
-  flex: 1; text-align: center; padding: 20rpx; background: $bg; border-radius: $radius; font-size: 26rpx;
-  border: 2rpx solid transparent;
-  &.active { border-color: $primary; background: $primary-light; }
-}
-.form-actions { display: flex; gap: 16rpx; margin-top: 32rpx;
-  button { flex: 1; }
-}
-
-.avatar-grid {
-  display: grid; grid-template-columns: repeat(6, 1fr); gap: 24rpx; margin-bottom: 32rpx;
-}
-.avatar-option {
-  width: 80rpx; height: 80rpx; display: flex; align-items: center; justify-content: center;
-  font-size: 40rpx; background: $bg; border-radius: 50%; margin: 0 auto;
-}
 </style>

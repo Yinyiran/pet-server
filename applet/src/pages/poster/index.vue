@@ -22,8 +22,6 @@ const constitution = ref<any>(null)
 const mealList = ref<MealPlan[]>([])
 const totalPrice = ref(0)
 const loading = ref(true)
-const showPreview = ref(false)
-const previewImage = ref('')
 
 let planId = ''
 
@@ -61,25 +59,10 @@ async function loadPosterData() {
 
 function generatePoster() {
   uni.showLoading({ title: '生成海报中...' })
-  // 使用 canvas 绘制海报或调用后端生成
   setTimeout(() => {
     uni.hideLoading()
-    previewImage.value = ''
-    showPreview.value = true
-    uni.showToast({ title: '海报已生成', icon: 'none' })
+    uni.navigateTo({ url: '/pages/poster-preview/index' })
   }, 1500)
-}
-
-function savePoster() {
-  if (!previewImage.value) {
-    uni.showToast({ title: '请先生成海报', icon: 'none' })
-    return
-  }
-  uni.saveImageToPhotosAlbum({
-    filePath: previewImage.value,
-    success: () => uni.showToast({ title: '已保存到相册', icon: 'success' }),
-    fail: () => uni.showToast({ title: '保存失败', icon: 'none' })
-  })
 }
 
 function sharePoster() {
@@ -227,25 +210,6 @@ const constitutionEmoji: Record<string, string> = {
       </view>
     </view>
 
-    <!-- 海报预览弹窗 -->
-    <view v-if="showPreview" class="preview-overlay" @tap.self="showPreview = false">
-      <view class="preview-card">
-        <view class="preview-header">
-          <text class="preview-title">长按保存海报</text>
-          <text class="preview-close" @tap="showPreview = false">✕</text>
-        </view>
-        <view class="preview-body">
-          <image v-if="previewImage" class="preview-img" :src="previewImage" mode="widthFix" />
-          <view v-else class="preview-placeholder">
-            <text>海报预览区域</text>
-          </view>
-        </view>
-        <view class="preview-actions">
-          <button class="preview-btn outline" @tap="savePoster">保存到相册</button>
-          <button class="preview-btn primary" @tap="sharePoster">分享给好友</button>
-        </view>
-      </view>
-    </view>
   </view>
 </template>
 
@@ -602,86 +566,4 @@ const constitutionEmoji: Record<string, string> = {
   }
 }
 
-.preview-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  z-index: 999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.preview-card {
-  width: 85%;
-  background: #fff;
-  border-radius: 24rpx;
-  overflow: hidden;
-}
-
-.preview-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 30rpx;
-
-  .preview-title {
-    font-size: 30rpx;
-    font-weight: 600;
-    color: #3d2c1e;
-  }
-
-  .preview-close {
-    font-size: 36rpx;
-    color: #8c7b6e;
-    padding: 10rpx;
-  }
-}
-
-.preview-body {
-  padding: 0 30rpx;
-
-  .preview-img {
-    width: 100%;
-    border-radius: 16rpx;
-  }
-
-  .preview-placeholder {
-    width: 100%;
-    height: 600rpx;
-    background: #f5f0eb;
-    border-radius: 16rpx;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #8c7b6e;
-    font-size: 28rpx;
-  }
-}
-
-.preview-actions {
-  display: flex;
-  gap: 20rpx;
-  padding: 30rpx;
-}
-
-.preview-btn {
-  flex: 1;
-  padding: 20rpx;
-  border-radius: 40rpx;
-  font-size: 28rpx;
-  text-align: center;
-  border: none;
-
-  &.outline {
-    background: #fff;
-    color: #f97316;
-    border: 2rpx solid #f97316;
-  }
-
-  &.primary {
-    background: linear-gradient(135deg, #f97316, #ea580c);
-    color: #fff;
-  }
-}
 </style>
