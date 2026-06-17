@@ -8383,15 +8383,25 @@
     "/pet/meal/plan": {
       "get": {
         "operationId": "MealPlanController_list",
+        "summary": "配餐方案列表",
         "parameters": [],
         "responses": {
           "200": {
             "description": ""
           }
-        }
+        },
+        "tags": [
+          "业务-配餐管理"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
       },
       "post": {
         "operationId": "MealPlanController_create",
+        "summary": "新增配餐方案",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -8407,10 +8417,19 @@
           "201": {
             "description": ""
           }
-        }
+        },
+        "tags": [
+          "业务-配餐管理"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
       },
       "put": {
         "operationId": "MealPlanController_update",
+        "summary": "更新配餐方案",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -8426,12 +8445,21 @@
           "200": {
             "description": ""
           }
-        }
+        },
+        "tags": [
+          "业务-配餐管理"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
       }
     },
     "/pet/meal/plan/{id}": {
       "get": {
         "operationId": "MealPlanController_detail",
+        "summary": "配餐方案详情",
         "parameters": [
           {
             "name": "id",
@@ -8446,12 +8474,21 @@
           "200": {
             "description": ""
           }
-        }
+        },
+        "tags": [
+          "业务-配餐管理"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
       }
     },
     "/pet/meal/plan/{ids}": {
       "delete": {
         "operationId": "MealPlanController_remove",
+        "summary": "删除配餐方案",
         "parameters": [
           {
             "name": "ids",
@@ -8466,12 +8503,21 @@
           "200": {
             "description": ""
           }
-        }
+        },
+        "tags": [
+          "业务-配餐管理"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
       }
     },
     "/pet/meal/plan/{id}/ingredients": {
       "get": {
         "operationId": "MealPlanController_ingredients",
+        "summary": "查询方案配料",
         "parameters": [
           {
             "name": "id",
@@ -8486,10 +8532,19 @@
           "200": {
             "description": ""
           }
-        }
+        },
+        "tags": [
+          "业务-配餐管理"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
       },
       "post": {
         "operationId": "MealPlanController_saveIngredients",
+        "summary": "保存方案配料",
         "parameters": [
           {
             "name": "id",
@@ -8504,34 +8559,61 @@
           "201": {
             "description": ""
           }
-        }
+        },
+        "tags": [
+          "业务-配餐管理"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
       }
     },
     "/pet/meal/quiz": {
       "get": {
         "operationId": "QuizRecordController_list",
+        "summary": "答题记录列表",
         "parameters": [],
         "responses": {
           "200": {
             "description": ""
           }
-        }
+        },
+        "tags": [
+          "业务-配餐答题"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
       }
     },
     "/pet/meal/order": {
       "get": {
         "operationId": "MealOrderController_list",
+        "summary": "配餐订单列表",
         "parameters": [],
         "responses": {
           "200": {
             "description": ""
           }
-        }
+        },
+        "tags": [
+          "业务-配餐订单"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
       }
     },
     "/pet/meal/order/{id}": {
       "get": {
         "operationId": "MealOrderController_detail",
+        "summary": "配餐订单详情",
         "parameters": [
           {
             "name": "id",
@@ -8546,12 +8628,21 @@
           "200": {
             "description": ""
           }
-        }
+        },
+        "tags": [
+          "业务-配餐订单"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
       }
     },
     "/app/meal/quiz": {
       "post": {
         "operationId": "AppMealController_submitQuiz",
+        "summary": "提交答题",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -8567,21 +8658,39 @@
           "201": {
             "description": ""
           }
-        }
+        },
+        "tags": [
+          "小程序-配餐管理"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
       },
       "get": {
         "operationId": "AppMealController_myQuizRecords",
+        "summary": "我的答题记录",
         "parameters": [],
         "responses": {
           "200": {
             "description": ""
           }
-        }
+        },
+        "tags": [
+          "小程序-配餐管理"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
       }
     },
     "/app/meal/plans": {
       "get": {
         "operationId": "AppMealController_plans",
+        "summary": "配餐方案列表(小程序)",
         "parameters": [
           {
             "name": "petType",
@@ -8596,12 +8705,21 @@
           "200": {
             "description": ""
           }
-        }
+        },
+        "tags": [
+          "小程序-配餐管理"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
       }
     },
     "/app/meal/order": {
       "post": {
         "operationId": "AppMealController_createOrder",
+        "summary": "创建配餐订单",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -8617,111 +8735,201 @@
           "201": {
             "description": ""
           }
-        }
+        },
+        "tags": [
+          "小程序-配餐管理"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
       }
     },
     "/app/meal/orders": {
       "get": {
         "operationId": "AppMealController_myOrders",
+        "summary": "我的配餐订单",
         "parameters": [],
         "responses": {
           "200": {
             "description": ""
           }
-        }
+        },
+        "tags": [
+          "小程序-配餐管理"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
       }
     },
     "/pet/finance/points": {
       "get": {
         "operationId": "PointsController_list",
+        "summary": "积分记录列表",
         "parameters": [],
         "responses": {
           "200": {
             "description": ""
           }
-        }
+        },
+        "tags": [
+          "业务-积分记录"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
       }
     },
     "/pet/finance/recharge": {
       "get": {
         "operationId": "RechargeController_list",
+        "summary": "充值记录列表",
         "parameters": [],
         "responses": {
           "200": {
             "description": ""
           }
-        }
+        },
+        "tags": [
+          "业务-充值记录"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
       }
     },
     "/pet/finance/consumption": {
       "get": {
         "operationId": "ConsumptionController_list",
+        "summary": "消费记录列表",
         "parameters": [],
         "responses": {
           "200": {
             "description": ""
           }
-        }
+        },
+        "tags": [
+          "业务-消费记录"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
       }
     },
     "/app/finance/points": {
       "get": {
         "operationId": "AppFinanceController_myPoints",
+        "summary": "我的积分记录",
         "parameters": [],
         "responses": {
           "200": {
             "description": ""
           }
-        }
+        },
+        "tags": [
+          "小程序-财务管理"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
       }
     },
     "/app/finance/recharges": {
       "get": {
         "operationId": "AppFinanceController_myRecharges",
+        "summary": "我的充值记录",
         "parameters": [],
         "responses": {
           "200": {
             "description": ""
           }
-        }
+        },
+        "tags": [
+          "小程序-财务管理"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
       }
     },
     "/app/finance/consumptions": {
       "get": {
         "operationId": "AppFinanceController_myConsumptions",
+        "summary": "我的消费记录",
         "parameters": [],
         "responses": {
           "200": {
             "description": ""
           }
-        }
+        },
+        "tags": [
+          "小程序-财务管理"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
       }
     },
     "/app/finance/sign-in": {
       "get": {
         "operationId": "AppFinanceController_signIn",
+        "summary": "每日签到",
         "parameters": [],
         "responses": {
           "200": {
             "description": ""
           }
-        }
+        },
+        "tags": [
+          "小程序-财务管理"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
       }
     },
     "/pet/dashboard/overview": {
       "get": {
         "operationId": "DashboardController_overview",
+        "summary": "数据总览",
         "parameters": [],
         "responses": {
           "200": {
             "description": ""
           }
-        }
+        },
+        "tags": [
+          "业务-数据看板"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
       }
     },
     "/pet/dashboard/trend": {
       "get": {
         "operationId": "DashboardController_trend",
+        "summary": "销售趋势",
         "parameters": [
           {
             "name": "days",
@@ -8736,12 +8944,21 @@
           "200": {
             "description": ""
           }
-        }
+        },
+        "tags": [
+          "业务-数据看板"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
       }
     },
     "/pet/dashboard/user-trend": {
       "get": {
         "operationId": "DashboardController_userTrend",
+        "summary": "用户增长趋势",
         "parameters": [
           {
             "name": "days",
@@ -8756,12 +8973,21 @@
           "200": {
             "description": ""
           }
-        }
+        },
+        "tags": [
+          "业务-数据看板"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
       }
     },
     "/pet/dashboard/top-products": {
       "get": {
         "operationId": "DashboardController_topProducts",
+        "summary": "热销商品排行",
         "parameters": [
           {
             "name": "limit",
@@ -8776,7 +9002,15 @@
           "200": {
             "description": ""
           }
-        }
+        },
+        "tags": [
+          "业务-数据看板"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
       }
     }
   },

@@ -5,7 +5,7 @@
 
   <div class="login">
     <el-form ref="loginRef" :model="loginForm.model" :rules="loginForm.rules" class="login-form">
-      <h3 class="title">nest-admin后台管理系统</h3>
+      <h3 class="title">梵优茗宠后台管理系统</h3>
       <el-form-item prop="userName">
         <el-input v-model.trim="loginForm.model.userName" maxlength="10" type="text" size="large" auto-complete="off" placeholder="账号">
           <template #prefix>
@@ -50,9 +50,9 @@
 </template>
 
 <script setup>
-import useUserStore from '@/store/modules/user'
-import useAuthCode from '@/hooks/useAuthCode'
 import { getRegisterUser } from '@/api/login'
+import useAuthCode from '@/hooks/useAuthCode'
+import useUserStore from '@/store/modules/user'
 
 const userStore = useUserStore()
 const authCodeInfo = useAuthCode.authCodeInfo

@@ -68,7 +68,7 @@ export class DashboardService {
 
   async getTopProducts(limit: number = 10) {
     const result = await this.dataSource.query(`
-      SELECT p.id, p.name, SUM(oi.quantity) as totalSold
+      SELECT p.id, p.name, SUM(oi.qty) as totalSold
       FROM t_order_item oi
       JOIN t_product p ON oi.product_id = p.id
       GROUP BY oi.product_id
