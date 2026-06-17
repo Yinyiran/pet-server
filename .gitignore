@@ -6,3 +6,5 @@
 /docs/node_modules
 /docs/dist
 /**/node_modules
+/applet/dist
+/applet/unpackage

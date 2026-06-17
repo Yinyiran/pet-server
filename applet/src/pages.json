@@ -1,0 +1,123 @@
+{
+  "easycom": {
+    "autoscan": true,
+    "custom": {}
+  },
+  "pages": [
+    {
+      "path": "pages/home/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "梵优茗宠"
+      }
+    },
+    {
+      "path": "pages/city/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "同城"
+      }
+    },
+    {
+      "path": "pages/creator/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "轻创"
+      }
+    },
+    {
+      "path": "pages/cart/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "购物车"
+      }
+    },
+    {
+      "path": "pages/profile/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "我的"
+      }
+    },
+    {
+      "path": "pages/shop/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "商品列表"
+      }
+    },
+    {
+      "path": "pages/product/detail",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "商品详情"
+      }
+    },
+    {
+      "path": "pages/quiz/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "AI 宠物配餐"
+      }
+    },
+    {
+      "path": "pages/poster/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "AI 配餐方案"
+      }
+    },
+    {
+      "path": "pages/login/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "登录"
+      }
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "梵优茗宠",
+    "navigationBarBackgroundColor": "#fdf0e6",
+    "backgroundColor": "#f8f4f0",
+    "backgroundTextStyle": "dark"
+  },
+  "tabBar": {
+    "color": "#8c7b6e",
+    "selectedColor": "#f97316",
+    "borderStyle": "white",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/home/index",
+        "text": "首页",
+        "iconPath": "static/tab/home.png",
+        "selectedIconPath": "static/tab/home-active.png"
+      },
+      {
+        "pagePath": "pages/city/index",
+        "text": "同城",
+        "iconPath": "static/tab/city.png",
+        "selectedIconPath": "static/tab/city-active.png"
+      },
+      {
+        "pagePath": "pages/creator/index",
+        "text": "轻创",
+        "iconPath": "static/tab/creator.png",
+        "selectedIconPath": "static/tab/creator-active.png"
+      },
+      {
+        "pagePath": "pages/cart/index",
+        "text": "购物车",
+        "iconPath": "static/tab/cart.png",
+        "selectedIconPath": "static/tab/cart-active.png"
+      },
+      {
+        "pagePath": "pages/profile/index",
+        "text": "我的",
+        "iconPath": "static/tab/profile.png",
+        "selectedIconPath": "static/tab/profile-active.png"
+      }
+    ]
+  }
+}
