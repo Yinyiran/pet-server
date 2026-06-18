@@ -9,16 +9,20 @@ const submitting = ref(false)
 
 const methods = [
   { key: 'wechat', name: '微信零钱', icon: '💚', desc: '实时到账' },
-  { key: 'alipay', name: '支付宝', icon: '💙', desc: '1-3个工作日' },
-  { key: 'bank', name: '银行卡', icon: '🏦', desc: '1-5个工作日' },
+  { key: 'bank', name: '银行卡', icon: '🏦', desc: '1-3个工作日' },
 ]
+
+const quickAmounts = [50, 100, 200, 500, 1000]
 
 const canSubmit = computed(() => {
   const amount = parseFloat(withdrawAmount.value)
-  return amount > 0 && amount <= availableBalance.value && amount >= 1
+  return amount >= 10 && amount <= availableBalance.value
 })
 
-const quickAmounts = [10, 50, 100, 500]
+const showWarn = computed(() => {
+  const amount = parseFloat(withdrawAmount.value)
+  return withdrawAmount.value !== '' && amount < 10
+})
 
 async function loadBalance() {
   try {
@@ -37,7 +41,7 @@ function selectMethod(key: string) {
 
 async function submitWithdraw() {
   if (!canSubmit.value) {
-    uni.showToast({ title: '请输入有效金额(最低1元)', icon: 'none' })
+    uni.showToast({ title: '请输入有效金额(最低10元)', icon: 'none' })
     return
   }
   submitting.value = true
@@ -61,54 +65,84 @@ onMounted(loadBalance)
       <view class="back-btn" @tap="uni.navigateBack()">
         <view class="arrow-icon" /><text>返回</text>
       </view>
-      <text class="page-title">申请提现</text>
+      <text class="page-title">💳 申请提现</text>
       <view style="width: 80rpx" />
     </view>
 
     <scroll-view scroll-y class="scroll-content">
       <!-- 可提现余额 -->
       <view class="balance-card">
-        <text class="balance-label">可提现余额(元)</text>
-        <text class="balance-num">{{ availableBalance.toFixed(2) }}</text>
+        <text class="balance-label">可提现余额</text>
+        <text class="balance-num">¥{{ availableBalance.toFixed(2) }}</text>
       </view>
 
-      <!-- 提现金额 -->
-      <view class="section">
-        <text class="section-title">提现金额</text>
-        <view class="amount-card">
-          <text class="amount-unit">¥</text>
-          <input class="amount-input" v-model="withdrawAmount" type="digit" placeholder="请输入金额" />
-          <text class="amount-all" @tap="setAmount('all')">全部提现</text>
+      <!-- 提现表单 -->
+      <view class="withdraw-form">
+        <!-- 提现金额 -->
+        <view class="form-group">
+          <text class="form-label">提现金额</text>
+          <view class="amount-input-wrap">
+            <text class="amount-prefix">¥</text>
+            <input
+              class="amount-input"
+              v-model="withdrawAmount"
+              type="digit"
+              placeholder="请输入提现金额"
+            />
+            <text class="amount-all" @tap="setAmount('all')">全部提现</text>
+          </view>
+          <text class="form-hint" :class="{ warn: showWarn }">
+            {{ showWarn ? '最低提现金额 ¥10' : '最低提现金额 ¥10' }}
+          </text>
         </view>
-        <view class="quick-amounts">
-          <view v-for="a in quickAmounts" :key="a" class="quick-btn" @tap="setAmount(a)">¥{{ a }}</view>
-        </view>
-      </view>
 
-      <!-- 提现方式 -->
-      <view class="section">
-        <text class="section-title">提现方式</text>
-        <view class="method-list">
-          <view v-for="m in methods" :key="m.key" class="method-item" :class="{ active: withdrawMethod === m.key }" @tap="selectMethod(m.key)">
-            <text class="method-icon">{{ m.icon }}</text>
-            <view class="method-info">
-              <text class="method-name">{{ m.name }}</text>
-              <text class="method-desc">{{ m.desc }}</text>
-            </view>
-            <view class="method-radio" :class="{ checked: withdrawMethod === m.key }" />
+        <!-- 快捷金额 -->
+        <view class="amount-presets">
+          <view
+            v-for="a in quickAmounts"
+            :key="a"
+            class="preset-chip"
+            :class="{ selected: withdrawAmount === String(a) }"
+            @tap="setAmount(a)"
+          >
+            ¥{{ a }}
           </view>
         </view>
+
+        <!-- 提现方式 -->
+        <view class="form-group">
+          <text class="form-label">提现方式</text>
+          <view class="method-list">
+            <view
+              v-for="m in methods"
+              :key="m.key"
+              class="method-item"
+              :class="{ active: withdrawMethod === m.key }"
+              @tap="selectMethod(m.key)"
+            >
+              <text class="method-icon">{{ m.icon }}</text>
+              <view class="method-info">
+                <text class="method-name">{{ m.name }}</text>
+                <text class="method-desc">{{ m.desc }}</text>
+              </view>
+              <view class="method-radio" :class="{ checked: withdrawMethod === m.key }" />
+            </view>
+          </view>
+        </view>
+
+        <!-- 提交按钮 -->
+        <button
+          class="submit-btn"
+          :disabled="!canSubmit"
+          :loading="submitting"
+          @tap="submitWithdraw"
+        >
+          确认提现
+        </button>
       </view>
 
-      <view style="height: 120rpx" />
+      <view style="height: 40rpx" />
     </scroll-view>
-
-    <!-- 底部按钮 -->
-    <view class="bottom-bar safe-bottom">
-      <button class="btn-submit" :disabled="!canSubmit" :loading="submitting" @tap="submitWithdraw">
-        确认提现
-      </button>
-    </view>
   </view>
 </template>
 
@@ -116,48 +150,74 @@ onMounted(loadBalance)
 @import '@/styles/variables.scss';
 
 .page-container { min-height: 100vh; background: $bg; display: flex; flex-direction: column; }
+
 .page-header {
   background: $header-gradient; padding: 24rpx 32rpx;
   padding-top: calc(var(--status-bar-height, 44px) + 16rpx);
   display: flex; align-items: center; justify-content: space-between;
 }
-.back-btn { display: flex; align-items: center; gap: 8rpx; font-size: 28rpx; color: $primary; width: 80rpx; }
+.back-btn { display: flex; align-items: center; gap: 8rpx; font-size: 28rpx; color: $primary; width: 120rpx; }
 .arrow-icon { width: 16rpx; height: 16rpx; border-top: 4rpx solid $primary; border-left: 4rpx solid $primary; transform: rotate(-45deg); }
 .page-title { font-size: 34rpx; font-weight: 700; color: $text; }
 .scroll-content { flex: 1; }
 
+/* 余额卡片 — 绿色渐变 */
 .balance-card {
-  margin: 24rpx 32rpx; padding: 36rpx 32rpx; text-align: center;
-  background: linear-gradient(135deg, #f97316, #ea580c);
+  margin: 24rpx 32rpx; padding: 32rpx; text-align: center;
+  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
   border-radius: $radius-lg;
 }
-.balance-label { font-size: 24rpx; color: rgba(255,255,255,0.8); display: block; margin-bottom: 8rpx; }
-.balance-num { font-size: 56rpx; font-weight: 700; color: #fff; }
+.balance-label { font-size: 24rpx; color: #065f46; display: block; margin-bottom: 8rpx; }
+.balance-num { font-size: 64rpx; font-weight: 800; color: #059669; }
 
-.section { padding: 24rpx 32rpx; }
-.section-title { font-size: 30rpx; font-weight: 700; color: $text; margin-bottom: 16rpx; display: block; }
+/* 表单 */
+.withdraw-form { margin: 0 32rpx; }
+.form-group { margin-bottom: 28rpx; }
+.form-label {
+  font-size: 26rpx; font-weight: 600; color: $text;
+  margin-bottom: 12rpx; display: block;
+}
 
-.amount-card {
+/* 金额输入 */
+.amount-input-wrap {
   display: flex; align-items: center; gap: 12rpx;
-  background: $card-bg; padding: 24rpx; border-radius: $radius-lg; box-shadow: $shadow-sm;
+  padding: 24rpx; background: #faf8f5;
+  border: 3rpx solid $border; border-radius: $radius-sm;
 }
-.amount-unit { font-size: 40rpx; font-weight: 700; color: $primary; }
-.amount-input { flex: 1; font-size: 40rpx; font-weight: 700; color: $text; }
-.amount-all { font-size: 26rpx; color: $primary; padding: 8rpx 16rpx; background: $primary-light; border-radius: 20rpx; }
-
-.quick-amounts { display: flex; gap: 12rpx; margin-top: 16rpx; }
-.quick-btn {
-  flex: 1; text-align: center; padding: 16rpx; background: $card-bg;
-  border-radius: $radius; font-size: 26rpx; color: $text-secondary;
-  border: 2rpx solid $border;
-  &:active { border-color: $primary; color: $primary; }
+.amount-prefix { font-size: 40rpx; font-weight: 700; color: $text; }
+.amount-input { flex: 1; font-size: 36rpx; font-weight: 700; color: $text; }
+.amount-all {
+  font-size: 24rpx; color: $primary; font-weight: 600;
+  padding: 8rpx 20rpx; background: $primary-light; border-radius: 20rpx;
+}
+.form-hint {
+  font-size: 22rpx; color: $text-light; margin-top: 8rpx; display: block;
+  &.warn { color: #ef4444; }
 }
 
-.method-list { background: $card-bg; border-radius: $radius-lg; overflow: hidden; box-shadow: $shadow-sm; }
+/* 快捷金额 */
+.amount-presets {
+  display: flex; gap: 16rpx; margin-bottom: 28rpx; flex-wrap: wrap;
+}
+.preset-chip {
+  padding: 12rpx 28rpx; border-radius: 40rpx;
+  font-size: 26rpx; font-weight: 600;
+  background: #faf8f5; border: 2rpx solid $border; color: $text;
+  &:active, &.selected {
+    background: $primary; color: #fff; border-color: $primary;
+  }
+}
+
+/* 提现方式 */
+.method-list {
+  background: $card-bg; border-radius: $radius-sm; overflow: hidden;
+  box-shadow: $shadow-sm;
+}
 .method-item {
-  display: flex; align-items: center; gap: 16rpx; padding: 28rpx 24rpx;
-  border-bottom: 1rpx solid $border;
+  display: flex; align-items: center; gap: 16rpx; padding: 24rpx;
+  border-bottom: 2rpx solid $border;
   &:last-child { border-bottom: none; }
+  &:active { background: #fef3c7; }
 }
 .method-icon { font-size: 36rpx; }
 .method-info { flex: 1; }
@@ -165,19 +225,20 @@ onMounted(loadBalance)
 .method-desc { font-size: 22rpx; color: $text-light; }
 .method-radio {
   width: 36rpx; height: 36rpx; border: 3rpx solid $border; border-radius: 50%;
-  &.checked { border-color: $primary; background: $primary; box-shadow: inset 0 0 0 6rpx #fff; }
+  &.checked {
+    border-color: $primary; background: $primary;
+    box-shadow: inset 0 0 0 6rpx #fff;
+  }
 }
 
-.bottom-bar {
-  position: fixed; bottom: 0; left: 0; right: 0;
-  padding: 16rpx 32rpx; background: $card-bg; border-top: 1rpx solid $border;
+/* 提交按钮 */
+.submit-btn {
+  width: 100%; height: 88rpx; line-height: 88rpx; margin-top: 8rpx;
+  background: linear-gradient(135deg, $primary, #ea580c);
+  color: #fff; font-size: 32rpx; font-weight: 700;
+  border-radius: $radius-sm; border: none;
+  box-shadow: 0 8rpx 28rpx rgba(249, 115, 22, 0.3);
+  &:active { transform: scale(0.98); box-shadow: 0 4rpx 16rpx rgba(249, 115, 22, 0.3); }
+  &[disabled] { background: #d4c8b8; box-shadow: none; }
 }
-.btn-submit {
-  width: 100%; height: 88rpx; line-height: 88rpx;
-  background: linear-gradient(135deg, $primary, $primary-dark);
-  color: #fff; font-size: 30rpx; font-weight: 700;
-  border-radius: $radius-lg; border: none;
-  &[disabled] { background: $border; color: $text-light; }
-}
-.safe-bottom { padding-bottom: calc(16rpx + env(safe-area-inset-bottom)); }
 </style>

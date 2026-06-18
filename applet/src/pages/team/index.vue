@@ -1,10 +1,29 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { commissionApi } from '@/api'
 
-const stats = ref({ total: 0, level1: 0, level2: 0 })
+const stats = ref({ total: 0, views: 0 })
 const members = ref<any[]>([])
 const loading = ref(false)
+const activeTab = ref('total')
+const activeLevel = ref('all')
+
+const tabs = [
+  { key: 'total', label: '邀请总数' },
+  { key: 'views', label: '浏览量' },
+]
+
+const levelChips = [
+  { key: 'all', label: '全部' },
+  { key: '普通用户', label: '普通用户' },
+  { key: '梵优合伙人', label: '梵优合伙人' },
+  { key: '梵优主理人', label: '梵优主理人' },
+]
+
+const filteredMembers = computed(() => {
+  if (activeLevel.value === 'all') return members.value
+  return members.value.filter((m: any) => m.level === activeLevel.value || m.role === activeLevel.value)
+})
 
 async function loadTeam() {
   loading.value = true
@@ -13,19 +32,15 @@ async function loadTeam() {
     members.value = Array.isArray(data) ? data : data?.list || data?.rows || []
     stats.value = {
       total: data?.total ?? members.value.length,
-      level1: data?.level1 ?? 0,
-      level2: data?.level2 ?? 0,
+      views: data?.views ?? 0,
     }
   } catch (e) { /* */ }
   finally { loading.value = false }
 }
 
 function inviteFriend() {
-  // #ifdef MP-WEIXIN
-  // 小程序分享
-  // #endif
   uni.showModal({
-    title: '邀请好友',
+    title: '🎉 邀请好友',
     content: '分享您的专属邀请链接给好友，好友注册后自动成为您的团队成员。',
     confirmText: '复制邀请码',
     success: (res) => {
@@ -45,6 +60,17 @@ function formatDate(dateStr: string) {
   return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}`
 }
 
+function getAvatar(avatar: string) {
+  return avatar || '🐾'
+}
+
+function getLevelBadge(m: any) {
+  const level = m.level || m.role || '普通用户'
+  if (level === '梵优合伙人' || level === 1) return { text: '合伙人', class: 'partner' }
+  if (level === '梵优主理人' || level === 2) return { text: '主理人', class: 'manager' }
+  return { text: '普通', class: '' }
+}
+
 onMounted(loadTeam)
 </script>
 
@@ -54,58 +80,73 @@ onMounted(loadTeam)
       <view class="back-btn" @tap="uni.navigateBack()">
         <view class="arrow-icon" /><text>返回</text>
       </view>
-      <text class="page-title">我的团队</text>
+      <text class="page-title">👥 我的团队</text>
       <view style="width: 80rpx" />
     </view>
 
     <scroll-view scroll-y class="scroll-content">
-      <!-- 团队统计 -->
-      <view class="stats-card">
-        <view class="stat-item">
-          <text class="stat-num">{{ stats.total }}</text>
-          <text class="stat-label">团队总人数</text>
-        </view>
-        <view class="stat-divider" />
-        <view class="stat-item">
-          <text class="stat-num">{{ stats.level1 }}</text>
-          <text class="stat-label">直推成员</text>
-        </view>
-        <view class="stat-divider" />
-        <view class="stat-item">
-          <text class="stat-num">{{ stats.level2 }}</text>
-          <text class="stat-label">间推成员</text>
+      <!-- 邀请分享卡片 -->
+      <view class="share-card">
+        <text class="share-title">🎉 邀请好友</text>
+        <text class="share-subtitle">好友注册即可获得专属权益，一起给宠物囤好物</text>
+        <view class="share-actions">
+          <button class="share-btn" @tap="inviteFriend">🔗 分享链接</button>
         </view>
       </view>
 
-      <!-- 邀请按钮 -->
-      <view class="invite-section">
-        <button class="invite-btn" @tap="inviteFriend">
-          <text>📤 邀请好友加入</text>
-        </button>
-        <text class="invite-hint">好友注册后自动成为您的团队成员</text>
+      <!-- Tab 切换 -->
+      <view class="invite-tabs">
+        <view
+          v-for="t in tabs"
+          :key="t.key"
+          class="invite-tab"
+          :class="{ active: activeTab === t.key }"
+          @tap="activeTab = t.key"
+        >
+          {{ t.label }}
+          <text class="tab-count">{{ activeTab === t.key ? (t.key === 'total' ? stats.total : stats.views) : '' }}</text>
+        </view>
       </view>
 
-      <!-- 成员列表 -->
-      <view class="section-title">团队成员</view>
-      <view class="member-list">
-        <view v-for="m in members" :key="m.id" class="member-item">
-          <view class="member-avatar">
-            <text>{{ m.avatar || '🐾' }}</text>
+      <!-- 等级筛选 -->
+      <scroll-view scroll-x class="level-filter" :show-scrollbar="false">
+        <view
+          v-for="chip in levelChips"
+          :key="chip.key"
+          class="level-chip"
+          :class="{ active: activeLevel === chip.key }"
+          @tap="activeLevel = chip.key"
+        >
+          {{ chip.label }}
+        </view>
+      </scroll-view>
+
+      <!-- 邀请列表 -->
+      <view class="invite-list">
+        <view v-for="m in filteredMembers" :key="m.id" class="invite-item">
+          <view class="item-avatar">
+            <text>{{ getAvatar(m.avatar) }}</text>
           </view>
-          <view class="member-info">
-            <text class="member-name">{{ m.nickName || '用户' + (m.id || '') }}</text>
-            <text class="member-date">{{ formatDate(m.joinTime || m.createTime) }}</text>
-          </view>
-          <view class="member-level">
-            <text class="level-badge" :class="m.level === 1 ? 'direct' : 'indirect'">
-              {{ m.level === 1 ? '直推' : '间推' }}
-            </text>
+          <view class="item-body">
+            <view class="item-row">
+              <text class="item-name">{{ m.nickName || '用户' + (m.id || '') }}</text>
+              <view class="item-row-right">
+                <text class="item-level" :class="getLevelBadge(m).class">{{ getLevelBadge(m).text }}</text>
+              </view>
+            </view>
+            <view class="item-row">
+              <text class="item-meta">{{ formatDate(m.joinTime || m.createTime) }}</text>
+              <text
+                class="item-consume"
+                :class="m.consumed ? 'consumed' : 'not-consumed'"
+              >
+                {{ m.consumed ? '已消费' : '未消费' }}
+              </text>
+            </view>
           </view>
         </view>
-        <view v-if="members.length === 0 && !loading" class="empty-state">
-          <text class="empty-icon">👥</text>
-          <text class="empty-text">还没有团队成员</text>
-          <text class="empty-hint">邀请好友加入，一起分享收益</text>
+        <view v-if="filteredMembers.length === 0 && !loading" class="invite-empty">
+          <text>暂无团队成员</text>
         </view>
       </view>
 
@@ -118,62 +159,98 @@ onMounted(loadTeam)
 @import '@/styles/variables.scss';
 
 .page-container { min-height: 100vh; background: $bg; display: flex; flex-direction: column; }
+
 .page-header {
   background: $header-gradient; padding: 24rpx 32rpx;
   padding-top: calc(var(--status-bar-height, 44px) + 16rpx);
   display: flex; align-items: center; justify-content: space-between;
 }
-.back-btn { display: flex; align-items: center; gap: 8rpx; font-size: 28rpx; color: $primary; width: 80rpx; }
+.back-btn { display: flex; align-items: center; gap: 8rpx; font-size: 28rpx; color: $primary; width: 120rpx; }
 .arrow-icon { width: 16rpx; height: 16rpx; border-top: 4rpx solid $primary; border-left: 4rpx solid $primary; transform: rotate(-45deg); }
 .page-title { font-size: 34rpx; font-weight: 700; color: $text; }
 .scroll-content { flex: 1; }
 
-.stats-card {
-  margin: 24rpx 32rpx; padding: 32rpx 0;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  border-radius: $radius-lg; display: flex; align-items: center;
+/* 邀请分享卡片 */
+.share-card {
+  margin: 24rpx 32rpx; padding: 40rpx 32rpx; text-align: center;
+  background: linear-gradient(135deg, #fff7ed 0%, #fed7aa 50%, #fdba74 100%);
+  border-radius: $radius-lg; color: #7c2d12;
 }
-.stat-item { flex: 1; text-align: center; }
-.stat-num { font-size: 48rpx; font-weight: 700; color: #fff; display: block; }
-.stat-label { font-size: 22rpx; color: rgba(255,255,255,0.7); display: block; margin-top: 4rpx; }
-.stat-divider { width: 1rpx; height: 60rpx; background: rgba(255,255,255,0.2); }
-
-.invite-section { text-align: center; padding: 24rpx 32rpx; }
-.invite-btn {
-  width: 100%; height: 88rpx; line-height: 88rpx;
-  background: linear-gradient(135deg, $primary, $primary-dark);
-  color: #fff; font-size: 30rpx; font-weight: 700;
-  border-radius: $radius-lg; border: none;
-}
-.invite-hint { font-size: 22rpx; color: $text-light; display: block; margin-top: 12rpx; }
-
-.section-title {
-  font-size: 30rpx; font-weight: 700; color: $text; padding: 0 32rpx; margin-bottom: 16rpx;
+.share-title { font-size: 36rpx; font-weight: 800; display: block; margin-bottom: 8rpx; }
+.share-subtitle { font-size: 24rpx; opacity: 0.8; display: block; margin-bottom: 28rpx; }
+.share-actions { display: flex; gap: 20rpx; justify-content: center; }
+.share-btn {
+  padding: 16rpx 40rpx; border-radius: 40rpx;
+  font-size: 26rpx; font-weight: 700; border: none;
+  background: $primary; color: #fff;
+  &:active { background: #ea580c; }
 }
 
-.member-list { margin: 0 32rpx; }
-.member-item {
-  display: flex; align-items: center; gap: 16rpx;
-  padding: 24rpx; background: $card-bg; margin-bottom: 2rpx;
-  &:first-child { border-radius: $radius-lg $radius-lg 0 0; }
-  &:last-child { border-radius: 0 0 $radius-lg $radius-lg; margin-bottom: 0; }
+/* Tab 切换 — 分段控件 */
+.invite-tabs {
+  display: flex; margin: 0 32rpx 24rpx; gap: 8rpx;
+  background: #f0ebe4; border-radius: $radius-sm; padding: 6rpx;
 }
-.member-avatar {
-  width: 72rpx; height: 72rpx; border-radius: 50%;
-  background: $primary-light; display: flex; align-items: center; justify-content: center;
-  font-size: 36rpx; flex-shrink: 0;
+.invite-tab {
+  flex: 1; padding: 20rpx 16rpx; text-align: center;
+  font-size: 28rpx; font-weight: 600; color: $text-light;
+  border-radius: 12rpx; transition: all 0.2s;
+  &.active {
+    background: #fff; color: $primary;
+    box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.08);
+  }
 }
-.member-info { flex: 1; }
-.member-name { font-size: 28rpx; font-weight: 600; color: $text; display: block; }
-.member-date { font-size: 22rpx; color: $text-light; }
-.level-badge {
-  font-size: 22rpx; padding: 4rpx 16rpx; border-radius: 20rpx;
-  &.direct { background: #e8f5e9; color: #4caf50; }
-  &.indirect { background: #e3f2fd; color: #2196f3; }
+.tab-count {
+  display: inline-block; margin-left: 8rpx; font-size: 32rpx; font-weight: 800;
+}
+.invite-tab.active .tab-count { color: $primary; }
+
+/* 等级筛选 */
+.level-filter {
+  margin: 0 32rpx 24rpx; display: flex; gap: 16rpx;
+  white-space: nowrap;
+}
+.level-chip {
+  flex-shrink: 0; padding: 8rpx 20rpx; border-radius: 40rpx;
+  font-size: 26rpx; color: $text-light; background: #f3f4f6;
+  transition: all 0.2s;
+  &.active { background: $primary; color: #fff; font-weight: 500; }
+  &:active { transform: scale(0.96); }
 }
 
-.empty-state { text-align: center; padding: 80rpx 0; }
-.empty-icon { font-size: 60rpx; display: block; margin-bottom: 16rpx; }
-.empty-text { font-size: 28rpx; color: $text-secondary; display: block; margin-bottom: 8rpx; }
-.empty-hint { font-size: 22rpx; color: $text-light; }
+/* 邀请列表 */
+.invite-list { margin: 0 32rpx; }
+.invite-item {
+  display: flex; align-items: center; gap: 20rpx; padding: 20rpx 24rpx;
+  background: $card-bg; border-radius: $radius-sm; margin-bottom: 12rpx;
+  box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.03);
+  &:active { background: #fef3c7; }
+}
+.item-avatar {
+  width: 80rpx; height: 80rpx; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(135deg, #ffedd5, #fed7aa);
+  display: flex; align-items: center; justify-content: center; font-size: 36rpx;
+}
+.item-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8rpx; }
+.item-row {
+  display: flex; align-items: center; justify-content: space-between;
+}
+.item-row-right { display: flex; align-items: center; gap: 12rpx; }
+.item-name { font-size: 28rpx; font-weight: 600; color: $text; }
+.item-meta { font-size: 22rpx; color: $text-light; }
+.item-level {
+  font-size: 20rpx; font-weight: 600; padding: 2rpx 12rpx; border-radius: 16rpx;
+  background: #f0ebe4; color: $text-light; white-space: nowrap;
+  &.partner { background: #ffedd5; color: #c2410c; }
+  &.manager { background: #fef3c7; color: #b45309; }
+}
+.item-consume {
+  font-size: 20rpx; font-weight: 600; padding: 2rpx 12rpx; border-radius: 16rpx; white-space: nowrap;
+  &.consumed { background: #dcfce7; color: #16a34a; }
+  &.not-consumed { background: #fee2e2; color: #dc2626; }
+}
+
+.invite-empty {
+  text-align: center; padding: 64rpx 32rpx; color: $text-light; font-size: 26rpx;
+}
 </style>
