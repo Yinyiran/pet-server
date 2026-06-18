@@ -394,9 +394,9 @@ onMounted(loadProduct)
   margin-bottom: 16rpx;
 }
 .price-current {
-  font-weight: 700;
-  color: $primary;
-  font-size: 48rpx;
+  font-weight: 800;
+  color: $accent;
+  font-size: 52rpx;
   line-height: 1;
 }
 .price-symbol {
@@ -634,9 +634,9 @@ onMounted(loadProduct)
   padding-right: 8rpx;
 }
 .bp-current {
-  color: $primary;
-  font-weight: 700;
-  font-size: 34rpx;
+  color: $accent;
+  font-weight: 800;
+  font-size: 36rpx;
 }
 .bp-original {
   font-size: 22rpx;
