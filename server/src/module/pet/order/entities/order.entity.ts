@@ -26,7 +26,7 @@ export class OrderEntity {
   discountAmount: number;
 
   @Index('idx_status')
-  @Column({ type: 'varchar', name: 'status', length: 16, default: 'pending', comment: '订单状态: pending/paid/shipped/received/cancelled/refunding' })
+  @Column({ type: 'varchar', name: 'status', length: 16, default: 'pending', comment: '订单状态: pending/paid/shipped/received/cancelled/refunding/refunded' })
   status: string;
 
   @Column({ type: 'json', name: 'payment', nullable: true, comment: '支付明细JSON' })
