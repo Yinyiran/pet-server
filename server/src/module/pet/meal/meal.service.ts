@@ -126,9 +126,11 @@ export class MealService {
     if (!plan) return ResultData.fail(500, '配餐方案不存在或已下架');
     const mealFreq = dto.mealFreq || 2;
     const mealDays = dto.mealDays || 30;
-    const totalPrice = Number(plan.monthlyPrice) * mealDays / 30;
+    if (mealDays <= 0) return ResultData.fail(500, '配餐天数必须大于 0');
+    // 用分计算避免浮点误差
+    const totalPrice = Math.round(Number(plan.monthlyPrice) * 100) * mealDays / 30 / 100;
     const orderNo = 'ML' + Date.now() + Math.random().toString(36).substring(2, 6).toUpperCase();
-    const order = await this.orderRepo.save({ orderNo, userId, planId: dto.planId, quizId: dto.quizId, mealFreq, mealDays, totalPrice, status: 'pending' });
+    const order = await this.orderRepo.save({ orderNo, userId, planId: dto.planId, quizId: dto.quizId, mealFreq, mealDays, totalPrice: Math.round(totalPrice * 100) / 100, status: 'pending' });
     return ResultData.ok(order);
   }
 

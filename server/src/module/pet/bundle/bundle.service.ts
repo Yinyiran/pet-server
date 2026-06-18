@@ -53,10 +53,11 @@ export class BundleService {
   }
 
   async remove(ids: string) {
-    const idArr = ids.split(',').map(Number);
-    await this.itemRepo.delete({ bundleId: idArr.length === 1 ? idArr[0] : undefined });
-    if (idArr.length > 1) {
-      for (const id of idArr) await this.itemRepo.delete({ bundleId: id });
+    const idArr = ids.split(',').map(Number).filter(n => !isNaN(n) && n > 0);
+    if (!idArr.length) return ResultData.fail(500, '请选择要删除的组合包');
+    // 先删除关联子项，再删除主表
+    for (const id of idArr) {
+      await this.itemRepo.delete({ bundleId: id });
     }
     await this.bundleRepo.delete(idArr);
     return ResultData.ok();
