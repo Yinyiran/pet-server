@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { financeApi, productApi } from '@/api'
+import { financeApi } from '@/api'
 
 const totalPoints = ref(0)
 const products = ref<any[]>([])
 const loading = ref(false)
 
 const demoProducts = [
-  { id: 1, name: '猫咪冻干零食', image: '', points: 500, stock: 100 },
-  { id: 2, name: '狗狗磨牙棒', image: '', points: 300, stock: 200 },
-  { id: 3, name: '宠物湿巾(80抽)', image: '', points: 200, stock: 150 },
-  { id: 4, name: '猫薄荷玩具', image: '', points: 800, stock: 50 },
-  { id: 5, name: '宠物牵引绳', image: '', points: 1500, stock: 30 },
-  { id: 6, name: '宠物营养膏', image: '', points: 2000, stock: 20 },
+  { id: 1, name: '猫咪冻干零食', desc: '美味营养，猫咪最爱', icon: '🐟', points: 500, stock: 100 },
+  { id: 2, name: '狗狗磨牙棒', desc: '清洁牙齿，强健颚骨', icon: '🦴', points: 300, stock: 200 },
+  { id: 3, name: '宠物湿巾(80抽)', desc: '温和无刺激，日常清洁', icon: '🧴', points: 200, stock: 150 },
+  { id: 4, name: '猫薄荷玩具', desc: '逗猫神器，快乐无穷', icon: '🐱', points: 800, stock: 50 },
+  { id: 5, name: '宠物牵引绳', desc: '耐用防断，遛宠必备', icon: '🔗', points: 1500, stock: 30 },
+  { id: 6, name: '宠物营养膏', desc: '补充营养，增强免疫', icon: '💊', points: 2000, stock: 20 },
 ]
 
 async function loadData() {
@@ -21,12 +21,7 @@ async function loadData() {
     const data = await financeApi.getPoints() as any
     totalPoints.value = data?.total ?? data?.points ?? 0
   } catch (e) { /* */ }
-  try {
-    const list = await productApi.getList({ pageNum: 1, pageSize: 20 }) as any
-    products.value = list?.rows || list || demoProducts
-  } catch (e) {
-    products.value = demoProducts
-  }
+  products.value = demoProducts
   finally { loading.value = false }
 }
 
@@ -63,37 +58,36 @@ onMounted(loadData)
       <view class="back-btn" @tap="uni.navigateBack()">
         <view class="arrow-icon" /><text>返回</text>
       </view>
-      <text class="page-title">积分兑换</text>
+      <text class="page-title">🎁 积分兑换</text>
       <view style="width: 80rpx" />
     </view>
 
     <scroll-view scroll-y class="scroll-content">
-      <!-- 积分余额 -->
+      <!-- 当前积分 -->
       <view class="balance-bar">
-        <text class="balance-label">我的积分</text>
+        <text class="balance-label">当前积分：</text>
         <text class="balance-num">{{ totalPoints }}</text>
       </view>
 
-      <!-- 商品网格 -->
-      <view class="product-grid">
-        <view v-for="item in products" :key="item.id" class="product-card">
-          <view class="product-img">
-            <text v-if="!item.image" class="img-placeholder">🎁</text>
-            <image v-else :src="item.image" mode="aspectFill" class="img-full" />
+      <!-- 兑换商品列表 -->
+      <view class="exchange-list">
+        <view
+          v-for="item in products"
+          :key="item.id"
+          class="exchange-item"
+          :class="{ disabled: !canExchange(item.points) }"
+          @tap="exchangeItem(item)"
+        >
+          <view class="item-icon">
+            <text>{{ item.icon || '🎁' }}</text>
           </view>
-          <view class="product-info">
-            <text class="product-name">{{ item.name }}</text>
-            <view class="product-points">
-              <text class="pts-num">{{ item.points }}</text>
-              <text class="pts-unit">积分</text>
-            </view>
-            <button
-              class="exchange-btn"
-              :disabled="!canExchange(item.points)"
-              @tap="exchangeItem(item)"
-            >
-              {{ canExchange(item.points) ? '兑换' : '积分不足' }}
-            </button>
+          <view class="item-info">
+            <text class="item-name">{{ item.name }}</text>
+            <text class="item-desc">{{ item.desc }}</text>
+          </view>
+          <view class="item-points">
+            <text class="pts-num">{{ item.points }}</text>
+            <text class="pts-unit">积分</text>
           </view>
         </view>
       </view>
@@ -112,50 +106,45 @@ onMounted(loadData)
   padding-top: calc(var(--status-bar-height, 44px) + 16rpx);
   display: flex; align-items: center; justify-content: space-between;
 }
-.back-btn { display: flex; align-items: center; gap: 8rpx; font-size: 28rpx; color: $primary; width: 80rpx; }
+.back-btn { display: flex; align-items: center; gap: 8rpx; font-size: 28rpx; color: $primary; width: 120rpx; }
 .arrow-icon { width: 16rpx; height: 16rpx; border-top: 4rpx solid $primary; border-left: 4rpx solid $primary; transform: rotate(-45deg); }
 .page-title { font-size: 34rpx; font-weight: 700; color: $text; }
 .scroll-content { flex: 1; }
 
+/* 余额栏 */
 .balance-bar {
-  margin: 24rpx 32rpx; padding: 24rpx 32rpx;
-  background: linear-gradient(135deg, #f97316, #ea580c);
-  border-radius: $radius-lg; display: flex; align-items: center; justify-content: space-between;
+  padding: 24rpx 32rpx; font-size: 26rpx; color: $text-secondary;
+  border-bottom: 2rpx solid $border;
 }
-.balance-label { font-size: 28rpx; color: rgba(255,255,255,0.85); }
-.balance-num { font-size: 48rpx; font-weight: 700; color: #fff; }
+.balance-num { font-size: 36rpx; font-weight: 700; color: $primary; }
 
-.product-grid {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 16rpx;
-  padding: 0 32rpx;
+/* 兑换列表 */
+.exchange-list {
+  padding: 24rpx 32rpx; display: flex; flex-direction: column; gap: 20rpx;
 }
-.product-card {
-  background: $card-bg; border-radius: $radius-lg; overflow: hidden; box-shadow: $shadow-sm;
-}
-.product-img {
-  width: 100%; height: 280rpx; background: $bg;
-  display: flex; align-items: center; justify-content: center;
-}
-.img-placeholder { font-size: 72rpx; }
-.img-full { width: 100%; height: 100%; }
-.product-info { padding: 16rpx 20rpx 20rpx; }
-.product-name {
-  font-size: 26rpx; font-weight: 600; color: $text; display: block;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-}
-.product-points {
-  display: flex; align-items: baseline; gap: 4rpx; margin: 8rpx 0 12rpx;
-}
-.pts-num { font-size: 36rpx; font-weight: 700; color: $primary; }
-.pts-unit { font-size: 22rpx; color: $primary; }
-.exchange-btn {
-  width: 100%; height: 64rpx; line-height: 64rpx;
-  background: linear-gradient(135deg, $primary, $primary-dark);
-  color: #fff; font-size: 26rpx; font-weight: 600;
-  border-radius: $radius; border: none; padding: 0;
-
-  &[disabled] {
-    background: $border; color: $text-light;
+.exchange-item {
+  display: flex; align-items: center; gap: 24rpx; padding: 24rpx;
+  background: #faf8f5; border-radius: $radius-sm;
+  border: 3rpx solid $border;
+  transition: all 0.2s;
+  &:active {
+    transform: scale(0.97);
+    background: $primary-light;
+    border-color: $primary;
   }
+  &.disabled { opacity: 0.5; pointer-events: none; }
 }
+.item-icon {
+  width: 96rpx; height: 96rpx; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 48rpx;
+  background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+  border-radius: $radius-sm;
+}
+.item-info { flex: 1; min-width: 0; }
+.item-name { font-size: 28rpx; font-weight: 700; color: $text; display: block; margin-bottom: 6rpx; }
+.item-desc { font-size: 22rpx; color: $text-light; }
+.item-points { flex-shrink: 0; white-space: nowrap; }
+.pts-num { font-size: 30rpx; font-weight: 800; color: $primary; }
+.pts-unit { font-size: 22rpx; color: $primary; margin-left: 4rpx; }
 </style>
