@@ -1,12 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import { ResultData } from 'src/common/utils/result';
 import { RefundEntity } from './entities/refund.entity';
 import { OrderEntity } from '../order/entities/order.entity';
 import { PaymentEntity } from '../order/entities/payment.entity';
+import { OrderItemEntity } from '../order/entities/order-item.entity';
 import { PetUserEntity } from '../user/entities/user.entity';
 import { PointsLogEntity } from '../finance/entities/points-log.entity';
+import { ProductEntity } from '../product/entities/product.entity';
+import { CommissionService } from '../commission/commission.service';
 import { CreateRefundDto, ListRefundDto, AuditRefundDto } from './dto/index';
 
 @Injectable()
@@ -15,8 +18,12 @@ export class RefundService {
     @InjectRepository(RefundEntity) private readonly repo: Repository<RefundEntity>,
     @InjectRepository(OrderEntity) private readonly orderRepo: Repository<OrderEntity>,
     @InjectRepository(PaymentEntity) private readonly payRepo: Repository<PaymentEntity>,
+    @InjectRepository(OrderItemEntity) private readonly itemRepo: Repository<OrderItemEntity>,
     @InjectRepository(PetUserEntity) private readonly userRepo: Repository<PetUserEntity>,
     @InjectRepository(PointsLogEntity) private readonly pointsLogRepo: Repository<PointsLogEntity>,
+    @InjectRepository(ProductEntity) private readonly productRepo: Repository<ProductEntity>,
+    private readonly commissionService: CommissionService,
+    private readonly dataSource: DataSource,
   ) {}
 
   // ====== 管理端 ======
@@ -41,44 +48,70 @@ export class RefundService {
   }
 
   /**
-   * 售后审核（修复：退款通过后执行退款、回滚积分）
+   * 售后审核（修复：事务 + 回滚积分 + 回滚佣金 + 回滚库存）
    */
   async audit(id: number, dto: AuditRefundDto, reviewerId?: number) {
     const refund = await this.repo.findOne({ where: { id } });
     if (!refund) return ResultData.fail(500, '售后记录不存在');
     if (refund.status !== 'pending') return ResultData.fail(500, '该售后已处理');
 
+    if (!['approved', 'rejected'].includes(dto.status)) {
+      return ResultData.fail(500, '不支持的状态');
+    }
+
     await this.repo.update(id, { status: dto.status, remark: dto.remark, reviewerId });
 
-    if (dto.status === 'approved' && refund.type === 'refund') {
-      // 更新订单状态为 refunding
-      const order = await this.orderRepo.findOne({ where: { orderNo: refund.orderNo } });
-      if (order) {
-        await this.orderRepo.update(order.id, { status: 'refunding' });
+    if (dto.status !== 'approved') return ResultData.ok();
 
-        // 退款：更新支付记录状态
-        await this.payRepo.update({ orderNo: refund.orderNo, status: 'success' }, { status: 'refunded' });
+    const order = await this.orderRepo.findOne({ where: { orderNo: refund.orderNo } });
+    if (!order) return ResultData.ok();
 
-        // 回滚积分（如有）
-        const user = await this.userRepo.findOne({ where: { id: refund.userId } });
-        if (user && order) {
-          // 查该订单获取的积分
-          const pointsLog = await this.pointsLogRepo.findOne({
+    // 退款类型：执行退款流程
+    if (refund.type === 'refund') {
+      await this.dataSource.transaction(async (manager) => {
+        // 更新支付记录状态
+        await manager.update(PaymentEntity, { orderNo: refund.orderNo, status: 'success' }, { status: 'refunded' });
+
+        // 回滚积分
+        const user = await manager.findOne(PetUserEntity, { where: { id: refund.userId } });
+        if (user) {
+          const pointsLog = await manager.findOne(PointsLogEntity, {
             where: { userId: user.id, source: 'order', relatedId: order.id },
           });
           if (pointsLog && pointsLog.changeValue > 0) {
             const newPoints = Math.max(0, (user.points || 0) - pointsLog.changeValue);
-            await this.userRepo.update(user.id, { points: newPoints });
-            await this.pointsLogRepo.save({
+            await manager.update(PetUserEntity, user.id, { points: newPoints });
+            await manager.save(PointsLogEntity, {
               userId: user.id, type: 'spend', source: 'refund',
               changeValue: -pointsLog.changeValue, balanceAfter: newPoints,
               remark: `退款回滚积分(${refund.orderNo})`, relatedId: order.id,
             });
           }
+
+          // 回滚累计消费
+          const newTotalSpent = Math.max(0, Number(user.totalSpent || 0) - Number(order.totalAmount));
+          await manager.update(PetUserEntity, user.id, { totalSpent: newTotalSpent });
         }
 
-        await this.orderRepo.update(order.id, { status: 'refunded' });
-      }
+        // 回滚库存（仅退款类型，换货不回滚库存）
+        const items = await manager.find(OrderItemEntity, { where: { orderId: order.id } });
+        for (const item of items) {
+          await manager.createQueryBuilder()
+            .update(ProductEntity)
+            .set({ stock: () => 'stock + :qty', sales: () => 'GREATEST(sales - :qty, 0)' })
+            .where('id = :id', { id: item.productId, qty: item.qty })
+            .execute();
+        }
+
+        // 订单状态更新为 refunded
+        await manager.update(OrderEntity, order.id, { status: 'refunded' });
+      });
+
+      // 事务外回滚佣金（pending → revoked，settled → 从余额扣回）
+      await this.commissionService.revokeCommission(order.id);
+    } else if (refund.type === 'exchange') {
+      // 换货仅更新订单状态为 refunding，等待换货处理
+      await this.orderRepo.update(order.id, { status: 'refunding' });
     }
 
     return ResultData.ok();
