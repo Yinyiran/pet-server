@@ -109,7 +109,13 @@ export class PetUserService {
       });
     }
     // 生成 JWT token（复用系统 UserService 的 createToken）
-    const token = this.sysUserService.createToken({ uuid: `pet_${user.id}`, userId: user.id });
+    const uuid = `pet_${user.id}`;
+    const token = this.sysUserService.createToken({ uuid, userId: user.id });
+    // 将用户信息存入 Redis，使 AuthStrategy.validate 能通过 token 校验
+    await this.sysUserService.updateRedisToken(uuid, {
+      token: uuid,
+      userId: user.id,
+    } as any);
     return ResultData.ok({ token, user: { id: user.id, nickname: user.nickname, avatar: user.avatar, memberLevel: user.memberLevel, points: user.points } });
   }
 
