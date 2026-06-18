@@ -96,13 +96,13 @@ export class AppUserController {
   @Put('address')
   updateAddress(@Request() req, @Body() dto: UpdateAddressDto) {
     dto.userId = req.user?.userId || 0;
-    return this.petUserService.updateAddress(dto);
+    return this.petUserService.updateAddress(req.user?.userId || 0, dto);
   }
 
   @ApiOperation({ summary: '删除地址' })
   @Delete('address/:id')
-  deleteAddress(@Param('id') id: string) {
-    return this.petUserService.deleteAddress(+id);
+  deleteAddress(@Request() req, @Param('id') id: string) {
+    return this.petUserService.deleteAddress(req.user?.userId || 0, +id);
   }
 
   // ---- 宠物 ----
@@ -121,13 +121,13 @@ export class AppUserController {
 
   @ApiOperation({ summary: '更新宠物' })
   @Put('pet')
-  updatePet(@Body() dto: UpdatePetDto) {
-    return this.petUserService.updatePet(dto);
+  updatePet(@Request() req, @Body() dto: UpdatePetDto) {
+    return this.petUserService.updatePet(req.user?.userId || 0, dto);
   }
 
   @ApiOperation({ summary: '删除宠物' })
   @Delete('pet/:id')
-  deletePet(@Param('id') id: string) {
-    return this.petUserService.deletePet(+id);
+  deletePet(@Request() req, @Param('id') id: string) {
+    return this.petUserService.deletePet(req.user?.userId || 0, +id);
   }
 }

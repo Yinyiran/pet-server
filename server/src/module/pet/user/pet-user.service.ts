@@ -6,6 +6,7 @@ import { PetUserEntity } from './entities/user.entity';
 import { UserAddressEntity } from './entities/user-address.entity';
 import { UserPetEntity } from './entities/user-pet.entity';
 import { ListUserDto, UpdatePetUserDto, CreateAddressDto, UpdateAddressDto, CreatePetDto, UpdatePetDto, UpdateProfileDto } from './dto/index';
+import { UserService } from 'src/module/system/user/user.service';
 
 @Injectable()
 export class PetUserService {
@@ -16,6 +17,7 @@ export class PetUserService {
     private readonly addressRepo: Repository<UserAddressEntity>,
     @InjectRepository(UserPetEntity)
     private readonly petRepo: Repository<UserPetEntity>,
+    private readonly sysUserService: UserService,
   ) {}
 
   // ==================== 管理端：用户 ====================
@@ -92,8 +94,23 @@ export class PetUserService {
   // ==================== 小程序端：用户 ====================
 
   async wxLogin(code: string) {
-    // TODO: 调用微信接口换取 openId，此处简化处理
-    return ResultData.fail(500, '微信登录接口待对接微信SDK');
+    // 开发模式：用 code 作为 openId，查找或创建用户
+    let user = await this.userRepo.findOne({ where: { openId: code } });
+    if (!user) {
+      user = await this.userRepo.save({
+        openId: code,
+        nickname: `用户${code.slice(-6)}`,
+        avatar: '',
+        memberLevel: 'silver',
+        points: 0,
+        balance: 0,
+        totalSpent: 0,
+        isActive: 1,
+      });
+    }
+    // 生成 JWT token（复用系统 UserService 的 createToken）
+    const token = this.sysUserService.createToken({ uuid: `pet_${user.id}`, userId: user.id });
+    return ResultData.ok({ token, user: { id: user.id, nickname: user.nickname, avatar: user.avatar, memberLevel: user.memberLevel, points: user.points } });
   }
 
   async getAppProfile(userId: number) {
@@ -119,16 +136,22 @@ export class PetUserService {
     return ResultData.ok();
   }
 
-  async updateAddress(dto: UpdateAddressDto) {
+  async updateAddress(userId: number, dto: UpdateAddressDto) {
     const { id, ...data } = dto;
+    // 校验地址归属
+    const addr = await this.addressRepo.findOne({ where: { id, userId } });
+    if (!addr) return ResultData.fail(500, '地址不存在或无权操作');
     if (data.isDefault === 1) {
-      await this.addressRepo.update({ userId: data.userId }, { isDefault: 0 });
+      await this.addressRepo.update({ userId }, { isDefault: 0 });
     }
     await this.addressRepo.update(id, data);
     return ResultData.ok();
   }
 
-  async deleteAddress(id: number) {
+  async deleteAddress(userId: number, id: number) {
+    // 校验地址归属，防止越权删除他人地址
+    const addr = await this.addressRepo.findOne({ where: { id, userId } });
+    if (!addr) return ResultData.fail(500, '地址不存在或无权操作');
     await this.addressRepo.delete(id);
     return ResultData.ok();
   }
@@ -140,13 +163,19 @@ export class PetUserService {
     return ResultData.ok();
   }
 
-  async updatePet(dto: UpdatePetDto) {
+  async updatePet(userId: number, dto: UpdatePetDto) {
     const { id, ...data } = dto;
+    // 校验宠物归属
+    const pet = await this.petRepo.findOne({ where: { id, userId } });
+    if (!pet) return ResultData.fail(500, '宠物不存在或无权操作');
     await this.petRepo.update(id, data);
     return ResultData.ok();
   }
 
-  async deletePet(id: number) {
+  async deletePet(userId: number, id: number) {
+    // 校验宠物归属，防止越权删除他人宠物
+    const pet = await this.petRepo.findOne({ where: { id, userId } });
+    if (!pet) return ResultData.fail(500, '宠物不存在或无权操作');
     await this.petRepo.delete(id);
     return ResultData.ok();
   }
