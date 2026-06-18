@@ -1,25 +1,11 @@
-<route lang="json">
-{"style":{"navigationStyle":"custom","navigationBarTitleText":"AI 配餐方案"}}
-</route>
-
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import { mealApi } from '@/api'
 
-interface MealPlan {
-  id: number
-  name: string
-  image: string
-  price: number
-  ingredients: string[]
-  nutrition: string
-  description: string
-}
-
 const petInfo = ref<any>(null)
 const constitution = ref<any>(null)
-const mealList = ref<MealPlan[]>([])
+const mealList = ref<any[]>([])
 const totalPrice = ref(0)
 const loading = ref(true)
 
@@ -36,14 +22,11 @@ onMounted(async () => {
 async function loadPosterData() {
   loading.value = true
   try {
-    // 从缓存获取答题结果
     const quizResult = uni.getStorageSync('quizResult')
     if (quizResult) {
       petInfo.value = quizResult.petInfo
       constitution.value = quizResult.constitution
     }
-
-    // 获取配餐方案列表
     const data = await mealApi.getPlans(petInfo.value?.petType)
     if (data) {
       const d = data as any
@@ -66,12 +49,7 @@ function generatePoster() {
 }
 
 function sharePoster() {
-  // #ifdef MP-WEIXIN
   uni.showToast({ title: '请点击右上角分享', icon: 'none' })
-  // #endif
-  // #ifndef MP-WEIXIN
-  uni.showToast({ title: '暂不支持分享', icon: 'none' })
-  // #endif
 }
 
 async function purchaseNow() {
@@ -88,14 +66,9 @@ function goBack() {
   uni.navigateBack({ fail: () => uni.switchTab({ url: '/pages/home/index' }) })
 }
 
-const constitutionEmoji: Record<string, string> = {
-  '健康活力型': '🐱',
-  '肠胃敏感型': '🐱',
-  '毛发护理型': '🐱',
-  '体重管理型': '🐱',
-  '幼年成长型': '🐱',
-  '老年养护型': '🐱'
-}
+const dotColors = ['c1', 'c2', 'c3', 'c4', 'c5', 'c6']
+
+const isCat = computed(() => petInfo.value?.petType !== 'dog')
 </script>
 
 <template>
@@ -104,7 +77,7 @@ const constitutionEmoji: Record<string, string> = {
     <view class="nav-bar">
       <view class="nav-bar-inner">
         <view class="nav-back" @tap="goBack">
-          <text class="back-icon">‹</text>
+          <view class="back-arrow" />
         </view>
         <text class="nav-title">AI 配餐方案</text>
         <view class="nav-placeholder" />
@@ -120,450 +93,205 @@ const constitutionEmoji: Record<string, string> = {
     <scroll-view v-else scroll-y class="poster-scroll">
       <!-- 顶部标题 -->
       <view class="poster-header">
-        <text class="poster-label">✨ AI 智能配餐方案</text>
-        <text class="poster-subtitle">根据您的爱宠信息，为您定制专属营养配方</text>
+        <view class="poster-label">✨ AI 智能配餐方案</view>
+        <view class="poster-subtitle">根据您的爱宠信息，为您定制专属营养配方</view>
       </view>
 
       <!-- 宠物信息卡片 -->
-      <view v-if="petInfo" class="poster-info-card">
-        <view class="info-row" v-if="petInfo.petName">
-          <text class="info-label">宠物名字</text>
-          <text class="info-value">{{ petInfo.petName }}</text>
+      <view class="poster-info-card" v-if="petInfo">
+        <view class="poster-pet-name">
+          <text class="emoji">{{ isCat ? '🐱' : '🐶' }}</text>
+          {{ petInfo.petName || petInfo.nickname || '我的爱宠' }}
         </view>
-        <view class="info-row" v-if="petInfo.petType">
-          <text class="info-label">宠物类型</text>
-          <text class="info-value">{{ petInfo.petType === 'cat' ? '猫咪' : '狗狗' }}</text>
-        </view>
-        <view class="info-row" v-if="petInfo.age">
-          <text class="info-label">年龄</text>
-          <text class="info-value">{{ petInfo.age }}</text>
-        </view>
-        <view class="info-row" v-if="petInfo.weight">
-          <text class="info-label">体重</text>
-          <text class="info-value">{{ petInfo.weight }}</text>
-        </view>
-      </view>
-
-      <!-- 体质分析 -->
-      <view v-if="constitution" class="poster-hero">
-        <view class="constitution-card">
-          <view class="constitution-badge">
-            <text class="badge-emoji">{{ constitutionEmoji[constitution.type] || '🐾' }}</text>
-            <text class="badge-label">{{ constitution.type || '综合分析' }}</text>
+        <view class="poster-info-grid">
+          <view class="poster-info-item" v-if="petInfo.petType">
+            <text class="key">类型</text><text class="val">{{ isCat ? '猫咪' : '狗狗' }}</text>
           </view>
-          <text class="constitution-desc">{{ constitution.desc || '根据您的宠物信息，AI已为您分析出最适合的营养方案。' }}</text>
+          <view class="poster-info-item" v-if="petInfo.age || petInfo.dAge">
+            <text class="key">年龄</text><text class="val">{{ petInfo.age || petInfo.dAge }}</text>
+          </view>
+          <view class="poster-info-item" v-if="petInfo.weight">
+            <text class="key">体重</text><text class="val">{{ petInfo.weight }}kg</text>
+          </view>
+          <view class="poster-info-item" v-if="petInfo.gender || petInfo.dGender">
+            <text class="key">性别</text><text class="val">{{ petInfo.gender || petInfo.dGender }}</text>
+          </view>
         </view>
       </view>
 
-      <!-- 营养方案 -->
+      <!-- 体质分析卡片 -->
+      <view class="poster-hero" v-if="constitution">
+        <view class="poster-hero-bg" :class="isCat ? 'cat-bg' : 'dog-bg'" />
+        <view class="poster-hero-content">
+          <view class="constitution-header">
+            <view class="constitution-badge">
+              <text class="badge-emoji">{{ isCat ? '🐱' : '🐶' }}</text>
+              <text class="badge-label">{{ constitution.type || '综合分析' }}</text>
+            </view>
+          </view>
+          <view class="constitution-desc">{{ constitution.desc || '根据您的宠物信息，AI已为您分析出最适合的营养方案。' }}</view>
+        </view>
+      </view>
+
+      <!-- 配餐方案 -->
       <view class="poster-meals">
-        <view class="poster-meals-title">
-          <text>🍽️ 营养方案</text>
-        </view>
+        <view class="poster-meals-title">🍽️ 营养方案</view>
         <view class="poster-meals-list">
-          <view v-for="(meal, idx) in mealList" :key="meal.id || idx" class="meal-card">
-            <image v-if="meal.image" class="meal-img" :src="meal.image" mode="aspectFill" />
-            <view v-else class="meal-img-placeholder">
-              <text>{{ idx + 1 }}</text>
+          <view v-for="(meal, idx) in mealList" :key="meal.id || idx" class="poster-meal-item">
+            <view class="poster-meal-dot" :class="dotColors[idx % 6]">
+              <text>{{ meal.emoji || '🥘' }}</text>
             </view>
-            <view class="meal-info">
-              <text class="meal-name">{{ meal.name }}</text>
-              <text class="meal-desc">{{ meal.description || meal.nutrition }}</text>
-              <view class="meal-tags" v-if="meal.ingredients?.length">
-                <text v-for="ing in meal.ingredients.slice(0, 3)" :key="ing" class="meal-tag">{{ ing }}</text>
-              </view>
-              <text class="meal-price">¥{{ meal.price }}</text>
+            <view class="poster-meal-info">
+              <text class="poster-meal-name">{{ meal.name }}</text>
             </view>
+            <text class="poster-meal-gram">{{ meal.gram || meal.price + 'g' }}</text>
           </view>
-          <view v-if="!mealList.length" class="empty-meals">
-            <text>暂无配餐数据</text>
+          <view v-if="!mealList.length" class="empty-meals">暂无配餐数据</view>
+        </view>
+        <view class="poster-footer">
+          <view class="poster-footer-left">
+            <view class="poster-brand">梵优茗宠</view>
+            <view class="poster-slogan">扫码了解更多专属配餐</view>
           </view>
+          <view class="poster-qr">二维码</view>
         </view>
       </view>
 
-      <!-- 底部品牌 -->
-      <view class="poster-footer">
-        <view class="poster-footer-left">
-          <text class="poster-brand">梵优茗宠</text>
-          <text class="poster-slogan">扫码了解更多专属配餐</text>
-        </view>
-        <view class="poster-qr">
-          <text class="qr-text">二维码</text>
-        </view>
-      </view>
-
-      <view style="height: 120rpx;" />
+      <view style="height: 140rpx" />
     </scroll-view>
 
     <!-- 底部购买栏 -->
-    <view v-if="!loading" class="poster-buy-bar">
+    <view v-if="!loading" class="poster-buy-bar safe-bottom">
       <view class="poster-buy-info">
-        <text class="poster-buy-price">
-          <text class="price-symbol">¥</text>{{ totalPrice }}
-          <text class="price-unit">/月起</text>
-        </text>
+        <view class="poster-buy-price">¥{{ totalPrice }}<text>/月起</text></view>
       </view>
       <view class="poster-buy-actions">
-        <button class="action-btn outline" @tap="generatePoster">生成海报</button>
-        <button class="action-btn outline" @tap="sharePoster">分享</button>
-        <button class="action-btn primary" @tap="purchaseNow">立即购买</button>
+        <view class="poster-action-btn outline" @tap="generatePoster">生成海报</view>
+        <view class="poster-action-btn outline" @tap="sharePoster">分享</view>
+        <view class="poster-action-btn primary" @tap="purchaseNow">立即购买</view>
       </view>
     </view>
-
   </view>
 </template>
 
 <style lang="scss" scoped>
-.poster-page {
-  min-height: 100vh;
-  background: linear-gradient(180deg, #fdf0e6 0%, #f8f4f0 30%);
-  position: relative;
-}
+@import '@/styles/variables.scss';
 
+.poster-page { min-height: 100vh; background: linear-gradient(180deg, #fdf0e6 0%, $bg 30%); display: flex; flex-direction: column; }
+
+/* 导航栏 */
 .nav-bar {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: rgba(253, 240, 230, 0.95);
-  backdrop-filter: blur(10px);
+  background: rgba(253, 240, 230, 0.95); backdrop-filter: blur(10px);
   padding-top: var(--status-bar-height, 44px);
-
-  .nav-bar-inner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 88rpx;
-    padding: 0 30rpx;
-  }
-
-  .nav-back {
-    width: 60rpx;
-    height: 60rpx;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0, 0, 0, 0.05);
-    border-radius: 50%;
-  }
-
-  .back-icon {
-    font-size: 36rpx;
-    color: #3d2c1e;
-    font-weight: bold;
-  }
-
-  .nav-title {
-    font-size: 32rpx;
-    font-weight: 600;
-    color: #3d2c1e;
-  }
-
-  .nav-placeholder {
-    width: 60rpx;
-  }
 }
-
-.loading-wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding-top: 200rpx;
-
-  .loading-spinner {
-    width: 60rpx;
-    height: 60rpx;
-    border: 4rpx solid #f0e6dc;
-    border-top-color: #f97316;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-
-  .loading-text {
-    margin-top: 20rpx;
-    font-size: 28rpx;
-    color: #8c7b6e;
-  }
+.nav-bar-inner { display: flex; align-items: center; justify-content: space-between; height: 88rpx; padding: 0 30rpx; }
+.nav-back {
+  width: 60rpx; height: 60rpx; display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.05); border-radius: 50%;
 }
+.back-arrow { width: 20rpx; height: 20rpx; border-top: 4rpx solid $text; border-left: 4rpx solid $text; transform: rotate(-45deg); }
+.nav-title { font-size: 32rpx; font-weight: 600; color: $text; }
+.nav-placeholder { width: 60rpx; }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
+/* 加载 */
+.loading-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; padding-top: 400rpx; }
+.loading-spinner { width: 60rpx; height: 60rpx; border: 4rpx solid #f0e6dc; border-top-color: $primary; border-radius: 50%; animation: spin 0.8s linear infinite; }
+.loading-text { margin-top: 20rpx; font-size: 28rpx; color: $text-secondary; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.poster-scroll { flex: 1; padding: 0 32rpx; }
+
+/* 标题 */
+.poster-header { text-align: center; padding: 40rpx 0 32rpx; }
+.poster-label {
+  font-size: 40rpx; font-weight: 800; margin-bottom: 12rpx;
+  background: linear-gradient(135deg, #f97316, #f59e0b);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
+.poster-subtitle { font-size: 24rpx; color: $text-secondary; }
 
-.poster-scroll {
-  height: calc(100vh - var(--status-bar-height, 44px) - 88rpx);
-}
-
-.poster-header {
-  text-align: center;
-  padding: 40rpx 30rpx 20rpx;
-
-  .poster-label {
-    display: block;
-    font-size: 36rpx;
-    font-weight: 700;
-    color: #3d2c1e;
-  }
-
-  .poster-subtitle {
-    display: block;
-    font-size: 26rpx;
-    color: #8c7b6e;
-    margin-top: 10rpx;
-  }
-}
-
+/* 宠物信息卡片 */
 .poster-info-card {
-  margin: 20rpx 30rpx;
-  background: #fff;
-  border-radius: 24rpx;
-  padding: 30rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
-
-  .info-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 16rpx 0;
-    border-bottom: 1rpx solid #f5f0eb;
-
-    &:last-child {
-      border-bottom: none;
-    }
-  }
-
-  .info-label {
-    font-size: 26rpx;
-    color: #8c7b6e;
-  }
-
-  .info-value {
-    font-size: 26rpx;
-    color: #3d2c1e;
-    font-weight: 500;
-  }
+  background: $card-bg; border-radius: $radius-lg; padding: 28rpx 32rpx;
+  box-shadow: $shadow-sm; margin-bottom: 24rpx;
+}
+.poster-pet-name { font-size: 36rpx; font-weight: 700; color: $text; display: flex; align-items: center; gap: 12rpx; margin-bottom: 20rpx;
+  .emoji { font-size: 48rpx; }
+}
+.poster-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12rpx 24rpx; }
+.poster-info-item { font-size: 26rpx; color: $text-secondary; display: flex; gap: 8rpx; line-height: 1.6;
+  .key { width: 96rpx; text-align: right; padding-right: 16rpx; color: $text-light; flex-shrink: 0; }
+  .val { color: $text; font-weight: 500; }
 }
 
-.poster-hero {
-  margin: 20rpx 30rpx;
-
-  .constitution-card {
-    background: linear-gradient(135deg, #fff7ed, #fff);
-    border-radius: 24rpx;
-    padding: 30rpx;
-    box-shadow: 0 4rpx 20rpx rgba(249, 115, 22, 0.1);
-  }
-
-  .constitution-badge {
-    display: flex;
-    align-items: center;
-    gap: 12rpx;
-    margin-bottom: 16rpx;
-
-    .badge-emoji {
-      font-size: 40rpx;
-    }
-
-    .badge-label {
-      font-size: 30rpx;
-      font-weight: 700;
-      color: #ea580c;
-      background: rgba(249, 115, 22, 0.1);
-      padding: 6rpx 20rpx;
-      border-radius: 20rpx;
-    }
-  }
-
-  .constitution-desc {
-    font-size: 26rpx;
-    color: #6b5c50;
-    line-height: 1.6;
-  }
+/* 体质分析卡片 */
+.poster-hero { position: relative; border-radius: $radius-lg; overflow: hidden; margin-bottom: 24rpx; box-shadow: $shadow-md; }
+.poster-hero-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+  &.cat-bg { background: linear-gradient(170deg, #fdf2e9 0%, #fdebd0 40%, #fadbd8 70%, #e8daef 100%); }
+  &.dog-bg { background: linear-gradient(170deg, #e8f8f5 0%, #d5f5e3 40%, #fcf3cf 70%, #fdebd0 100%); }
 }
-
-.poster-meals {
-  margin: 20rpx 30rpx;
-
-  .poster-meals-title {
-    font-size: 30rpx;
-    font-weight: 600;
-    color: #3d2c1e;
-    margin-bottom: 20rpx;
-  }
+.poster-hero-content { position: relative; z-index: 1; padding: 32rpx; }
+.constitution-header { display: flex; align-items: center; gap: 20rpx; margin-bottom: 20rpx; }
+.constitution-badge {
+  display: inline-flex; align-items: center; gap: 8rpx;
+  background: rgba(255,255,255,0.9); backdrop-filter: blur(8px);
+  padding: 10rpx 24rpx; border-radius: 40rpx; box-shadow: $shadow-sm;
 }
+.badge-emoji { font-size: 30rpx; }
+.badge-label { font-size: 26rpx; font-weight: 700; color: $primary; }
+.constitution-desc { font-size: 26rpx; line-height: 1.65; color: $text; }
 
-.meal-card {
-  display: flex;
-  background: #fff;
-  border-radius: 20rpx;
-  overflow: hidden;
-  margin-bottom: 20rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
-
-  .meal-img {
-    width: 200rpx;
-    height: 200rpx;
-    flex-shrink: 0;
-  }
-
-  .meal-img-placeholder {
-    width: 200rpx;
-    height: 200rpx;
-    flex-shrink: 0;
-    background: linear-gradient(135deg, #fef3c7, #fde68a);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 40rpx;
-    color: #f97316;
-    font-weight: 700;
-  }
-
-  .meal-info {
-    flex: 1;
-    padding: 20rpx;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-
-  .meal-name {
-    font-size: 28rpx;
-    font-weight: 600;
-    color: #3d2c1e;
-  }
-
-  .meal-desc {
-    font-size: 24rpx;
-    color: #8c7b6e;
-    margin-top: 8rpx;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-  }
-
-  .meal-tags {
-    display: flex;
-    gap: 10rpx;
-    margin-top: 10rpx;
-    flex-wrap: wrap;
-
-    .meal-tag {
-      font-size: 20rpx;
-      color: #f97316;
-      background: rgba(249, 115, 22, 0.08);
-      padding: 4rpx 14rpx;
-      border-radius: 10rpx;
-    }
-  }
-
-  .meal-price {
-    font-size: 30rpx;
-    font-weight: 700;
-    color: #ea580c;
-    margin-top: 10rpx;
-  }
+/* 配餐方案 */
+.poster-meals { background: $card-bg; border-radius: $radius-lg; box-shadow: $shadow-md; padding: 0 8rpx; }
+.poster-meals-title { font-size: 30rpx; font-weight: 700; color: $text; display: flex; padding: 20rpx; align-items: center; gap: 12rpx; }
+.poster-meals-list { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; }
+.poster-meal-item {
+  display: flex; align-items: center; width: 48%; gap: 12rpx; margin-top: 10rpx;
+  background: $card-bg; border-radius: $radius; padding: 20rpx 24rpx; box-shadow: $shadow-sm;
 }
-
-.empty-meals {
-  text-align: center;
-  padding: 60rpx 0;
-  color: #8c7b6e;
-  font-size: 28rpx;
+.poster-meal-dot {
+  width: 60rpx; height: 60rpx; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 40rpx;
+  &.c1 { background: #fff3e0; }
+  &.c2 { background: #e8f5e9; }
+  &.c3 { background: #e3f2fd; }
+  &.c4 { background: #fce4ec; }
+  &.c5 { background: #f3e5f5; }
+  &.c6 { background: #e0f2f1; }
 }
+.poster-meal-info { flex: 1; min-width: 0; }
+.poster-meal-name { font-size: 26rpx; color: $text; }
+.poster-meal-gram { font-size: 24rpx; font-weight: 600; color: $accent; flex-shrink: 0; align-self: flex-start; padding-top: 4rpx; }
 
-.poster-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin: 30rpx 30rpx 0;
-  padding: 30rpx;
-  background: #fff;
-  border-radius: 20rpx;
+.empty-meals { text-align: center; padding: 80rpx 0; color: $text-light; font-size: 28rpx; width: 100%; }
 
-  .poster-brand {
-    font-size: 30rpx;
-    font-weight: 700;
-    color: #3d2c1e;
-  }
+/* 底部品牌 */
+.poster-footer { display: flex; align-items: center; justify-content: space-between; padding: 24rpx 12rpx 12rpx; border-top: 2rpx dashed $border; margin-top: 8rpx; width: 100%; }
+.poster-footer-left { display: flex; flex-direction: column; gap: 8rpx; }
+.poster-brand { font-size: 36rpx; font-weight: 800; color: $text; }
+.poster-slogan { font-size: 22rpx; color: $text-light; }
+.poster-qr { width: 144rpx; height: 144rpx; border-radius: $radius-sm; border: 3rpx solid $border; display: flex; align-items: center; justify-content: center; font-size: 22rpx; color: $text-light; flex-shrink: 0; }
 
-  .poster-slogan {
-    font-size: 22rpx;
-    color: #8c7b6e;
-    margin-top: 6rpx;
-  }
-
-  .poster-qr {
-    width: 120rpx;
-    height: 120rpx;
-    background: #f5f0eb;
-    border-radius: 12rpx;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    .qr-text {
-      font-size: 22rpx;
-      color: #8c7b6e;
-    }
-  }
-}
-
+/* 底部购买栏 */
 .poster-buy-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20rpx 30rpx;
-  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
-  background: #fff;
-  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.06);
-  z-index: 99;
-
-  .poster-buy-price {
-    font-size: 40rpx;
-    font-weight: 700;
-    color: #ea580c;
-
-    .price-symbol {
-      font-size: 28rpx;
-    }
-
-    .price-unit {
-      font-size: 22rpx;
-      color: #8c7b6e;
-      font-weight: 400;
-    }
-  }
-
-  .poster-buy-actions {
-    display: flex;
-    gap: 16rpx;
-  }
+  display: flex; align-items: center; gap: 16rpx; padding: 16rpx 24rpx;
+  background: $card-bg; border-top: 2rpx solid $border; box-shadow: 0 -4rpx 24rpx rgba(0,0,0,0.06);
 }
-
-.action-btn {
-  padding: 16rpx 28rpx;
-  border-radius: 40rpx;
-  font-size: 26rpx;
-  font-weight: 500;
-  border: none;
-  line-height: 1;
-
-  &.outline {
-    background: #fff;
-    color: #f97316;
-    border: 2rpx solid #f97316;
-  }
-
+.poster-buy-info { flex: 1; min-width: 0; }
+.poster-buy-price { font-size: 40rpx; font-weight: 800; color: $accent;
+  text { font-size: 24rpx; font-weight: 500; color: $text-light; }
+}
+.poster-buy-actions { display: flex; align-items: center; gap: 12rpx; flex-shrink: 0; }
+.poster-action-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6rpx;
+  border-radius: 40rpx; font-size: 24rpx; font-weight: 600; white-space: nowrap;
+  padding: 16rpx 24rpx; border: none; transition: transform 0.15s, opacity 0.15s;
+  &:active { transform: scale(0.95); }
+  &.outline { background: #fff; color: $primary; border: 3rpx solid $primary; }
   &.primary {
-    background: linear-gradient(135deg, #f97316, #ea580c);
-    color: #fff;
+    background: linear-gradient(135deg, $primary, $primary-dark); color: #fff;
+    box-shadow: 0 8rpx 28rpx rgba(249, 115, 22, 0.35); padding: 20rpx 36rpx;
   }
 }
-
+.safe-bottom { padding-bottom: calc(16rpx + env(safe-area-inset-bottom)); }
 </style>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, nextTick } from 'vue'
 import { mealApi } from '@/api'
 import { checkLogin } from '@/utils/auth'
 
@@ -22,7 +22,7 @@ const catQuestions = [
   { key: 'activity', label: '日常活动量', type: 'radio', options: ['低(大部分时间睡觉)','中(每天少量玩耍)','高(精力旺盛爱跑酷)'] },
   { key: 'mode', label: '饲养模式', type: 'radio', options: ['单宠','多宠'] },
   { key: 'petCount', label: '多宠数量', type: 'number', showIf: () => answers.value.mode === '多宠' },
-  { key: 'company', label: '每日陪伴时长', type: 'radio', options: ['无陪伴(整日独处)','少量陪伴(白天独处)','充足陪伴(白天互动)'] },
+  { key: 'company', label: '每日陪伴时长', type: 'radio', options: ['无陪伴(整日独处)','少量陪伴(白天独处，夜间短时)','充足陪伴(白天互动，夜间同处)'] },
   { key: 'stomach', label: '肠胃健康', type: 'checkbox', options: ['软便','便秘','频繁呕吐','肠胃健康'] },
   { key: 'skin', label: '皮毛健康', type: 'checkbox', options: ['掉毛重','皮屑瘙痒','毛发干枯','皮肤健康'] },
   { key: 'urinary', label: '泌尿健康', type: 'checkbox', options: ['尿频上火','泪痕重','泌尿健康'] },
@@ -56,8 +56,23 @@ const visibleQuestions = computed(() => questions.value.filter(q => !(q as any).
 const totalSteps = computed(() => visibleQuestions.value.length)
 const currentQuestion = computed(() => visibleQuestions.value[currentStep.value])
 const progress = computed(() => ((currentStep.value + 1) / totalSteps.value * 100).toFixed(0))
+const isLastStep = computed(() => currentStep.value === totalSteps.value - 1)
+const submitting = ref(false)
 
-function selectRadio(key: string, value: string) { answers.value[key] = value }
+/** 动画 key — 用于强制重新渲染题目区域 */
+const animKey = ref(0)
+
+function selectRadio(key: string, value: string) {
+  answers.value[key] = value
+  // 单选题自动跳转下一题
+  if (!isLastStep.value) {
+    setTimeout(() => {
+      currentStep.value++
+      animKey.value++
+    }, 350)
+  }
+}
+
 function toggleCheckbox(key: string, value: string) {
   const arr: string[] = answers.value[key] || []
   const idx = arr.indexOf(value)
@@ -67,14 +82,24 @@ function toggleCheckbox(key: string, value: string) {
 }
 
 function goNext() {
-  if (currentStep.value < totalSteps.value - 1) currentStep.value++
+  if (currentStep.value < totalSteps.value - 1) {
+    currentStep.value++
+    animKey.value++
+  }
 }
 function goPrev() {
-  if (currentStep.value > 0) currentStep.value--
+  if (currentStep.value > 0) {
+    currentStep.value--
+    animKey.value++
+  }
 }
 
-const isLastStep = computed(() => currentStep.value === totalSteps.value - 1)
-const submitting = ref(false)
+function switchPetType(type: 'cat' | 'dog') {
+  petType.value = type
+  currentStep.value = 0
+  answers.value = {}
+  animKey.value++
+}
 
 async function submitQuiz() {
   if (!checkLogin()) return
@@ -90,65 +115,104 @@ async function submitQuiz() {
 </script>
 
 <template>
-  <view class="page-container">
-    <view class="quiz-header">
-      <view class="back-btn" @tap="uni.navigateBack()"><text>‹ 返回</text></view>
-      <text class="quiz-title">AI 宠物配餐</text>
-      <text class="quiz-subtitle">智能分析爱宠特征，精准推荐营养方案</text>
+  <view class="quiz-page">
+    <!-- 顶部区域 -->
+    <view class="quiz-top-area">
+      <view class="quiz-back" @tap="uni.navigateBack()">
+        <view class="arrow-icon" />
+      </view>
+
+      <view class="quiz-page-header">
+        <view class="quiz-page-title">AI 宠物配餐</view>
+        <view class="quiz-page-subtitle">智能分析爱宠特征，精准推荐最适合的营养配餐方案</view>
+      </view>
 
       <!-- 宠物类型选择 -->
-      <view class="pet-type-row">
-        <view class="pet-type-btn" :class="{ active: petType === 'cat' }" @tap="petType = 'cat'; currentStep = 0; answers = {}">
-          <text>🐱 猫猫</text>
+      <view class="quiz-pet-row">
+        <view class="quiz-pet-card" :class="{ selected: petType === 'cat' }" @tap="switchPetType('cat')">
+          <view class="pet-r-dot" :class="{ checked: petType === 'cat' }" />
+          <view class="pet-icon">🐱</view>
+          <view class="pet-label">猫猫</view>
         </view>
-        <view class="pet-type-btn" :class="{ active: petType === 'dog' }" @tap="petType = 'dog'; currentStep = 0; answers = {}">
-          <text>🐶 狗狗</text>
+        <view class="quiz-pet-card" :class="{ selected: petType === 'dog' }" @tap="switchPetType('dog')">
+          <view class="pet-r-dot" :class="{ checked: petType === 'dog' }" />
+          <view class="pet-icon">🐶</view>
+          <view class="pet-label">狗狗</view>
         </view>
       </view>
 
       <!-- 进度条 -->
-      <view class="progress-bar">
-        <view class="progress-fill" :style="{ width: progress + '%' }" />
+      <view class="quiz-progress">
+        <view class="quiz-progress-bar">
+          <view class="quiz-progress-fill" :style="{ width: progress + '%' }" />
+        </view>
+        <text class="quiz-progress-text">{{ currentStep + 1 }}/{{ totalSteps }}</text>
       </view>
-      <text class="progress-text">{{ currentStep + 1 }}/{{ totalSteps }}</text>
     </view>
 
     <!-- 题目区域 -->
-    <view class="quiz-body" v-if="currentQuestion">
-      <view class="question-label">
-        <text class="q-num">{{ currentStep + 1 }}</text>
-        <text>{{ currentQuestion.label }}</text>
-        <text class="type-badge" :class="currentQuestion.type">{{ currentQuestion.type === 'radio' ? '单选' : currentQuestion.type === 'checkbox' ? '多选' : '填空' }}</text>
-      </view>
+    <scroll-view scroll-y class="quiz-scroll">
+      <view class="quiz-field" :key="animKey" v-if="currentQuestion">
+        <view class="quiz-field-label">
+          <view class="q-num">{{ currentStep + 1 }}</view>
+          <text>{{ currentQuestion.label }}</text>
+          <view class="type-badge" :class="currentQuestion.type === 'radio' ? 'single' : currentQuestion.type === 'checkbox' ? 'multi' : 'fill'">
+            {{ currentQuestion.type === 'radio' ? '单选' : currentQuestion.type === 'checkbox' ? '多选' : '填空' }}
+          </view>
+        </view>
 
-      <!-- 单选题 -->
-      <view v-if="currentQuestion.type === 'radio'" class="options-list">
-        <view v-for="opt in currentQuestion.options" :key="opt" class="radio-item" :class="{ active: answers[currentQuestion.key] === opt }" @tap="selectRadio(currentQuestion.key, opt)">
-          <view class="r-dot" :class="{ checked: answers[currentQuestion.key] === opt }" />
-          <text>{{ opt }}</text>
+        <!-- 单选题 -->
+        <view v-if="currentQuestion.type === 'radio'" class="quiz-radio-group">
+          <view
+            v-for="opt in currentQuestion.options" :key="opt"
+            class="quiz-radio" :class="{ selected: answers[currentQuestion.key] === opt }"
+            @tap="selectRadio(currentQuestion.key, opt)"
+          >
+            <view class="r-dot" :class="{ checked: answers[currentQuestion.key] === opt }" />
+            <text>{{ opt }}</text>
+          </view>
+        </view>
+
+        <!-- 多选题 -->
+        <view v-if="currentQuestion.type === 'checkbox'" class="quiz-checkbox-group">
+          <view
+            v-for="opt in currentQuestion.options" :key="opt"
+            class="quiz-checkbox" :class="{ selected: (answers[currentQuestion.key] || []).includes(opt) }"
+            @tap="toggleCheckbox(currentQuestion.key, opt)"
+          >
+            <view class="c-box">{{ (answers[currentQuestion.key] || []).includes(opt) ? '✓' : '' }}</view>
+            <text>{{ opt }}</text>
+          </view>
+        </view>
+
+        <!-- 填空题 -->
+        <view v-if="currentQuestion.type === 'input' || currentQuestion.type === 'number'" class="quiz-input-wrap">
+          <input
+            class="quiz-input"
+            :class="{ 'has-value': answers[currentQuestion.key] }"
+            v-model="answers[currentQuestion.key]"
+            :type="currentQuestion.type === 'number' ? 'digit' : 'text'"
+            :placeholder="`请输入${currentQuestion.label}`"
+          />
         </view>
       </view>
 
-      <!-- 多选题 -->
-      <view v-if="currentQuestion.type === 'checkbox'" class="options-list">
-        <view v-for="opt in currentQuestion.options" :key="opt" class="checkbox-item" :class="{ active: (answers[currentQuestion.key] || []).includes(opt) }" @tap="toggleCheckbox(currentQuestion.key, opt)">
-          <view class="c-box">{{ (answers[currentQuestion.key] || []).includes(opt) ? '✓' : '' }}</view>
-          <text>{{ opt }}</text>
-        </view>
-      </view>
+      <view style="height: 160rpx" />
+    </scroll-view>
 
-      <!-- 填空题 -->
-      <view v-if="currentQuestion.type === 'input' || currentQuestion.type === 'number'" class="input-wrap">
-        <input class="quiz-input" v-model="answers[currentQuestion.key]" :type="currentQuestion.type === 'number' ? 'digit' : 'text'" :placeholder="`请输入${currentQuestion.label}`" />
-      </view>
-    </view>
-
-    <!-- 导航按钮 -->
+    <!-- 底部导航 -->
     <view class="quiz-nav safe-bottom">
-      <button v-if="currentStep > 0" class="btn-outline" @tap="goPrev">‹ 上一题</button>
-      <view v-else style="flex:1" />
-      <button v-if="!isLastStep" class="btn-primary" @tap="goNext">下一题 ›</button>
-      <button v-else class="btn-primary" @tap="submitQuiz" :loading="submitting">提交，开始AI配餐</button>
+      <view v-if="currentStep > 0" class="quiz-nav-btn prev" @tap="goPrev">
+        <text class="nav-arrow">‹</text> 上一题
+      </view>
+      <view v-else style="min-width: 160rpx" />
+      <text class="quiz-nav-indicator">{{ currentStep + 1 }} / {{ totalSteps }}</text>
+      <view v-if="!isLastStep" class="quiz-nav-btn next" @tap="goNext">
+        下一题 <text class="nav-arrow">›</text>
+      </view>
+      <view v-else class="quiz-submit-btn" @tap="submitQuiz">
+        {{ submitting ? '提交中...' : '提交，开始AI配餐' }}
+      </view>
     </view>
   </view>
 </template>
@@ -156,65 +220,138 @@ async function submitQuiz() {
 <style lang="scss" scoped>
 @import '@/styles/variables.scss';
 
-.quiz-header {
-  background: $header-gradient; padding: 24rpx 32rpx;
+.quiz-page { display: flex; flex-direction: column; height: 100vh; background: $bg; }
+
+/* 顶部区域 */
+.quiz-top-area {
+  background: $header-gradient;
+  padding: calc(var(--status-bar-height, 44px) + 16rpx) 32rpx 24rpx;
 }
-.back-btn { font-size: 28rpx; color: $primary; margin-bottom: 16rpx; }
-.quiz-title { font-size: 36rpx; font-weight: 700; display: block; }
-.quiz-subtitle { font-size: 24rpx; color: $text-secondary; display: block; margin-bottom: 20rpx; }
+.quiz-back { margin-bottom: 16rpx; }
+.arrow-icon { width: 20rpx; height: 20rpx; border-top: 4rpx solid $primary; border-left: 4rpx solid $primary; transform: rotate(-45deg); }
 
-.pet-type-row { display: flex; gap: 16rpx; margin-bottom: 20rpx; }
-.pet-type-btn {
-  flex: 1; text-align: center; padding: 20rpx; background: $card-bg; border-radius: $radius;
-  font-size: 28rpx; border: 2rpx solid transparent;
-  &.active { border-color: $primary; background: $primary-light; }
+/* 标题 */
+.quiz-page-header { text-align: center; margin-bottom: 12rpx; }
+.quiz-page-title {
+  font-size: 52rpx; font-weight: 800; letter-spacing: 1rpx; margin-bottom: 4rpx;
+  background: linear-gradient(135deg, #f97316, #ea580c);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.quiz-page-subtitle { font-size: 26rpx; color: #a8998a; line-height: 1.6; }
+
+/* 宠物类型选择 — 大图标卡片 */
+.quiz-pet-row { display: flex; gap: 24rpx; margin: 28rpx 0; }
+.quiz-pet-card {
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 12rpx;
+  padding: 48rpx 32rpx 36rpx; border-radius: $radius;
+  border: 3rpx solid $border; background: rgba(255,255,255,0.5); position: relative;
+  transition: all 0.25s;
+  &.selected { border-color: $primary; background: $primary-light; }
+}
+.pet-r-dot {
+  position: absolute; top: 20rpx; right: 20rpx;
+  width: 40rpx; height: 40rpx; border: 3rpx solid #d4c8b8; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  &.checked { border-color: $primary; background: $primary;
+    &::after { content: ''; width: 10rpx; height: 10rpx; background: #fff; border-radius: 50%; }
+  }
+}
+.pet-icon { font-size: 104rpx; line-height: 1; transition: transform 0.3s; }
+.quiz-pet-card.selected .pet-icon { transform: scale(1.1); }
+.pet-label { font-size: 32rpx; font-weight: 700; color: $text; transition: color 0.25s; }
+.quiz-pet-card.selected .pet-label { color: $primary-dark; }
+
+/* 进度条 */
+.quiz-progress { display: flex; align-items: center; gap: 16rpx; margin-top: 24rpx; }
+.quiz-progress-bar { flex: 1; height: 8rpx; background: #e8e3dc; border-radius: 4rpx; overflow: hidden; }
+.quiz-progress-fill { height: 100%; background: linear-gradient(90deg, #4facfe, #00f2fe); border-radius: 4rpx; transition: width 0.35s ease; }
+.quiz-progress-text { font-size: 22rpx; color: $text-secondary; font-weight: 600; white-space: nowrap; }
+
+/* 题目区域 */
+.quiz-scroll { flex: 1; }
+.quiz-field {
+  margin: 24rpx; padding: 28rpx; background: $card-bg; border-radius: $radius; box-shadow: $shadow-sm;
+  animation: quizFadeSlideIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes quizFadeSlideIn {
+  from { opacity: 0; transform: translateY(20rpx); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.progress-bar { height: 8rpx; background: $border; border-radius: 4rpx; overflow: hidden; }
-.progress-fill { height: 100%; background: linear-gradient(90deg, $primary, $accent); transition: width 0.3s; }
-.progress-text { font-size: 22rpx; color: $text-light; text-align: right; display: block; margin-top: 8rpx; }
-
-.quiz-body { flex: 1; padding: 32rpx; overflow-y: auto; }
-
-.question-label {
-  display: flex; align-items: center; gap: 12rpx; margin-bottom: 32rpx; font-size: 32rpx; font-weight: 700;
+.quiz-field-label {
+  display: flex; align-items: center; gap: 12rpx; margin-bottom: 20rpx;
+  font-size: 28rpx; font-weight: 700; color: $text;
 }
 .q-num {
-  width: 48rpx; height: 48rpx; background: $primary; color: #fff; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center; font-size: 24rpx;
+  width: 44rpx; height: 44rpx; background: $primary-light; color: $primary;
+  font-size: 22rpx; font-weight: 800; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
 .type-badge {
-  font-size: 20rpx; padding: 4rpx 12rpx; border-radius: 6rpx; margin-left: auto;
-  &.radio { background: #e8f5e9; color: #4caf50; }
-  &.checkbox { background: #fff3e0; color: #ff9800; }
-  &.input, &.number { background: #e3f2fd; color: #2196f3; }
+  font-size: 20rpx; font-weight: 600; padding: 4rpx 14rpx; border-radius: 8rpx; margin-left: auto; flex-shrink: 0;
+  &.single { background: #e3f2fd; color: #1565c0; }
+  &.multi { background: #fce4ec; color: #c62828; }
+  &.fill { background: #e8f5e9; color: #2e7d32; }
 }
 
-.options-list { display: flex; flex-direction: column; gap: 16rpx; }
-.radio-item, .checkbox-item {
-  display: flex; align-items: center; gap: 16rpx; padding: 24rpx;
-  background: $card-bg; border-radius: $radius; border: 2rpx solid $border;
-  font-size: 28rpx;
-  &.active { border-color: $primary; background: $primary-light; }
+/* 单选/多选组 */
+.quiz-radio-group, .quiz-checkbox-group { display: flex; flex-direction: column; gap: 16rpx; }
+
+.quiz-radio, .quiz-checkbox {
+  display: flex; align-items: center; gap: 20rpx; padding: 24rpx 28rpx;
+  border: 3rpx solid $border; border-radius: $radius-sm; font-size: 28rpx; color: $text;
+  background: #faf8f5; transition: all 0.25s;
+  &:active { transform: scale(0.97); }
+  &.selected { border-color: $primary; background: $primary-light; color: $primary-dark; }
 }
+
 .r-dot {
-  width: 32rpx; height: 32rpx; border: 2rpx solid $border; border-radius: 50%;
-  &.checked { border-color: $primary; background: $primary; box-shadow: inset 0 0 0 6rpx #fff; }
+  width: 32rpx; height: 32rpx; border: 3rpx solid #d4c8b8; border-radius: 50%;
+  flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.25s;
+  &.checked {
+    border-color: $primary; background: $primary;
+    &::after { content: ''; width: 10rpx; height: 10rpx; background: #fff; border-radius: 50%; }
+  }
 }
+
 .c-box {
-  width: 32rpx; height: 32rpx; border: 2rpx solid $border; border-radius: 6rpx;
-  display: flex; align-items: center; justify-content: center; font-size: 20rpx; color: #fff;
-  .active & { background: $primary; border-color: $primary; }
+  width: 32rpx; height: 32rpx; border: 3rpx solid #d4c8b8; border-radius: 6rpx;
+  flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  font-size: 20rpx; color: transparent; transition: all 0.25s;
+  .selected & { border-color: $primary; background: $primary; color: #fff; }
 }
 
-.input-wrap { }
+/* 填空题 */
 .quiz-input {
-  background: $card-bg; border: 2rpx solid $border; padding: 24rpx; border-radius: $radius;
-  font-size: 28rpx; width: 100%;
+  width: 100%; padding: 20rpx 28rpx; font-size: 28rpx; color: $text;
+  background: #faf8f5; border: 3rpx solid $border; border-radius: $radius-sm;
+  transition: border-color 0.25s;
+  &:focus { border-color: $primary; background: #fff; }
+  &.has-value { border-color: #b8d8be; background: #f9fdf9; }
 }
 
+/* 底部导航 */
 .quiz-nav {
-  display: flex; gap: 16rpx; padding: 20rpx 32rpx; background: $card-bg; border-top: 1rpx solid $border;
-  button { min-width: 200rpx; }
+  display: flex; align-items: center; justify-content: space-between; gap: 20rpx;
+  padding: 20rpx 32rpx; background: $card-bg; border-top: 2rpx solid $border;
 }
+.quiz-nav-indicator { font-size: 26rpx; font-weight: 600; color: $text-secondary; white-space: nowrap; min-width: 100rpx; text-align: center; }
+.quiz-nav-btn {
+  display: flex; align-items: center; gap: 8rpx; padding: 22rpx 40rpx;
+  font-size: 28rpx; font-weight: 600; border-radius: $radius;
+  transition: all 0.25s; color: #fff; background: $primary;
+  box-shadow: 0 6rpx 24rpx rgba(249, 115, 22, 0.25);
+  &:active { transform: scale(0.96); opacity: 0.9; }
+  &.prev { background: #fff; color: $text; border: 3rpx solid $border; box-shadow: none; }
+}
+.nav-arrow { font-size: 40rpx; line-height: 1; font-weight: 300; }
+.quiz-submit-btn {
+  display: flex; align-items: center; justify-content: center; padding: 22rpx 40rpx;
+  font-size: 28rpx; font-weight: 700; color: #fff; border-radius: $radius;
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  box-shadow: 0 8rpx 32rpx rgba(79, 172, 254, 0.3);
+  transition: all 0.25s;
+  &:active { transform: scale(0.98); opacity: 0.85; }
+}
+.safe-bottom { padding-bottom: calc(20rpx + env(safe-area-inset-bottom)); }
 </style>
