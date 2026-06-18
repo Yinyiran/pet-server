@@ -1,0 +1,185 @@
+/* ========================================
+   梵优茗宠 — SCSS Mixins
+   提取页面间重复的样式模式
+   ======================================== */
+
+@import './variables.scss';
+
+/* 页面容器 */
+@mixin page-container {
+  min-height: 100vh;
+  background: $bg;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 页面头部（暖色渐变 + 返回按钮 + 标题 + 右侧槽） */
+@mixin page-header {
+  background: $header-gradient;
+  padding: 24rpx 32rpx;
+  padding-top: calc(var(--status-bar-height, 44px) + 16rpx);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin back-btn {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 28rpx;
+  color: $primary;
+  width: 120rpx;
+}
+
+@mixin arrow-icon {
+  width: 16rpx;
+  height: 16rpx;
+  border-top: 4rpx solid $primary;
+  border-left: 4rpx solid $primary;
+  transform: rotate(-45deg);
+}
+
+@mixin page-title {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: $text;
+}
+
+/* 扁平表单字段 */
+@mixin form-field {
+  margin-bottom: 28rpx;
+}
+
+@mixin form-label {
+  display: block;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: $text;
+  margin-bottom: 12rpx;
+}
+
+@mixin form-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 20rpx 24rpx;
+  font-size: 26rpx;
+  color: $text;
+  background: #faf8f5;
+  border: 2rpx solid $border;
+  border-radius: $radius-sm;
+  transition: border-color 0.2s;
+
+  &.placeholder {
+    color: $text-light;
+  }
+}
+
+@mixin form-textarea {
+  @include form-input;
+  min-height: 160rpx;
+  line-height: 1.6;
+}
+
+/* 底部固定栏 */
+@mixin bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16rpx 32rpx;
+  background: $card-bg;
+  border-top: 1rpx solid $border;
+}
+
+@mixin safe-bottom {
+  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
+}
+
+/* 主按钮（橙色渐变） */
+@mixin btn-primary {
+  width: 100%;
+  height: 88rpx;
+  line-height: 88rpx;
+  background: linear-gradient(135deg, $primary, #ea580c);
+  color: #fff;
+  font-size: 32rpx;
+  font-weight: 700;
+  border-radius: $radius-lg;
+  border: none;
+  box-shadow: 0 8rpx 24rpx rgba(249, 115, 22, 0.25);
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+/* 次按钮（白色描边） */
+@mixin btn-outline {
+  background: $card-bg;
+  border: 3rpx solid $primary;
+  color: $primary;
+  font-size: 28rpx;
+  font-weight: 600;
+  border-radius: $radius-lg;
+}
+
+/* 分段控件 Tab */
+@mixin segmented-tabs {
+  display: flex;
+  gap: 0;
+  background: #f0ece6;
+  border-radius: $radius-sm;
+  padding: 6rpx;
+  overflow: hidden;
+}
+
+@mixin segmented-tab {
+  flex: 1;
+  text-align: center;
+  padding: 18rpx 0;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: $text-secondary;
+  border-radius: 12rpx;
+  transition: all 0.25s ease;
+
+  &.active {
+    background: #fff;
+    color: $primary;
+    box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.08);
+  }
+}
+
+/* 药丸式筛选标签 */
+@mixin filter-chip {
+  padding: 12rpx 28rpx;
+  border-radius: 40rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+  background: #faf8f5;
+  border: 2rpx solid $border;
+  color: $text;
+
+  &.active {
+    background: $primary;
+    color: #fff;
+    border-color: $primary;
+  }
+}
+
+/* 空状态 */
+@mixin empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64rpx 32rpx;
+}
+
+/* 卡片基础 */
+@mixin card {
+  background: $card-bg;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
+}

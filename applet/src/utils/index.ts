@@ -45,3 +45,34 @@ export function formatCountdown(seconds: number): { h: string; m: string; s: str
   const s = (seconds % 60).toString().padStart(2, '0')
   return { h, m, s }
 }
+
+/** 格式化日期为 M/D HH:MM */
+export function formatDate(dateStr: string): string {
+  if (!dateStr) return ''
+  const d = new Date(dateStr)
+  if (isNaN(d.getTime())) return dateStr
+  return `${d.getMonth() + 1}/${d.getDate()} ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`
+}
+
+/** 格式化日期为 YYYY/M/D */
+export function formatDateLong(dateStr: string): string {
+  if (!dateStr) return ''
+  const d = new Date(dateStr)
+  if (isNaN(d.getTime())) return dateStr
+  return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}`
+}
+
+/** 格式化金额为两位小数 */
+export function formatMoney(num: number): string {
+  return (num || 0).toFixed(2)
+}
+
+/** 格式化千分位金额 */
+export function formatMoneyThousand(num: number): string {
+  return (num || 0).toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+}
+
+/** 手机号验证 */
+export function isValidPhone(phone: string): boolean {
+  return /^1\d{10}$/.test(phone)
+}
