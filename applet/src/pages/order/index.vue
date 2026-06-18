@@ -11,13 +11,17 @@ const tabs = [
   { key: 'all', label: '全部' },
   { key: 'pending', label: '待付款' },
   { key: 'paid', label: '待发货' },
-  { key: 'shipped', label: '待收货' },
+  { key: 'shipped', label: '已发货' },
   { key: 'completed', label: '已完成' },
 ]
 
-const statusMap: Record<string, string> = {
-  pending: '待付款', paid: '待发货', shipped: '待收货',
-  completed: '已完成', cancelled: '已取消', refunded: '已退款',
+const statusMap: Record<string, { label: string; color: string; bg: string }> = {
+  pending:   { label: '待付款', color: '#f5c842', bg: '#fef9e7' },
+  paid:      { label: '待发货', color: '#f97316', bg: '#fff3e0' },
+  shipped:   { label: '已发货', color: '#2196f3', bg: '#e3f2fd' },
+  completed: { label: '已完成', color: '#7bc67e', bg: '#f0f9eb' },
+  cancelled: { label: '已取消', color: '#b8a898', bg: '#f5f2ee' },
+  refunded:  { label: '已退款', color: '#e05555', bg: '#fef0f0' },
 }
 
 const filteredOrders = computed(() => {
@@ -76,65 +80,79 @@ function formatDate(dateStr: string) {
 
 function formatMoney(num: number) { return (num || 0).toFixed(2) }
 
+function getStatusInfo(status: string) {
+  return statusMap[status] || { label: status, color: '#8c7b6e', bg: '#f5f2ee' }
+}
+
+function getItemsPreview(order: any) {
+  const items = order.items || order.goods || [order]
+  return items.map((g: any) => g.emoji || '📦').join(' ')
+}
+
+function getItemsNames(order: any) {
+  const items = order.items || order.goods || [order]
+  return items.map((g: any) => g.name || g.productName || '商品').join('、')
+}
+
 onShow(loadOrders)
 onMounted(loadOrders)
 </script>
 
 <template>
   <view class="page-container">
+    <!-- 导航栏 -->
     <view class="page-header">
       <view class="back-btn" @tap="uni.navigateBack()">
         <view class="arrow-icon" /><text>返回</text>
       </view>
-      <text class="page-title">我的订单</text>
+      <text class="page-title">📦 我的订单</text>
       <view style="width: 80rpx" />
     </view>
 
-    <!-- tabs -->
-    <view class="tab-row">
-      <view v-for="t in tabs" :key="t.key" class="tab-item" :class="{ active: activeTab === t.key }" @tap="activeTab = t.key; loadOrders()">
-        {{ t.label }}
-      </view>
+    <!-- 分段式标签 -->
+    <view class="tab-segment">
+      <view
+        v-for="t in tabs" :key="t.key"
+        class="tab-segment-item"
+        :class="{ active: activeTab === t.key }"
+        @tap="activeTab = t.key; loadOrders()"
+      >{{ t.label }}</view>
     </view>
 
     <scroll-view scroll-y class="scroll-content">
       <view class="order-list">
         <view v-for="order in filteredOrders" :key="order.id" class="order-card" @tap="viewDetail(order.id)">
-          <!-- 订单头部 -->
-          <view class="order-top">
-            <text class="order-no">订单号: {{ order.orderNo || order.id }}</text>
-            <text class="order-status" :class="order.status">{{ statusMap[order.status] || order.status }}</text>
-          </view>
-          <!-- 商品信息 -->
-          <view class="order-goods">
-            <view v-for="(g, i) in (order.items || order.goods || [order])" :key="i" class="goods-row">
-              <view class="goods-img">
-                <text v-if="!g.image && !g.productImage" class="img-placeholder">📦</text>
-                <image v-else :src="g.image || g.productImage" mode="aspectFill" class="img-full" />
-              </view>
-              <view class="goods-info">
-                <text class="goods-name">{{ g.name || g.productName || '商品' }}</text>
-                <text class="goods-spec" v-if="g.spec">{{ g.spec }}</text>
-              </view>
-              <view class="goods-right">
-                <text class="goods-price">¥{{ formatMoney(g.price || 0) }}</text>
-                <text class="goods-qty">x{{ g.quantity || 1 }}</text>
-              </view>
+          <!-- 卡片头部 -->
+          <view class="order-card-header">
+            <text class="order-card-no">订单号: {{ order.orderNo || order.id }}</text>
+            <view class="order-card-status" :style="{ color: getStatusInfo(order.status).color, background: getStatusInfo(order.status).bg }">
+              {{ getStatusInfo(order.status).label }}
             </view>
           </view>
-          <!-- 底部操作 -->
-          <view class="order-bottom">
-            <text class="order-total">合计: <text class="total-num">¥{{ formatMoney(order.totalAmount || order.amount || 0) }}</text></text>
-            <view class="order-actions">
-              <button v-if="order.status === 'pending'" class="action-btn outline" @tap.stop="cancelOrder(order.id)">取消</button>
-              <button v-if="order.status === 'pending'" class="action-btn primary" @tap.stop="">去付款</button>
-              <button v-if="order.status === 'shipped'" class="action-btn primary" @tap.stop="confirmReceive(order.id)">确认收货</button>
+          <!-- 商品预览 -->
+          <view class="order-card-items">
+            <text class="items-preview">{{ getItemsPreview(order) }}</text>
+            <text class="items-names">{{ getItemsNames(order) }}</text>
+          </view>
+          <!-- 底部 -->
+          <view class="order-card-bottom">
+            <text class="order-card-time">{{ formatDate(order.createTime) }}</text>
+            <view class="order-card-right">
+              <text class="order-card-total">合计 <b>¥{{ formatMoney(order.totalAmount || order.amount || 0) }}</b></text>
+              <view class="order-card-actions">
+                <view v-if="order.status === 'pending'" class="action-pill outline" @tap.stop="cancelOrder(order.id)">取消</view>
+                <view v-if="order.status === 'pending'" class="action-pill primary" @tap.stop="">去付款</view>
+                <view v-if="order.status === 'shipped'" class="action-pill primary" @tap.stop="confirmReceive(order.id)">确认收货</view>
+                <view class="action-pill outline" @tap.stop="viewDetail(order.id)">详情</view>
+              </view>
             </view>
           </view>
         </view>
+
+        <!-- 空状态 -->
         <view v-if="filteredOrders.length === 0 && !loading" class="empty-state">
-          <text class="empty-icon">📦</text>
-          <text>暂无订单</text>
+          <view class="empty-icon">📦</view>
+          <view class="empty-text">暂无订单</view>
         </view>
       </view>
       <view style="height: 40rpx" />
@@ -153,70 +171,58 @@ onMounted(loadOrders)
 }
 .back-btn { display: flex; align-items: center; gap: 8rpx; font-size: 28rpx; color: $primary; width: 80rpx; }
 .arrow-icon { width: 16rpx; height: 16rpx; border-top: 4rpx solid $primary; border-left: 4rpx solid $primary; transform: rotate(-45deg); }
-.page-title { font-size: 34rpx; font-weight: 700; color: $text; }
+.page-title { font-size: 34rpx; font-weight: 800; color: $text; }
 
-.tab-row {
-  display: flex; padding: 0; gap: 0;
-  background: $card-bg; border-bottom: 1rpx solid $border;
+/* 分段式标签 */
+.tab-segment {
+  display: flex; gap: 0; margin: 16rpx 24rpx 12rpx;
+  background: #f5f2ee; border-radius: $radius-sm; padding: 6rpx;
 }
-.tab-item {
-  flex: 1; text-align: center; padding: 20rpx 0; font-size: 26rpx; color: $text-secondary;
-  border-bottom: 4rpx solid transparent;
-  &.active { color: $primary; font-weight: 700; border-bottom-color: $primary; }
+.tab-segment-item {
+  flex: 1; text-align: center; padding: 14rpx 0; font-size: 22rpx; font-weight: 600;
+  color: $text-secondary; border-radius: 12rpx; transition: all 0.25s; white-space: nowrap;
+  &.active { background: $card-bg; color: $text; box-shadow: 0 2rpx 6rpx rgba(0,0,0,0.06); }
 }
 
 .scroll-content { flex: 1; }
+.order-list { padding: 0 24rpx; display: flex; flex-direction: column; gap: 16rpx; }
 
-.order-list { padding: 16rpx 32rpx 0; }
+/* 订单卡片 */
 .order-card {
-  background: $card-bg; border-radius: $radius-lg; margin-bottom: 16rpx;
-  overflow: hidden; box-shadow: $shadow-sm;
+  background: #faf8f5; border-radius: $radius-sm; border: 2rpx solid $border;
+  padding: 20rpx 24rpx; transition: box-shadow 0.2s;
+  &:active { box-shadow: inset 0 0 0 2rpx $border; }
 }
-.order-top {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 20rpx 24rpx; border-bottom: 1rpx solid $border;
+.order-card-header {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 12rpx;
 }
-.order-no { font-size: 24rpx; color: $text-light; }
-.order-status {
-  font-size: 24rpx; font-weight: 600;
-  &.pending { color: $warning; }
-  &.paid { color: $primary; }
-  &.shipped { color: #2196f3; }
-  &.completed { color: $success; }
-  &.cancelled { color: $text-light; }
+.order-card-no { font-size: 22rpx; color: $text-light; }
+.order-card-status {
+  font-size: 22rpx; font-weight: 700; padding: 2rpx 16rpx; border-radius: 8rpx;
 }
-
-.order-goods { padding: 16rpx 24rpx; }
-.goods-row {
-  display: flex; align-items: center; gap: 16rpx; padding: 8rpx 0;
+.order-card-items {
+  display: flex; align-items: center; gap: 12rpx; margin-bottom: 12rpx;
 }
-.goods-img {
-  width: 100rpx; height: 100rpx; border-radius: $radius; background: $bg;
-  display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden;
+.items-preview { font-size: 40rpx; letter-spacing: 4rpx; flex-shrink: 0; }
+.items-names { font-size: 24rpx; color: $text; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+.order-card-bottom {
+  display: flex; align-items: center; justify-content: space-between;
 }
-.img-placeholder { font-size: 40rpx; }
-.img-full { width: 100%; height: 100%; }
-.goods-info { flex: 1; }
-.goods-name { font-size: 26rpx; font-weight: 600; color: $text; display: block; }
-.goods-spec { font-size: 22rpx; color: $text-light; }
-.goods-right { text-align: right; flex-shrink: 0; }
-.goods-price { font-size: 26rpx; font-weight: 600; color: $text; display: block; }
-.goods-qty { font-size: 22rpx; color: $text-light; }
-
-.order-bottom {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 16rpx 24rpx; border-top: 1rpx solid $border;
+.order-card-time { font-size: 20rpx; color: $text-light; }
+.order-card-right { display: flex; align-items: center; gap: 16rpx; }
+.order-card-total { font-size: 24rpx; color: $text-secondary;
+  b { color: $accent; font-size: 28rpx; font-weight: 800; }
 }
-.order-total { font-size: 26rpx; color: $text-secondary; }
-.total-num { font-size: 30rpx; font-weight: 700; color: $primary; }
-.order-actions { display: flex; gap: 12rpx; }
-.action-btn {
-  padding: 10rpx 28rpx; border-radius: 30rpx; font-size: 24rpx; font-weight: 600; border: none;
-  line-height: 1.5;
+.order-card-actions { display: flex; gap: 8rpx; }
+.action-pill {
+  font-size: 22rpx; font-weight: 600; padding: 6rpx 20rpx; border-radius: 20rpx; transition: opacity 0.2s;
+  &.primary { background: $primary; color: #fff; }
   &.outline { background: $card-bg; border: 2rpx solid $border; color: $text-secondary; }
-  &.primary { background: linear-gradient(135deg, $primary, $primary-dark); color: #fff; }
+  &:active { opacity: 0.8; }
 }
 
-.empty-state { text-align: center; padding: 80rpx 0; color: $text-light; font-size: 28rpx; }
-.empty-icon { font-size: 60rpx; display: block; margin-bottom: 16rpx; }
+/* 空状态 */
+.empty-state { text-align: center; padding: 120rpx 0; }
+.empty-icon { font-size: 80rpx; margin-bottom: 16rpx; }
+.empty-text { font-size: 28rpx; color: $text-light; }
 </style>
