@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import { ResultData } from 'src/common/utils/result';
 import { CommissionTierEntity } from './entities/commission-tier.entity';
 import { UserCommissionEntity } from './entities/user-commission.entity';
@@ -17,6 +17,7 @@ export class CommissionService {
     @InjectRepository(UserInviteEntity) private readonly inviteRepo: Repository<UserInviteEntity>,
     @InjectRepository(CommissionLogEntity) private readonly logRepo: Repository<CommissionLogEntity>,
     @InjectRepository(WithdrawEntity) private readonly withdrawRepo: Repository<WithdrawEntity>,
+    private readonly dataSource: DataSource,
   ) {}
 
   // ====== 分佣等级 ======
@@ -70,7 +71,7 @@ export class CommissionService {
   }
 
   /**
-   * 审核提现（修复：余额回滚）
+   * 审核提现（修复：事务 + 原子操作防并发）
    * 通过：frozen_amount 扣减
    * 拒绝：available_balance 回滚，frozen_amount 扣减
    */
@@ -79,29 +80,38 @@ export class CommissionService {
     if (!withdraw) return ResultData.fail(500, '提现记录不存在');
     if (withdraw.status !== 'pending') return ResultData.fail(500, '该提现已处理');
 
-    const uc = await this.ucRepo.findOne({ where: { userId: withdraw.userId } });
-    if (!uc) return ResultData.fail(500, '分佣账户不存在');
+    return await this.dataSource.transaction(async (manager) => {
+      const update: any = { status: dto.status, auditRemark: dto.auditRemark };
 
-    const update: any = { status: dto.status, auditRemark: dto.auditRemark };
+      if (dto.status === 'completed') {
+        // 通过并打款：原子扣减冻结金额
+        update.finishedAt = new Date();
+        const result = await manager.createQueryBuilder()
+          .update(UserCommissionEntity)
+          .set({ frozenAmount: () => 'GREATEST(frozen_amount - :amt, 0)', updatedAt: new Date() })
+          .where('userId = :uid AND frozen_amount >= :amt', { uid: withdraw.userId, amt: withdraw.amount })
+          .execute();
+        if (result.affected === 0) {
+          return ResultData.fail(500, '冻结金额不足，数据异常');
+        }
+      } else if (dto.status === 'rejected') {
+        // 拒绝：冻结金额回滚到可提现余额（原子操作）
+        await manager.createQueryBuilder()
+          .update(UserCommissionEntity)
+          .set({
+            availableBalance: () => 'available_balance + :amt',
+            frozenAmount: () => 'GREATEST(frozen_amount - :amt, 0)',
+            updatedAt: new Date(),
+          })
+          .where('userId = :uid', { uid: withdraw.userId, amt: withdraw.amount })
+          .execute();
+      } else {
+        return ResultData.fail(500, '不支持的状态');
+      }
 
-    if (dto.status === 'completed') {
-      // 通过并打款：扣减冻结金额
-      update.finishedAt = new Date();
-      await this.ucRepo.update(uc.id, {
-        frozenAmount: Math.max(0, Number(uc.frozenAmount) - Number(withdraw.amount)),
-        updatedAt: new Date(),
-      });
-    } else if (dto.status === 'rejected') {
-      // 拒绝：冻结金额回滚到可提现余额
-      await this.ucRepo.update(uc.id, {
-        availableBalance: Number(uc.availableBalance) + Number(withdraw.amount),
-        frozenAmount: Math.max(0, Number(uc.frozenAmount) - Number(withdraw.amount)),
-        updatedAt: new Date(),
-      });
-    }
-
-    await this.withdrawRepo.update(id, update);
-    return ResultData.ok();
+      await manager.update(WithdrawEntity, id, update);
+      return ResultData.ok();
+    });
   }
 
   // ====== 小程序端 ======
@@ -122,27 +132,30 @@ export class CommissionService {
   }
 
   /**
-   * 申请提现（修复：余额校验 + 冻结）
+   * 申请提现（修复：事务 + 原子扣减防并发超提）
    * 校验：最低 10 元、金额 <= available_balance
    * 操作：available_balance -= amount, frozen_amount += amount
    */
   async applyWithdraw(userId: number, dto: ApplyWithdrawDto) {
     if (!dto.amount || dto.amount < 10) return ResultData.fail(500, '最低提现金额为 ¥10');
 
-    const uc = await this.ucRepo.findOne({ where: { userId } });
-    if (!uc) return ResultData.fail(500, '分佣账户不存在');
-    if (Number(uc.availableBalance) < dto.amount) return ResultData.fail(500, `可提现余额不足，当前可提现 ¥${uc.availableBalance}`);
+    return await this.dataSource.transaction(async (manager) => {
+      // 原子扣减可提现余额：UPDATE ... SET available_balance = available_balance - amt WHERE user_id = ? AND available_balance >= amt
+      const result = await manager.createQueryBuilder()
+        .update(UserCommissionEntity)
+        .set({
+          availableBalance: () => 'available_balance - :amt',
+          frozenAmount: () => 'frozen_amount + :amt',
+          updatedAt: new Date(),
+        })
+        .where('userId = :uid AND available_balance >= :amt', { uid: userId, amt: dto.amount })
+        .execute();
+      if (result.affected === 0) return ResultData.fail(500, '可提现余额不足');
 
-    // 冻结余额
-    await this.ucRepo.update(uc.id, {
-      availableBalance: Number(uc.availableBalance) - dto.amount,
-      frozenAmount: Number(uc.frozenAmount) + dto.amount,
-      updatedAt: new Date(),
+      const withdrawNo = 'WD' + Date.now() + Math.random().toString(36).slice(2, 6).toUpperCase();
+      await manager.save(WithdrawEntity, { ...dto, userId, withdrawNo, status: 'pending', appliedAt: new Date() });
+      return ResultData.ok();
     });
-
-    const withdrawNo = 'WD' + Date.now() + Math.random().toString(36).slice(2, 6).toUpperCase();
-    await this.withdrawRepo.save({ ...dto, userId, withdrawNo, status: 'pending', appliedAt: new Date() });
-    return ResultData.ok();
   }
 
   /**
@@ -193,13 +206,17 @@ export class CommissionService {
         status: 'pending', // 待结算，收货后转为 settled
       });
 
-      // 更新分佣账户的 pending_amount
-      await this.ucRepo.update(uc.id, {
-        pendingAmount: Number(uc.pendingAmount) + commissionAmount,
-        totalEarned: Number(uc.totalEarned) + commissionAmount,
-        thisMonthEarned: Number(uc.thisMonthEarned) + commissionAmount,
-        updatedAt: new Date(),
-      });
+      // 原子更新分佣账户：pending_amount / total_earned / this_month_earned 累加
+      await this.ucRepo.createQueryBuilder()
+        .update(UserCommissionEntity)
+        .set({
+          pendingAmount: () => 'pending_amount + :amt',
+          totalEarned: () => 'total_earned + :amt',
+          thisMonthEarned: () => 'this_month_earned + :amt',
+          updatedAt: new Date(),
+        })
+        .where('userId = :uid', { uid: currentUserId, amt: commissionAmount })
+        .execute();
 
       childRate = currentRate;
 
@@ -220,15 +237,55 @@ export class CommissionService {
     for (const log of logs) {
       await this.logRepo.update(log.id, { status: 'settled', settledAt: new Date() });
 
-      // pending_amount → available_balance
-      const uc = await this.ucRepo.findOne({ where: { userId: log.userId } });
-      if (uc) {
-        await this.ucRepo.update(uc.id, {
-          pendingAmount: Math.max(0, Number(uc.pendingAmount) - Number(log.amount)),
-          availableBalance: Number(uc.availableBalance) + Number(log.amount),
+      // 原子操作：pending_amount → available_balance
+      await this.ucRepo.createQueryBuilder()
+        .update(UserCommissionEntity)
+        .set({
+          pendingAmount: () => 'GREATEST(pending_amount - :amt, 0)',
+          availableBalance: () => 'available_balance + :amt',
           updatedAt: new Date(),
-        });
+        })
+        .where('userId = :uid', { uid: log.userId, amt: log.amount })
+        .execute();
+    }
+  }
+
+  /**
+   * 回滚佣金（新增）
+   * 取消订单/退款时，将佣金作废，并扣回对应金额
+   * 已结算(settled)的佣金需从 available_balance 扣回（如存在）
+   */
+  async revokeCommission(orderId: number) {
+    const logs = await this.logRepo.find({ where: { orderId } });
+    for (const log of logs) {
+      if (log.status === 'revoked') continue;
+
+      if (log.status === 'pending') {
+        // 待结算：原子扣回 pending_amount 和 totalEarned
+        await this.ucRepo.createQueryBuilder()
+          .update(UserCommissionEntity)
+          .set({
+            pendingAmount: () => 'GREATEST(pending_amount - :amt, 0)',
+            totalEarned: () => 'GREATEST(total_earned - :amt, 0)',
+            thisMonthEarned: () => 'GREATEST(this_month_earned - :amt, 0)',
+            updatedAt: new Date(),
+          })
+          .where('userId = :uid', { uid: log.userId, amt: log.amount })
+          .execute();
+      } else if (log.status === 'settled') {
+        // 已结算：从可提现余额扣回（max(0) 保护，可能已被提现）
+        await this.ucRepo.createQueryBuilder()
+          .update(UserCommissionEntity)
+          .set({
+            availableBalance: () => 'GREATEST(available_balance - :amt, 0)',
+            totalEarned: () => 'GREATEST(total_earned - :amt, 0)',
+            updatedAt: new Date(),
+          })
+          .where('userId = :uid', { uid: log.userId, amt: log.amount })
+          .execute();
       }
+
+      await this.logRepo.update(log.id, { status: 'revoked' });
     }
   }
 

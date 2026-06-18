@@ -38,7 +38,7 @@ export class CommissionLogEntity {
   orderAmount: number;
 
   @Index('idx_status')
-  @Column({ type: 'varchar', name: 'status', length: 16, default: 'pending', comment: '结算状态: pending/settled' })
+  @Column({ type: 'varchar', name: 'status', length: 16, default: 'pending', comment: '结算状态: pending/settled/revoked' })
   status: string;
 
   @Column({ type: 'datetime', name: 'settled_at', nullable: true, comment: '结算时间' })
