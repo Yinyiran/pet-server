@@ -45,7 +45,7 @@ db:
 # redis 配置
 redis:
   host: 'localhost'
-  password: '*********'
+  password: ''
   port: 6379
   db: 2
   keyPrefix: ''
@@ -67,6 +67,8 @@ perm:
         { path: '/logout', method: 'POST' },
         { path: '/perm/{id}', method: 'GET' },
         { path: '/upload', method: 'POST' },
+        { path: '/app/user/wxLogin', method: 'POST' },
+        { path: '/app/order/payNotify', method: 'POST' },
       ]
 
 # 用户相关
