@@ -3,10 +3,10 @@
 </route>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
-import { bannerApi, bundleApi, categoryApi, productApi, liveRoomApi } from '@/api'
+import { bannerApi, bundleApi, categoryApi, liveRoomApi, productApi } from '@/api'
 import { useCartStore } from '@/store'
 import { useUserStore } from '@/store/modules/user'
+import { onMounted, onUnmounted, ref } from 'vue'
 
 const cartStore = useCartStore()
 const userStore = useUserStore()
@@ -358,7 +358,7 @@ function openDouyin() {
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/variables.scss';
+@use '@/styles/variables' as *;
 
 .page-container {
   min-height: 100vh;

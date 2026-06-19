@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
 import { courseApi } from '@/api'
+import { onMounted, ref } from 'vue'
 
 const courseList = ref<any[]>([])
 
@@ -121,7 +121,7 @@ onMounted(async () => {
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/variables.scss';
+@use '@/styles/variables' as *;
 
 .page-container {
   min-height: 100vh;

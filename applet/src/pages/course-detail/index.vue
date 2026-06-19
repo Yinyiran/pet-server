@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { onLoad } from '@dcloudio/uni-app'
 import { courseApi } from '@/api'
+import { onLoad } from '@dcloudio/uni-app'
+import { ref } from 'vue'
 
 const courseKey = ref('')
 const course = ref<any>(null)
@@ -195,7 +195,7 @@ function contactService() {
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/variables.scss';
+@use '@/styles/variables' as *;
 
 .page-container { min-height: 100vh; background: $bg; display: flex; flex-direction: column; }
 

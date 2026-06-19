@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
 import { merchantApi } from '@/api'
+import { onMounted, ref } from 'vue'
 
 const currentCity = ref('杭州市')
 const activeFilter = ref('all')
@@ -184,7 +184,7 @@ onMounted(loadMerchants)
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/variables.scss';
+@use '@/styles/variables' as *;
 
 .page-container {
   min-height: 100vh;

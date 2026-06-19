@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { useCartStore } from '@/store'
 import { orderApi } from '@/api'
-import { checkLogin } from '@/utils/auth'
+import { useCartStore } from '@/store'
 import { formatPrice } from '@/utils'
+import { checkLogin } from '@/utils/auth'
+import { computed, onMounted, ref } from 'vue'
 
 const cartStore = useCartStore()
 
@@ -121,7 +121,7 @@ onMounted(loadCart)
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/variables.scss';
+@use '@/styles/variables' as *;
 
 .cart-page {
   display: flex; flex-direction: column; height: 100vh; background: $bg;

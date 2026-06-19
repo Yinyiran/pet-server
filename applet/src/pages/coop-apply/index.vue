@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import { merchantApi } from '@/api'
+import { ref } from 'vue'
 
 const typeOptions = [
   { value: 'shop', label: '宠物店（用品/活体）' },
@@ -148,7 +148,7 @@ async function submitCoop() {
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/variables.scss';
+@use '@/styles/variables' as *;
 
 .page-container { min-height: 100vh; background: $bg; display: flex; flex-direction: column; }
 

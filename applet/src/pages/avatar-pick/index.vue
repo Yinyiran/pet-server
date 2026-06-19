@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import { useUserStore } from '@/store'
+import { ref } from 'vue'
 
 const userStore = useUserStore()
 const saving = ref(false)
@@ -69,7 +69,7 @@ async function selectAvatar(emoji: string) {
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/variables.scss';
+@use '@/styles/variables' as *;
 
 .page-container { min-height: 100vh; background: $bg; display: flex; flex-direction: column; }
 

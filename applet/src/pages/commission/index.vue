@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
 import { commissionApi } from '@/api'
+import { computed, onMounted, ref } from 'vue'
 
 const account = ref({ totalEarning: 0, availableBalance: 0, withdrawn: 0, pendingBalance: 0 })
 const logs = ref<any[]>([])
@@ -141,7 +141,7 @@ onMounted(async () => {
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/variables.scss';
+@use '@/styles/variables' as *;
 
 .page-container { min-height: 100vh; background: $bg; display: flex; flex-direction: column; }
 
