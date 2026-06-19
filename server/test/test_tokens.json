@@ -1,0 +1,13 @@
+{
+  "user1_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoicGV0XzEiLCJ1c2VySWQiOiIxIiwiaWF0IjoxNzgxODAwMTE4fQ.Buf97FrlDz9iicYFujecXKKyfo09NMg7p_qN9DNd-2M",
+  "user2_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoicGV0XzIiLCJ1c2VySWQiOiIyIiwiaWF0IjoxNzgxODAwMTE4fQ.fAw5ys2K3tdS9R1Q1c-Hy2061ox1eIkIkTUxXaNtEkg",
+  "user3_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoicGV0XzMiLCJ1c2VySWQiOiIzIiwiaWF0IjoxNzgxODAwMTE4fQ.otB_aTrkk9VkrBajgnJwgpPZY4ZgtblWlraF5-wZSgU",
+  "user1_id": "1",
+  "user2_id": "2",
+  "user3_id": "3",
+  "test_product_id": "10",
+  "test_product_name": "逗猫棒套装 5件组",
+  "test_product_price": 19.9,
+  "test_product_stock": 200,
+  "test_address_id": "3"
+}
