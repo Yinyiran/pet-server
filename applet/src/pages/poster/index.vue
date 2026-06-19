@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { onLoad } from '@dcloudio/uni-app'
 import { mealApi } from '@/api'
+import { onLoad } from '@dcloudio/uni-app'
+import { computed, onMounted, ref } from 'vue'
 
 const petInfo = ref<any>(null)
 const constitution = ref<any>(null)
@@ -175,7 +175,7 @@ const isCat = computed(() => petInfo.value?.petType !== 'dog')
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/variables.scss';
+@use '@/styles/variables' as *;
 
 .poster-page { min-height: 100vh; background: linear-gradient(180deg, #fdf0e6 0%, $bg 30%); display: flex; flex-direction: column; }
 

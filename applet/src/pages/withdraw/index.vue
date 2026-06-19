@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
 import { commissionApi } from '@/api'
+import { computed, onMounted, ref } from 'vue'
 
 const availableBalance = ref(0)
 const withdrawAmount = ref('')
@@ -147,7 +147,7 @@ onMounted(loadBalance)
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/variables.scss';
+@use '@/styles/variables' as *;
 
 .page-container { min-height: 100vh; background: $bg; display: flex; flex-direction: column; }
 

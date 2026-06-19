@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { onLoad } from '@dcloudio/uni-app'
 import { orderApi } from '@/api'
+import { onLoad } from '@dcloudio/uni-app'
+import { onMounted, ref } from 'vue'
 
 const order = ref<any>(null)
 const loading = ref(true)
@@ -177,7 +177,7 @@ onMounted(loadDetail)
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/variables.scss';
+@use '@/styles/variables' as *;
 
 .page-container { min-height: 100vh; background: $bg; display: flex; flex-direction: column; }
 .page-header {

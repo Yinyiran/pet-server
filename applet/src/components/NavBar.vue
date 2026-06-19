@@ -79,7 +79,7 @@ function handleRight() {
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/variables.scss';
+@use '@/styles/variables' as *;
 
 .nav-bar {
   position: sticky;

@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { onShow } from '@dcloudio/uni-app'
-import { useUserStore } from '@/store'
 import { userApi } from '@/api'
+import { useUserStore } from '@/store'
 import { maskPhone } from '@/utils'
-import { isLoggedIn, checkLogin } from '@/utils/auth'
+import { checkLogin, isLoggedIn } from '@/utils/auth'
+import { onShow } from '@dcloudio/uni-app'
+import { onMounted, ref } from 'vue'
 
 const userStore = useUserStore()
 
@@ -218,7 +218,7 @@ onMounted(async () => {
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/variables.scss';
+@use '@/styles/variables' as *;
 
 .page-container {
   min-height: 100vh;

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { onLoad } from '@dcloudio/uni-app'
 import { userApi } from '@/api'
+import { onLoad } from '@dcloudio/uni-app'
+import { ref } from 'vue'
 
 const petForm = ref({ type: 'cat', name: '', breed: '', weight: '', birthday: '' })
 const editingPetId = ref<number | null>(null)
@@ -153,7 +153,7 @@ async function deletePet() {
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/variables.scss';
+@use '@/styles/variables' as *;
 
 .page-container { min-height: 100vh; background: $bg; display: flex; flex-direction: column; }
 

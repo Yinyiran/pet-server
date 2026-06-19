@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, computed, nextTick } from 'vue'
 import { mealApi } from '@/api'
 import { checkLogin } from '@/utils/auth'
+import { computed, ref } from 'vue'
 
 /** 宠物类型 */
 const petType = ref<'cat' | 'dog'>('cat')
@@ -218,7 +218,7 @@ async function submitQuiz() {
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/variables.scss';
+@use '@/styles/variables' as *;
 
 .quiz-page { display: flex; flex-direction: column; height: 100vh; background: $bg; }
 

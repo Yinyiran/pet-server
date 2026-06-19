@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { onLoad } from '@dcloudio/uni-app'
-import { productApi, categoryApi } from '@/api'
+import { categoryApi, productApi } from '@/api'
 import { debounce } from '@/utils'
+import { onLoad } from '@dcloudio/uni-app'
+import { computed, onMounted, ref } from 'vue'
 
 interface Category {
   id: string
@@ -198,7 +198,7 @@ onMounted(async () => {
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/variables.scss';
+@use '@/styles/variables' as *;
 
 .shop-page { height: 100vh; display: flex; flex-direction: column; background: $bg; }
 

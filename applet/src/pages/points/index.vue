@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
 import { financeApi } from '@/api'
+import { computed, onMounted, ref } from 'vue'
 
 const totalPoints = ref(0)
 const totalEarned = ref(0)
@@ -200,7 +200,7 @@ onMounted(async () => {
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/variables.scss';
+@use '@/styles/variables' as *;
 
 .page-container { min-height: 100vh; background: $bg; display: flex; flex-direction: column; }
 

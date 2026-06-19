@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
 import { commissionApi } from '@/api'
+import { computed, onMounted, ref } from 'vue'
 
 const stats = ref({ total: 0, views: 0 })
 const members = ref<any[]>([])
@@ -156,7 +156,7 @@ onMounted(loadTeam)
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/variables.scss';
+@use '@/styles/variables' as *;
 
 .page-container { min-height: 100vh; background: $bg; display: flex; flex-direction: column; }
 

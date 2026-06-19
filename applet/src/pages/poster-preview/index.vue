@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
+import { ref } from 'vue'
 
 const previewImage = ref('')
 const posterTitle = ref('')
@@ -81,7 +81,7 @@ function sharePoster() {
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/variables.scss';
+@use '@/styles/variables' as *;
 
 .page-container {
   min-height: 100vh;

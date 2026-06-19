@@ -3,11 +3,11 @@
 </route>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { onLoad } from '@dcloudio/uni-app'
 import { productApi } from '@/api'
 import { useCartStore } from '@/store'
 import { useUserStore } from '@/store/modules/user'
+import { onLoad } from '@dcloudio/uni-app'
+import { computed, onMounted, ref } from 'vue'
 
 const cartStore = useCartStore()
 const userStore = useUserStore()
@@ -276,7 +276,7 @@ onMounted(loadProduct)
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/variables.scss';
+@use '@/styles/variables' as *;
 
 .detail-page {
   min-height: 100vh;

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
 import { financeApi } from '@/api'
+import { computed, onMounted, ref } from 'vue'
 
 const rechargeList = ref<any[]>([])
 const consumeList = ref<any[]>([])
@@ -174,7 +174,7 @@ onMounted(loadData)
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/variables.scss';
+@use '@/styles/variables' as *;
 
 .page-container { min-height: 100vh; background: $bg; display: flex; flex-direction: column; }
 
