@@ -218,7 +218,6 @@ async function submitQuiz() {
 </template>
 
 <style lang="scss" scoped>
-@use '@/styles/variables' as *;
 
 .quiz-page { display: flex; flex-direction: column; height: 100vh; background: $bg; }
 

@@ -20,8 +20,8 @@ async function loadData() {
   try {
     const data = await financeApi.getPoints() as any
     totalPoints.value = data?.total ?? data?.points ?? 0
+    products.value = demoProducts
   } catch (e) { /* */ }
-  products.value = demoProducts
   finally { loading.value = false }
 }
 
@@ -98,7 +98,6 @@ onMounted(loadData)
 </template>
 
 <style lang="scss" scoped>
-@use '@/styles/variables' as *;
 
 .page-container { min-height: 100vh; background: $bg; display: flex; flex-direction: column; }
 .page-header {

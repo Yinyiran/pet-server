@@ -121,7 +121,6 @@ onMounted(loadCart)
 </template>
 
 <style lang="scss" scoped>
-@use '@/styles/variables' as *;
 
 .cart-page {
   display: flex; flex-direction: column; height: 100vh; background: $bg;

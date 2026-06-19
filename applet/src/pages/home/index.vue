@@ -358,7 +358,6 @@ function openDouyin() {
 </template>
 
 <style lang="scss" scoped>
-@use '@/styles/variables' as *;
 
 .page-container {
   min-height: 100vh;

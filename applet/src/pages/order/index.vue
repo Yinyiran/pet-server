@@ -161,7 +161,6 @@ onMounted(loadOrders)
 </template>
 
 <style lang="scss" scoped>
-@use '@/styles/variables' as *;
 
 .page-container { min-height: 100vh; background: $bg; display: flex; flex-direction: column; }
 .page-header {

@@ -175,7 +175,6 @@ const isCat = computed(() => petInfo.value?.petType !== 'dog')
 </template>
 
 <style lang="scss" scoped>
-@use '@/styles/variables' as *;
 
 .poster-page { min-height: 100vh; background: linear-gradient(180deg, #fdf0e6 0%, $bg 30%); display: flex; flex-direction: column; }
 

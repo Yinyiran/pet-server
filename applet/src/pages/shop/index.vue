@@ -198,7 +198,6 @@ onMounted(async () => {
 </template>
 
 <style lang="scss" scoped>
-@use '@/styles/variables' as *;
 
 .shop-page { height: 100vh; display: flex; flex-direction: column; background: $bg; }
 

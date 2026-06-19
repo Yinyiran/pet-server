@@ -276,7 +276,6 @@ onMounted(loadProduct)
 </template>
 
 <style lang="scss" scoped>
-@use '@/styles/variables' as *;
 
 .detail-page {
   min-height: 100vh;
