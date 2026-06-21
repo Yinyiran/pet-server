@@ -160,6 +160,11 @@ function handleAdd() {
 
 function handleEdit(row) {
   Object.assign(form, { ...row })
+  // 数值字段转 Number，避免 el-input-number 报类型错误
+  if (row.price != null && row.price !== '') form.price = Number(row.price)
+  if (row.originalPrice != null && row.originalPrice !== '') form.originalPrice = Number(row.originalPrice)
+  if (row.flashPrice != null && row.flashPrice !== '') form.flashPrice = Number(row.flashPrice)
+  if (row.stock != null && row.stock !== '') form.stock = Number(row.stock)
   // 将 gallery JSON 数组或逗号分隔字符串转为 ImageUpload 可用的字符串
   if (Array.isArray(row.gallery)) {
     form.gallery = row.gallery.join(',')

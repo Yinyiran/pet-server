@@ -126,7 +126,7 @@ const styles = computed(() => {
 const content = ref("");
 watch(() => props.modelValue, (v) => {
   if (v !== content.value) {
-    content.value = v === undefined ? "<p></p>" : v;
+    content.value = v == null || v === '' ? "<p></p>" : v;
   }
 }, { immediate: true });
 
