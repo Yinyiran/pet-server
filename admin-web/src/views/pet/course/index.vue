@@ -48,7 +48,9 @@
         <el-form-item label="课程名" required><el-input v-model="form.name" /></el-form-item>
         <el-form-item label="档位"><el-select v-model="form.tier"><el-option label="基础" value="basic" /><el-option label="专业" value="pro" /><el-option label="合伙人" value="partner" /></el-select></el-form-item>
         <el-form-item label="价格" required><el-input-number v-model="form.price" :min="0" :precision="2" /></el-form-item>
-        <el-form-item label="封面图URL"><el-input v-model="form.heroImg" /></el-form-item>
+        <el-form-item label="封面图">
+          <image-upload v-model="form.heroImg" :limit="1" :action="ossUploadUrl" />
+        </el-form-item>
         <el-form-item label="简介"><el-input v-model="form.description" type="textarea" :rows="3" /></el-form-item>
         <el-form-item label="排序"><el-input-number v-model="form.sortOrder" :min="0" /></el-form-item>
         <el-form-item label="上架"><el-switch v-model="form.isActive" :active-value="1" :inactive-value="0" /></el-form-item>
@@ -97,6 +99,7 @@ const loading = ref(false), showSearch = ref(true), list = ref([]), total = ref(
 const dialogVisible = ref(false), dialogTitle = ref(''), submitLoading = ref(false)
 const videoVisible = ref(false), videoList = ref([]), videoSaving = ref(false), currentCourseId = ref(null)
 const queryParams = reactive({ pageNum: 1, pageSize: 10, keyword: undefined, tier: undefined })
+const ossUploadUrl = import.meta.env.VITE_APP_BASE_API + '/common/upload/oss'
 const defaultForm = { name: '', tier: 'basic', price: 0, heroImg: '', description: '', sortOrder: 0, isActive: 1 }
 const form = reactive({ ...defaultForm, id: null })
 

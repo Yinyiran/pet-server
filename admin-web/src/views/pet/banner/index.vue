@@ -73,8 +73,8 @@
         <el-form-item label="副标题">
           <el-input v-model="form.subtitle" placeholder="Banner副标题" />
         </el-form-item>
-        <el-form-item label="背景图URL">
-          <el-input v-model="form.bgImg" placeholder="背景图URL" />
+        <el-form-item label="背景图">
+          <image-upload v-model="form.bgImg" :limit="1" :action="ossUploadUrl" />
         </el-form-item>
         <el-form-item label="兜底背景色">
           <el-color-picker v-model="form.bgColor" />
@@ -130,6 +130,7 @@ const selectedIds = ref([])
 const multiple = ref(true)
 
 const queryParams = reactive({ pageNum: 1, pageSize: 10, title: undefined, isActive: undefined })
+const ossUploadUrl = import.meta.env.VITE_APP_BASE_API + '/common/upload/oss'
 const defaultForm = { title: '', subtitle: '', bgImg: '', bgColor: '#f0f0f0', btnText: '', btnColor: '', linkType: 'none', linkValue: '', sortOrder: 0, isActive: 1, validFrom: null, validUntil: null }
 const form = reactive({ ...defaultForm, id: null })
 

@@ -45,7 +45,9 @@
         <el-form-item label="平台"><el-input v-model="form.platform" placeholder="douyin/kuaishou等" /></el-form-item>
         <el-form-item label="房间号"><el-input v-model="form.roomId" /></el-form-item>
         <el-form-item label="分享口令"><el-input v-model="form.shareCode" /></el-form-item>
-        <el-form-item label="封面图URL"><el-input v-model="form.coverImg" /></el-form-item>
+        <el-form-item label="封面图">
+          <image-upload v-model="form.coverImg" :limit="1" :action="ossUploadUrl" />
+        </el-form-item>
         <el-form-item label="直播链接"><el-input v-model="form.liveUrl" /></el-form-item>
         <el-form-item label="排序"><el-input-number v-model="form.sortOrder" :min="0" /></el-form-item>
         <el-form-item label="启用"><el-switch v-model="form.isActive" :active-value="1" :inactive-value="0" /></el-form-item>
@@ -62,6 +64,7 @@ import { listLiveRoom, addLiveRoom, updateLiveRoom, delLiveRoom, toggleLiveRoomS
 const loading = ref(false), showSearch = ref(true), list = ref([]), total = ref(0)
 const dialogVisible = ref(false), dialogTitle = ref(''), submitLoading = ref(false)
 const queryParams = reactive({ pageNum: 1, pageSize: 10, keyword: undefined, isActive: undefined })
+const ossUploadUrl = import.meta.env.VITE_APP_BASE_API + '/common/upload/oss'
 const defaultForm = { name: '', platform: '', roomId: '', shareCode: '', coverImg: '', liveUrl: '', sortOrder: 0, isActive: 1 }
 const form = reactive({ ...defaultForm, id: null })
 

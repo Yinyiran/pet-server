@@ -29,7 +29,10 @@
     <el-table v-loading="loading" :data="list">
       <el-table-column label="ID" prop="id" width="60" />
       <el-table-column label="封面" prop="imgUrl" width="80" align="center">
-        <template #default="{ row }"><span style="font-size:28px">{{ row.imgUrl ? '🏪' : '📍' }}</span></template>
+        <template #default="{ row }">
+          <el-image v-if="row.imgUrl" :src="row.imgUrl" fit="cover" style="width:48px;height:48px;border-radius:4px" preview-teleported :preview-src-list="[row.imgUrl]" />
+          <span v-else style="font-size:28px">📦</span>
+        </template>
       </el-table-column>
       <el-table-column label="商家名称" prop="name" min-width="140" show-overflow-tooltip />
       <el-table-column label="类型" prop="type" width="90">
@@ -58,7 +61,9 @@
         <el-form-item label="类型"><el-select v-model="form.type" placeholder="选择类型"><el-option label="宠物店" value="shop" /><el-option label="宠物医院" value="hospital" /><el-option label="其他" value="other" /></el-select></el-form-item>
         <el-form-item label="联系电话"><el-input v-model="form.phone" /></el-form-item>
         <el-form-item label="地址"><el-input v-model="form.address" /></el-form-item>
-        <el-form-item label="封面图URL"><el-input v-model="form.imgUrl" /></el-form-item>
+        <el-form-item label="封面图">
+          <image-upload v-model="form.imgUrl" :limit="1" :action="ossUploadUrl" />
+        </el-form-item>
         <el-form-item label="评分"><el-input-number v-model="form.score" :min="0" :max="5" :step="0.1" :precision="1" /></el-form-item>
         <el-form-item label="经度"><el-input-number v-model="form.lng" :precision="6" :step="0.000001" /></el-form-item>
         <el-form-item label="纬度"><el-input-number v-model="form.lat" :precision="6" :step="0.000001" /></el-form-item>
@@ -79,6 +84,7 @@ const router = useRouter()
 const loading = ref(false), showSearch = ref(true), list = ref([]), total = ref(0)
 const dialogVisible = ref(false), dialogTitle = ref(''), submitLoading = ref(false)
 const queryParams = reactive({ pageNum: 1, pageSize: 10, keyword: undefined, type: undefined, status: undefined })
+const ossUploadUrl = import.meta.env.VITE_APP_BASE_API + '/common/upload/oss'
 const defaultForm = { name: '', type: 'shop', phone: '', address: '', imgUrl: '', score: 5.0, lng: null, lat: null, description: '', status: 'active' }
 const form = reactive({ ...defaultForm, id: null })
 

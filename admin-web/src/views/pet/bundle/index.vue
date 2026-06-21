@@ -25,7 +25,10 @@
       <el-table-column type="selection" width="50" align="center" />
       <el-table-column label="ID" prop="id" width="60" />
       <el-table-column label="封面" prop="coverImg" width="80" align="center">
-        <template #default="{ row }"><span style="font-size:28px">{{ row.coverImg ? '🎁' : '📦' }}</span></template>
+        <template #default="{ row }">
+          <el-image v-if="row.coverImg" :src="row.coverImg" fit="cover" style="width:48px;height:48px;border-radius:4px" preview-teleported :preview-src-list="[row.coverImg]" />
+          <span v-else style="font-size:28px">📦</span>
+        </template>
       </el-table-column>
       <el-table-column label="组合包名称" prop="name" min-width="150" show-overflow-tooltip />
       <el-table-column label="组合价" prop="bundlePrice" width="100"><template #default="{ row }">¥{{ row.bundlePrice }}</template></el-table-column>
@@ -48,7 +51,9 @@
     <el-dialog :title="dialogTitle" v-model="dialogVisible" width="720px" destroy-on-close>
       <el-form :model="form" label-width="100px">
         <el-form-item label="名称" required><el-input v-model="form.name" /></el-form-item>
-        <el-form-item label="封面图URL"><el-input v-model="form.coverImg" /></el-form-item>
+        <el-form-item label="封面图">
+          <image-upload v-model="form.coverImg" :limit="1" :action="ossUploadUrl" />
+        </el-form-item>
         <el-form-item label="组合价" required><el-input-number v-model="form.bundlePrice" :min="0" :precision="2" /></el-form-item>
         <el-form-item label="原价合计"><el-input-number v-model="form.originalPrice" :min="0" :precision="2" /></el-form-item>
         <el-form-item label="描述"><el-input v-model="form.description" type="textarea" :rows="3" /></el-form-item>
@@ -85,6 +90,7 @@ const loading = ref(false), showSearch = ref(true), list = ref([]), total = ref(
 const dialogVisible = ref(false), dialogTitle = ref(''), submitLoading = ref(false)
 const selectedIds = ref([]), multiple = ref(true)
 const queryParams = reactive({ pageNum: 1, pageSize: 10, keyword: undefined, isActive: undefined })
+const ossUploadUrl = import.meta.env.VITE_APP_BASE_API + '/common/upload/oss'
 const defaultForm = { name: '', coverImg: '', bundlePrice: 0, originalPrice: null, description: '', sortOrder: 0, isActive: 1, items: [] }
 const form = reactive({ ...defaultForm, id: null })
 
