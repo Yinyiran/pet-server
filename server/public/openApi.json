@@ -5518,6 +5518,26 @@
         ]
       }
     },
+    "/pet/product/tags/all": {
+      "get": {
+        "operationId": "ProductController_getAllTags",
+        "summary": "获取所有商品标签",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "业务-商品管理"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
     "/pet/product/{id}": {
       "get": {
         "operationId": "ProductController_findOne",
@@ -5703,20 +5723,11 @@
         ]
       }
     },
-    "/app/product/{id}": {
+    "/app/product/flash/list": {
       "get": {
-        "operationId": "AppProductController_findOne",
-        "summary": "商品详情",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "operationId": "AppProductController_getFlash",
+        "summary": "限时特供",
+        "parameters": [],
         "responses": {
           "200": {
             "description": ""
@@ -5732,11 +5743,20 @@
         ]
       }
     },
-    "/app/product/flash/list": {
+    "/app/product/{id}": {
       "get": {
-        "operationId": "AppProductController_getFlash",
-        "summary": "限时特供",
-        "parameters": [],
+        "operationId": "AppProductController_findOne",
+        "summary": "商品详情",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": ""

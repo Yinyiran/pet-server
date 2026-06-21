@@ -5,7 +5,7 @@
         <el-input v-model="queryParams.keyword" placeholder="商品名/标签" clearable style="width: 160px" @keyup.enter="handleQuery" />
       </el-form-item>
       <el-form-item label="分类" prop="category">
-        <el-input v-model="queryParams.category" placeholder="分类编码" clearable style="width: 120px" />
+        <el-tree-select v-model="queryParams.category" :data="categoryTree" :props="{ label: 'name', value: 'id', children: 'children' }" placeholder="全部分类" clearable check-strictly filterable style="width: 160px" />
       </el-form-item>
       <el-form-item label="状态" prop="isActive">
         <el-select v-model="queryParams.isActive" placeholder="全部" clearable style="width: 100px">
@@ -40,7 +40,9 @@
         <template #default="{ row }"><el-tag :type="row.stock < 10 ? 'danger' : ''" size="small">{{ row.stock }}</el-tag></template>
       </el-table-column>
       <el-table-column label="销量" prop="sales" width="70" align="center" />
-      <el-table-column label="分类" prop="category" width="90" />
+      <el-table-column label="分类" prop="category" width="100">
+        <template #default="{ row }">{{ categoryNameMap[row.category] || row.category || '—' }}</template>
+      </el-table-column>
       <el-table-column label="特供" prop="isFlash" width="70" align="center">
         <template #default="{ row }"><el-tag v-if="row.isFlash" type="warning" size="small">特供</el-tag></template>
       </el-table-column>
@@ -63,8 +65,14 @@
         <el-form-item label="售价" prop="price"><el-input-number v-model="form.price" :min="0" :precision="2" /></el-form-item>
         <el-form-item label="原价" prop="originalPrice"><el-input-number v-model="form.originalPrice" :min="0" :precision="2" /></el-form-item>
         <el-form-item label="库存" prop="stock"><el-input-number v-model="form.stock" :min="0" /></el-form-item>
-        <el-form-item label="分类" prop="category"><el-input v-model="form.category" placeholder="分类编码" /></el-form-item>
-        <el-form-item label="标签"><el-input v-model="form.tags" placeholder="逗号分隔" /></el-form-item>
+        <el-form-item label="分类" prop="category">
+          <el-tree-select v-model="form.category" :data="categoryTree" :props="{ label: 'name', value: 'id', children: 'children' }" placeholder="请选择分类" clearable check-strictly filterable style="width: 100%" />
+        </el-form-item>
+        <el-form-item label="标签" prop="tagList">
+          <el-select v-model="form.tagList" multiple filterable allow-create default-first-option placeholder="搜索或输入标签后回车" style="width: 100%">
+            <el-option v-for="tag in tagOptions" :key="tag" :label="tag" :value="tag" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="商品主图" prop="gallery">
           <image-upload v-model="form.gallery" :limit="9" :action="ossUploadUrl" />
         </el-form-item>
@@ -85,7 +93,8 @@
 
 <script setup>
 import { ref, reactive, nextTick } from 'vue'
-import { listProduct, addProduct, updateProduct, delProduct, toggleProductStatus } from '@/api/pet/product'
+import { listProduct, addProduct, updateProduct, delProduct, toggleProductStatus, getProductTags } from '@/api/pet/product'
+import { getCategoryTree } from '@/api/pet/productCategory'
 
 const loading = ref(false), showSearch = ref(true), list = ref([]), total = ref(0)
 const dialogVisible = ref(false), dialogTitle = ref(''), submitLoading = ref(false)
@@ -94,16 +103,48 @@ const queryParams = reactive({ pageNum: 1, pageSize: 10, keyword: undefined, cat
 // OSS 上传地址
 const ossUploadUrl = import.meta.env.VITE_APP_BASE_API + '/common/upload/oss'
 const formRef = ref(null)
-const defaultForm = { name: '', price: 0, originalPrice: null, stock: 0, category: '', tags: '', imgUrl: '', gallery: '', description: '', isFlash: 0, flashPrice: null, flashStart: null, flashEnd: null, isActive: 1 }
+const defaultForm = { name: '', price: 0, originalPrice: null, stock: 0, category: null, tagList: [], imgUrl: '', gallery: '', description: '', isFlash: 0, flashPrice: null, flashStart: null, flashEnd: null, isActive: 1 }
 const form = reactive({ ...defaultForm, id: null })
+
+// 分类数据
+const categoryTree = ref([])
+const categoryNameMap = reactive({}) // id -> name 映射，用于列表显示
+
+// 标签数据
+const tagOptions = ref([])
 
 // 表单校验规则
 const formRules = {
   name: [{ required: true, message: '请输入商品名称', trigger: 'blur' }],
   price: [{ required: true, message: '请输入售价', trigger: 'change' }],
+  category: [{ required: true, message: '请选择商品分类', trigger: 'change' }],
   gallery: [{ required: true, message: '请上传至少一张商品主图', trigger: 'change' }],
   description: [{ required: true, message: '请输入商品描述', trigger: 'blur' }],
   flashPrice: [{ required: true, message: '请输入特供价', trigger: 'change' }],
+}
+
+// 加载分类树
+function loadCategoryTree() {
+  getCategoryTree().then(res => {
+    categoryTree.value = res.data || []
+    // 构建 id -> name 映射（递归遍历树）
+    const map = {}
+    function walk(nodes) {
+      nodes.forEach(n => {
+        map[n.id] = n.name
+        if (n.children?.length) walk(n.children)
+      })
+    }
+    walk(categoryTree.value)
+    Object.assign(categoryNameMap, map)
+  })
+}
+
+// 加载已有标签
+function loadTags() {
+  getProductTags().then(res => {
+    tagOptions.value = res.data || []
+  })
 }
 
 function getList() { loading.value = true; listProduct(queryParams).then(res => { list.value = res.data.list; total.value = res.data.total }).finally(() => loading.value = false) }
@@ -111,7 +152,7 @@ function handleQuery() { queryParams.pageNum = 1; getList() }
 function resetQuery() { queryParams.keyword = undefined; queryParams.category = undefined; queryParams.isActive = undefined; handleQuery() }
 
 function handleAdd() {
-  Object.assign(form, { ...defaultForm, id: null })
+  Object.assign(form, { ...defaultForm, tagList: [], id: null })
   dialogTitle.value = '新增商品'
   dialogVisible.value = true
   nextTick(() => formRef.value?.clearValidate())
@@ -124,6 +165,14 @@ function handleEdit(row) {
     form.gallery = row.gallery.join(',')
   } else if (!row.gallery) {
     form.gallery = row.imgUrl || ''
+  }
+  // 将 tags 字符串转为 tagList 数组
+  form.tagList = row.tags ? row.tags.split(',').map(t => t.trim()).filter(Boolean) : []
+  // category 需要是 number 类型以匹配 tree-select
+  if (row.category !== null && row.category !== undefined && row.category !== '') {
+    form.category = Number(row.category) || row.category
+  } else {
+    form.category = null
   }
   dialogTitle.value = '编辑商品'
   dialogVisible.value = true
@@ -138,14 +187,23 @@ function submitForm() {
     const submitData = { ...form }
     submitData.imgUrl = galleryArr.length ? galleryArr[0] : ''
     submitData.gallery = galleryArr.length ? galleryArr : null
+    // tagList 数组转回逗号分隔字符串
+    submitData.tags = form.tagList?.length ? form.tagList.join(',') : ''
+    // category 存为字符串
+    submitData.category = form.category != null ? String(form.category) : ''
+    delete submitData.tagList
     submitLoading.value = true
     const api = form.id ? updateProduct : addProduct
-    api(submitData).then(() => { dialogVisible.value = false; getList() }).finally(() => submitLoading.value = false)
+    api(submitData).then(() => { dialogVisible.value = false; getList(); loadTags() }).finally(() => submitLoading.value = false)
   })
 }
 
 function handleStatusChange(row) { toggleProductStatus(row.id, row.isActive) }
 function handleSelectionChange(sel) { selectedIds.value = sel.map(s => s.id); multiple.value = !sel.length }
 function handleDelete(row) { const ids = row?.id ? [row.id] : selectedIds.value; if (!ids.length) return; if (confirm('确定删除？')) delProduct(ids.join(',')).then(() => getList()) }
+
+// 初始化
+loadCategoryTree()
+loadTags()
 getList()
 </script>

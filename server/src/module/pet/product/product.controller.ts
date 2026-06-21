@@ -3,6 +3,7 @@ import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { ProductService } from './product.service';
 import { CreateProductDto, UpdateProductDto, ListProductDto } from './dto/index';
 import { RequirePermission } from 'src/common/decorators/require-permission.decorator';
+import { ResultData } from 'src/common/utils/result';
 
 @ApiTags('业务-商品管理')
 @ApiBearerAuth('Authorization')
@@ -14,6 +15,10 @@ export class ProductController {
   @RequirePermission('pet:product:list')
   @Get('list')
   findAll(@Query() query: ListProductDto) { return this.service.findAll(query); }
+
+  @ApiOperation({ summary: '获取所有商品标签' })
+  @Get('tags/all')
+  getAllTags() { return this.service.getAllTags().then(tags => ResultData.ok(tags)); }
 
   @ApiOperation({ summary: '商品详情' })
   @RequirePermission('pet:product:query')
@@ -56,11 +61,11 @@ export class AppProductController {
   @Get('list')
   getList(@Query() query: { category?: string; keyword?: string; pageNum?: number; pageSize?: number }) { return this.service.getAppProducts(query); }
 
-  @ApiOperation({ summary: '商品详情' })
-  @Get(':id')
-  findOne(@Param('id') id: string) { return this.service.findOne(+id); }
-
   @ApiOperation({ summary: '限时特供' })
   @Get('flash/list')
   getFlash() { return this.service.getFlashProducts(); }
+
+  @ApiOperation({ summary: '商品详情' })
+  @Get(':id')
+  findOne(@Param('id') id: string) { return this.service.findOne(+id); }
 }

@@ -80,4 +80,22 @@ export class ProductService {
     const list = await qb.getMany();
     return ResultData.ok(list);
   }
+
+  /**
+   * 获取商品已使用的所有标签（去重）
+   */
+  async getAllTags(): Promise<string[]> {
+    const rows = await this.repo
+      .createQueryBuilder('p')
+      .select('p.tags', 'tags')
+      .where('p.tags IS NOT NULL AND p.tags != ""')
+      .getRawMany();
+    const tagSet = new Set<string>();
+    rows.forEach(r => {
+      if (r.tags) {
+        r.tags.split(',').map((t: string) => t.trim()).filter(Boolean).forEach((t: string) => tagSet.add(t));
+      }
+    });
+    return Array.from(tagSet);
+  }
 }

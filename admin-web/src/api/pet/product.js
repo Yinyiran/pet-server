@@ -18,3 +18,6 @@ export function delProduct(ids) {
 export function toggleProductStatus(id, isActive) {
   return request({ url: '/pet/product/' + id + '/status', method: 'put', data: { isActive } })
 }
+export function getProductTags() {
+  return request({ url: '/pet/product/tags/all', method: 'get' })
+}
