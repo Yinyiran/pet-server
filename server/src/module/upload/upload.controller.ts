@@ -116,4 +116,24 @@ export class UploadController {
   getAuthorization(@Query() query: { key: string }) {
     return this.uploadService.getAuthorization(query.key);
   }
+
+  /**
+   * 阿里云OSS文件上传
+   * @param file
+   * @returns
+   */
+  @ApiOperation({
+    summary: '阿里云OSS文件上传',
+  })
+  @ApiBody({
+    type: FileUploadDto,
+    required: true,
+  })
+  @HttpCode(200)
+  @Post('/oss')
+  @UseInterceptors(FileInterceptor('file'))
+  async ossUpload(@UploadedFile() file: Express.Multer.File) {
+    const res = await this.uploadService.ossUpload(file);
+    return ResultData.ok(res);
+  }
 }

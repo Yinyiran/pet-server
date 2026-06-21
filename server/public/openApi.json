@@ -350,6 +350,36 @@
         ]
       }
     },
+    "/common/upload/oss": {
+      "post": {
+        "operationId": "UploadController_ossUpload",
+        "summary": "阿里云OSS文件上传",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FileUploadDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "通用-文件上传"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
     "/system/config": {
       "post": {
         "operationId": "ConfigController_create",

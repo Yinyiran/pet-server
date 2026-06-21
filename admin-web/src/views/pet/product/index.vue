@@ -28,7 +28,10 @@
       <el-table-column type="selection" width="50" align="center" />
       <el-table-column label="ID" prop="id" width="60" />
       <el-table-column label="主图" prop="imgUrl" width="80" align="center">
-        <template #default="{ row }"><span style="font-size:28px">{{ row.imgUrl ? '📷' : '📦' }}</span></template>
+        <template #default="{ row }">
+          <el-image v-if="row.imgUrl" :src="row.imgUrl" :preview-src-list="[row.imgUrl]" fit="cover" style="width:48px;height:48px;border-radius:4px" preview-teleported />
+          <span v-else style="font-size:28px">📦</span>
+        </template>
       </el-table-column>
       <el-table-column label="商品名称" prop="name" min-width="150" show-overflow-tooltip />
       <el-table-column label="售价" prop="price" width="90"><template #default="{ row }">¥{{ row.price }}</template></el-table-column>
@@ -54,19 +57,23 @@
     <pagination v-show="total > 0" :total="total" v-model:page="queryParams.pageNum" v-model:limit="queryParams.pageSize" @pagination="getList" />
 
     <!-- 新增/编辑弹窗 -->
-    <el-dialog :title="dialogTitle" v-model="dialogVisible" width="640px" destroy-on-close>
-      <el-form :model="form" label-width="100px">
-        <el-form-item label="商品名称" required><el-input v-model="form.name" /></el-form-item>
-        <el-form-item label="售价" required><el-input-number v-model="form.price" :min="0" :precision="2" /></el-form-item>
-        <el-form-item label="原价"><el-input-number v-model="form.originalPrice" :min="0" :precision="2" /></el-form-item>
-        <el-form-item label="库存"><el-input-number v-model="form.stock" :min="0" /></el-form-item>
-        <el-form-item label="分类"><el-input v-model="form.category" placeholder="分类编码" /></el-form-item>
+    <el-dialog :title="dialogTitle" v-model="dialogVisible" width="800px" destroy-on-close>
+      <el-form ref="formRef" :model="form" :rules="formRules" label-width="100px">
+        <el-form-item label="商品名称" prop="name"><el-input v-model="form.name" placeholder="请输入商品名称" /></el-form-item>
+        <el-form-item label="售价" prop="price"><el-input-number v-model="form.price" :min="0" :precision="2" /></el-form-item>
+        <el-form-item label="原价" prop="originalPrice"><el-input-number v-model="form.originalPrice" :min="0" :precision="2" /></el-form-item>
+        <el-form-item label="库存" prop="stock"><el-input-number v-model="form.stock" :min="0" /></el-form-item>
+        <el-form-item label="分类" prop="category"><el-input v-model="form.category" placeholder="分类编码" /></el-form-item>
         <el-form-item label="标签"><el-input v-model="form.tags" placeholder="逗号分隔" /></el-form-item>
-        <el-form-item label="主图URL"><el-input v-model="form.imgUrl" /></el-form-item>
-        <el-form-item label="描述"><el-input v-model="form.description" type="textarea" :rows="3" /></el-form-item>
+        <el-form-item label="商品主图" prop="gallery">
+          <image-upload v-model="form.gallery" :limit="9" :action="ossUploadUrl" />
+        </el-form-item>
+        <el-form-item label="商品描述" prop="description">
+          <editor v-model="form.description" :min-height="300" />
+        </el-form-item>
         <el-form-item label="限时特供"><el-switch v-model="form.isFlash" :active-value="1" :inactive-value="0" /></el-form-item>
         <template v-if="form.isFlash === 1">
-          <el-form-item label="特供价"><el-input-number v-model="form.flashPrice" :min="0" :precision="2" /></el-form-item>
+          <el-form-item label="特供价" prop="flashPrice"><el-input-number v-model="form.flashPrice" :min="0" :precision="2" /></el-form-item>
           <el-form-item label="特供时段"><el-date-picker v-model="form.flashStart" type="datetime" placeholder="开始" value-format="YYYY-MM-DD HH:mm:ss" /><span style="margin:0 8px">~</span><el-date-picker v-model="form.flashEnd" type="datetime" placeholder="结束" value-format="YYYY-MM-DD HH:mm:ss" /></el-form-item>
         </template>
         <el-form-item label="上架"><el-switch v-model="form.isActive" :active-value="1" :inactive-value="0" /></el-form-item>
@@ -77,22 +84,66 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, nextTick } from 'vue'
 import { listProduct, addProduct, updateProduct, delProduct, toggleProductStatus } from '@/api/pet/product'
 
 const loading = ref(false), showSearch = ref(true), list = ref([]), total = ref(0)
 const dialogVisible = ref(false), dialogTitle = ref(''), submitLoading = ref(false)
 const selectedIds = ref([]), multiple = ref(true)
 const queryParams = reactive({ pageNum: 1, pageSize: 10, keyword: undefined, category: undefined, isActive: undefined })
-const defaultForm = { name: '', price: 0, originalPrice: null, stock: 0, category: '', tags: '', imgUrl: '', description: '', isFlash: 0, flashPrice: null, flashStart: null, flashEnd: null, isActive: 1 }
+// OSS 上传地址
+const ossUploadUrl = import.meta.env.VITE_APP_BASE_API + '/common/upload/oss'
+const formRef = ref(null)
+const defaultForm = { name: '', price: 0, originalPrice: null, stock: 0, category: '', tags: '', imgUrl: '', gallery: '', description: '', isFlash: 0, flashPrice: null, flashStart: null, flashEnd: null, isActive: 1 }
 const form = reactive({ ...defaultForm, id: null })
+
+// 表单校验规则
+const formRules = {
+  name: [{ required: true, message: '请输入商品名称', trigger: 'blur' }],
+  price: [{ required: true, message: '请输入售价', trigger: 'change' }],
+  gallery: [{ required: true, message: '请上传至少一张商品主图', trigger: 'change' }],
+  description: [{ required: true, message: '请输入商品描述', trigger: 'blur' }],
+  flashPrice: [{ required: true, message: '请输入特供价', trigger: 'change' }],
+}
 
 function getList() { loading.value = true; listProduct(queryParams).then(res => { list.value = res.data.list; total.value = res.data.total }).finally(() => loading.value = false) }
 function handleQuery() { queryParams.pageNum = 1; getList() }
 function resetQuery() { queryParams.keyword = undefined; queryParams.category = undefined; queryParams.isActive = undefined; handleQuery() }
-function handleAdd() { Object.assign(form, { ...defaultForm, id: null }); dialogTitle.value = '新增商品'; dialogVisible.value = true }
-function handleEdit(row) { Object.assign(form, { ...row }); dialogTitle.value = '编辑商品'; dialogVisible.value = true }
-function submitForm() { submitLoading.value = true; const api = form.id ? updateProduct : addProduct; api(form).then(() => { dialogVisible.value = false; getList() }).finally(() => submitLoading.value = false) }
+
+function handleAdd() {
+  Object.assign(form, { ...defaultForm, id: null })
+  dialogTitle.value = '新增商品'
+  dialogVisible.value = true
+  nextTick(() => formRef.value?.clearValidate())
+}
+
+function handleEdit(row) {
+  Object.assign(form, { ...row })
+  // 将 gallery JSON 数组或逗号分隔字符串转为 ImageUpload 可用的字符串
+  if (Array.isArray(row.gallery)) {
+    form.gallery = row.gallery.join(',')
+  } else if (!row.gallery) {
+    form.gallery = row.imgUrl || ''
+  }
+  dialogTitle.value = '编辑商品'
+  dialogVisible.value = true
+  nextTick(() => formRef.value?.clearValidate())
+}
+
+function submitForm() {
+  formRef.value.validate(valid => {
+    if (!valid) return
+    // 从 gallery 提取第一张图作为 imgUrl
+    const galleryArr = form.gallery ? form.gallery.split(',').filter(Boolean) : []
+    const submitData = { ...form }
+    submitData.imgUrl = galleryArr.length ? galleryArr[0] : ''
+    submitData.gallery = galleryArr.length ? galleryArr : null
+    submitLoading.value = true
+    const api = form.id ? updateProduct : addProduct
+    api(submitData).then(() => { dialogVisible.value = false; getList() }).finally(() => submitLoading.value = false)
+  })
+}
+
 function handleStatusChange(row) { toggleProductStatus(row.id, row.isActive) }
 function handleSelectionChange(sel) { selectedIds.value = sel.map(s => s.id); multiple.value = !sel.length }
 function handleDelete(row) { const ids = row?.id ? [row.id] : selectedIds.value; if (!ids.length) return; if (confirm('确定删除？')) delProduct(ids.join(',')).then(() => getList()) }

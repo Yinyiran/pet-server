@@ -1,6 +1,7 @@
 <template>
   <div class="editor">
       <quill-editor
+        ref="editorRef"
         v-model:content="content"
         contentType="html"
         @textChange="(e) => $emit('update:modelValue', content)"
@@ -13,6 +14,8 @@
 <script setup>
 import { QuillEditor } from '@vueup/vue-quill';
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
+
+import { getToken } from "@/utils/auth";
 
 const props = defineProps({
   /* 编辑器的内容 */
@@ -34,26 +37,75 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  /* 图片上传地址（默认使用本地，可传 OSS 地址） */
+  uploadUrl: {
+    type: String,
+    default: '',
+  },
 });
 
+const baseUrl = import.meta.env.VITE_APP_BASE_API;
+
+// 图片上传处理函数
+function imageHandler() {
+  const input = document.createElement('input');
+  input.setAttribute('type', 'file');
+  input.setAttribute('accept', 'image/*');
+  input.click();
+  input.onchange = async () => {
+    const file = input.files[0];
+    if (!file) return;
+    const formData = new FormData();
+    formData.append('file', file);
+    // 优先使用 props 传入的上传地址，否则用默认的 OSS 地址
+    const url = props.uploadUrl || (baseUrl + '/common/upload/oss');
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { Authorization: 'Bearer ' + getToken() },
+        body: formData,
+      });
+      const data = await res.json();
+      if (data.code === 200 && data.data?.url) {
+        const quill = editorRef.value?.getEditor?.() || null;
+        if (quill) {
+          const range = quill.getSelection(true);
+          quill.insertEmbed(range.index, 'image', data.data.url);
+          quill.setSelection(range.index + 1);
+        }
+      } else {
+        console.error('图片上传失败', data);
+      }
+    } catch (e) {
+      console.error('图片上传异常', e);
+    }
+  };
+}
+
+const editorRef = ref(null);
 const options = ref({
   theme: "snow",
   bounds: document.body,
   debug: "warn",
   modules: {
     // 工具栏配置
-    toolbar: [
-      ["bold", "italic", "underline", "strike"],       // 加粗 斜体 下划线 删除线
-      ["blockquote", "code-block"],                    // 引用  代码块
-      [{ list: "ordered" }, { list: "bullet" }],       // 有序、无序列表
-      [{ indent: "-1" }, { indent: "+1" }],            // 缩进
-      [{ size: ["small", false, "large", "huge"] }],   // 字体大小
-      [{ header: [1, 2, 3, 4, 5, 6, false] }],         // 标题
-      [{ color: [] }, { background: [] }],             // 字体颜色、字体背景颜色
-      [{ align: [] }],                                 // 对齐方式
-      ["clean"],                                       // 清除文本格式
-      ["link", "image", "video"]                       // 链接、图片、视频
-    ],
+    toolbar: {
+      container: [
+        ["bold", "italic", "underline", "strike"],
+        ["blockquote", "code-block"],
+        [{ list: "ordered" }, { list: "bullet" }],
+        [{ indent: "-1" }, { indent: "+1" }],
+        [{ size: ["small", false, "large", "huge"] }],
+        [{ header: [1, 2, 3, 4, 5, 6, false] }],
+        [{ color: [] }, { background: [] }],
+        [{ align: [] }],
+        ["clean"],
+        ["link", "image", "video"],
+      ],
+      handlers: {
+        image: imageHandler,
+      },
+    },
   },
   placeholder: '请输入内容',
   readOnly: props.readOnly,

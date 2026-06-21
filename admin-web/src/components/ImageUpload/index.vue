@@ -70,6 +70,11 @@ const props = defineProps({
     type: Boolean,
     default: true
   },
+  // 自定义上传地址（默认走 /common/upload，可传 OSS 地址）
+  action: {
+    type: String,
+    default: '',
+  },
 });
 
 const { proxy } = getCurrentInstance();
@@ -80,6 +85,10 @@ const dialogImageUrl = ref("");
 const dialogVisible = ref(false);
 const baseUrl = import.meta.env.VITE_APP_BASE_API;
 const uploadImgUrl = ref(import.meta.env.VITE_APP_BASE_API + "/common/upload"); // 上传的图片服务器地址
+// 如果有自定义 action 则使用自定义地址
+watch(() => props.action, (val) => {
+  if (val) uploadImgUrl.value = val;
+}, { immediate: true });
 const headers = ref({ Authorization: "Bearer " + getToken() });
 const fileList = ref([]);
 const showTip = computed(
@@ -93,7 +102,10 @@ watch(() => props.modelValue, val => {
     // 然后将数组转为对象数组
     fileList.value = list.map(item => {
       if (typeof item === "string") {
-        if (item.indexOf(baseUrl) === -1) {
+        // 如果是完整 URL（OSS 等）则直接使用
+        if (item.startsWith('http://') || item.startsWith('https://')) {
+          item = { name: item, url: item };
+        } else if (item.indexOf(baseUrl) === -1) {
           item = { name: baseUrl + item, url: baseUrl + item };
         } else {
           item = { name: item, url: item };
@@ -148,7 +160,9 @@ function handleExceed() {
 // 上传成功回调
 function handleUploadSuccess(res, file) {
   if (res.code === 200) {
-    uploadList.value.push({ name: res.data.fileName, url: res.data.fileName });
+    // 优先使用 url（兼容 OSS 等返回完整 URL 的情况）
+    const fileUrl = res.data.url || res.data.fileName;
+    uploadList.value.push({ name: res.data.fileName, url: fileUrl });
     uploadedSuccessfully();
   } else {
     number.value--;
@@ -198,7 +212,13 @@ function listToString(list, separator) {
   separator = separator || ",";
   for (let i in list) {
     if (undefined !== list[i].url && list[i].url.indexOf("blob:") !== 0) {
-      strs += list[i].url.replace(baseUrl, "") + separator;
+      // 如果是完整 URL（OSS 等）则直接存储，否则去掉 baseUrl 前缀
+      let url = list[i].url;
+      if (url.startsWith('http://') || url.startsWith('https://')) {
+        strs += url + separator;
+      } else {
+        strs += url.replace(baseUrl, "") + separator;
+      }
     }
   }
   return strs != "" ? strs.substr(0, strs.length - 1) : "";

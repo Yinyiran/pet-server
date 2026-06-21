@@ -10,6 +10,7 @@ import fs from 'fs';
 import path from 'path';
 import iconv from 'iconv-lite';
 import COS from 'cos-nodejs-sdk-v5';
+import OSS from 'ali-oss';
 import Mime from 'mime-types';
 
 @Injectable()
@@ -383,5 +384,57 @@ export class UploadService {
     return ResultData.ok({
       sign: authorization,
     });
+  }
+
+  /**
+   * 获取阿里云 OSS 客户端实例
+   */
+  private getOssClient(): OSS {
+    return new OSS({
+      region: this.config.get('oss.region'),
+      accessKeyId: this.config.get('oss.accessKeyId'),
+      accessKeySecret: this.config.get('oss.accessKeySecret'),
+      bucket: this.config.get('oss.bucket'),
+    });
+  }
+
+  /**
+   * 上传文件到阿里云 OSS
+   * @param file Multer 文件对象
+   * @returns 上传结果
+   */
+  async saveFileOss(file: Express.Multer.File) {
+    const client = this.getOssClient();
+    // 对文件名转码
+    const originalname = iconv.decode(Buffer.from(file.originalname, 'binary'), 'utf8');
+    const ext = Mime.extension(file.mimetype);
+    // 生成新文件名（加时间戳防重）
+    const newFileName = this.getNewFileName(originalname) + '.' + ext;
+    // OSS 存储路径
+    const location = this.config.get('oss.location') || 'upload';
+    const ossKey = `${location}/${newFileName}`;
+    // 执行上传
+    const result = await client.put(ossKey, file.buffer);
+    const domain = this.config.get('oss.domain');
+    const url = domain ? `${domain}/${ossKey}` : result.url;
+    return {
+      fileName: ossKey,
+      newFileName: newFileName,
+      url: url,
+    };
+  }
+
+  /**
+   * OSS 单文件上传接口（供前端直接调用）
+   */
+  async ossUpload(file: Express.Multer.File) {
+    const fileSize = (file.size / 1024 / 1024).toFixed(2);
+    if (fileSize > this.config.get('app.file.maxSize')) {
+      return ResultData.fail(500, `文件大小不能超过${this.config.get('app.file.maxSize')}MB`);
+    }
+    const res = await this.saveFileOss(file);
+    const uploadId = GenerateUUID();
+    await this.sysUploadEntityRep.save({ uploadId, ...res, ext: path.extname(res.newFileName), size: file.size });
+    return res;
   }
 }

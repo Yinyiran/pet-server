@@ -12,7 +12,7 @@ export class ProductEntity {
   @Column({ type: 'varchar', name: 'name', length: 128, comment: '商品名称' })
   name: string;
 
-  @Column({ type: 'text', name: 'description', nullable: true, comment: '商品描述' })
+  @Column({ type: 'mediumtext', name: 'description', nullable: true, comment: '商品描述(富文本)' })
   description: string;
 
   @Column({ type: 'decimal', name: 'price', precision: 10, scale: 2, comment: '售价' })

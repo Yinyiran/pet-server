@@ -25,6 +25,14 @@ cos:
   region: ''
   domain: ''
   location: ''
+# 阿里云OSS配置
+oss:
+  region: ''          # 例如 oss-cn-hangzhou
+  accessKeyId: ''
+  accessKeySecret: ''
+  bucket: ''
+  domain: ''          # CDN或Bucket域名，例如 https://your-bucket.oss-cn-hangzhou.aliyuncs.com
+  location: 'pet'     # 上传目录前缀
 # 数据库配置
 db:
   mysql:
