@@ -35,7 +35,7 @@ async function selectAvatar(emoji: string) {
       </view>
       <text class="page-title">选择头像</text>
       <view style="width: 120rpx" />
-    </view>
+    </view> 
 
     <scroll-view scroll-y class="scroll-content">
       <!-- 当前头像 -->
