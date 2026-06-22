@@ -15,7 +15,7 @@ export class ProductService {
   async findAll(query: ListProductDto) {
     const qb = this.repo.createQueryBuilder('p');
     if (query.keyword) qb.andWhere('(p.name LIKE :kw OR p.tags LIKE :kw)', { kw: `%${query.keyword}%` });
-    if (query.category) qb.andWhere('p.category = :cat', { cat: query.category });
+    if (query.category) qb.andWhere('FIND_IN_SET(:cat, p.category) > 0', { cat: query.category });
     if (query.merchantId) qb.andWhere('p.merchantId = :mid', { mid: query.merchantId });
     if (query.isActive !== undefined && query.isActive !== null) qb.andWhere('p.isActive = :a', { a: query.isActive });
     if (query.isFlash !== undefined && query.isFlash !== null) qb.andWhere('p.isFlash = :f', { f: query.isFlash });
@@ -62,7 +62,7 @@ export class ProductService {
   // 小程序端
   async getAppProducts(query: { category?: string; keyword?: string; pageNum?: number; pageSize?: number }) {
     const qb = this.repo.createQueryBuilder('p').where('p.isActive = 1');
-    if (query.category) qb.andWhere('p.category = :cat', { cat: query.category });
+    if (query.category) qb.andWhere('FIND_IN_SET(:cat, p.category) > 0', { cat: query.category });
     if (query.keyword) qb.andWhere('p.name LIKE :kw', { kw: `%${query.keyword}%` });
     qb.orderBy('p.sales', 'DESC');
     if (query.pageSize && query.pageNum) qb.skip(+query.pageSize * (+query.pageNum - 1)).take(+query.pageSize);

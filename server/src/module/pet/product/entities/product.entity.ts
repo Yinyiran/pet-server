@@ -25,7 +25,7 @@ export class ProductEntity {
   stock: number;
 
   @Index('idx_category')
-  @Column({ type: 'varchar', name: 'category', length: 64, nullable: true, comment: '分类编码' })
+  @Column({ type: 'varchar', name: 'category', length: 256, nullable: true, comment: '分类ID(多选逗号分隔)' })
   category: string;
 
   @Column({ type: 'varchar', name: 'tags', length: 256, nullable: true, comment: '标签(逗号分隔)' })
