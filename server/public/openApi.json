@@ -5501,6 +5501,18 @@
             "schema": {
               "type": "number"
             }
+          },
+          {
+            "name": "source",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "official",
+                "merchant"
+              ],
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -5764,6 +5776,171 @@
         },
         "tags": [
           "小程序-商品"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/app/merchant/product/list": {
+      "get": {
+        "operationId": "MerchantProductController_findAll",
+        "summary": "我的商品列表",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "小程序-商家商品管理"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/app/merchant/product/{id}": {
+      "get": {
+        "operationId": "MerchantProductController_findOne",
+        "summary": "商品详情",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "小程序-商家商品管理"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/app/merchant/product": {
+      "post": {
+        "operationId": "MerchantProductController_create",
+        "summary": "新增商品",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProductDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "小程序-商家商品管理"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      },
+      "put": {
+        "operationId": "MerchantProductController_update",
+        "summary": "更新商品",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProductDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "小程序-商家商品管理"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/app/merchant/product/{ids}": {
+      "delete": {
+        "operationId": "MerchantProductController_remove",
+        "summary": "删除商品",
+        "parameters": [
+          {
+            "name": "ids",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "小程序-商家商品管理"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/app/merchant/product/{id}/status": {
+      "put": {
+        "operationId": "MerchantProductController_toggleStatus",
+        "summary": "上下架商品",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "小程序-商家商品管理"
         ],
         "security": [
           {
@@ -9206,6 +9383,296 @@
           }
         ]
       }
+    },
+    "/pet/group/list": {
+      "get": {
+        "operationId": "GroupBuyingController_findAll",
+        "summary": "拼团列表",
+        "parameters": [
+          {
+            "name": "pageNum",
+            "required": true,
+            "in": "query",
+            "description": "当前分页",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": true,
+            "in": "query",
+            "description": "每页数量",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "orderByColumn",
+            "required": false,
+            "in": "query",
+            "description": "排序字段",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isAsc",
+            "required": false,
+            "in": "query",
+            "description": "排序规则",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "productId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "leaderId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "业务-拼团管理"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/pet/group/{id}": {
+      "get": {
+        "operationId": "GroupBuyingController_findOne",
+        "summary": "拼团详情",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "业务-拼团管理"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/pet/group/expire-check": {
+      "post": {
+        "operationId": "GroupBuyingController_checkExpired",
+        "summary": "手动处理过期拼团",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "业务-拼团管理"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/app/group/start": {
+      "post": {
+        "operationId": "AppGroupBuyingController_startGroup",
+        "summary": "发起拼团",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StartGroupDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "小程序-拼团"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/app/group/join": {
+      "post": {
+        "operationId": "AppGroupBuyingController_joinGroup",
+        "summary": "参加拼团",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JoinGroupDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "小程序-拼团"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/app/group/product/{productId}": {
+      "get": {
+        "operationId": "AppGroupBuyingController_getProductGroups",
+        "summary": "商品进行中的拼团列表",
+        "parameters": [
+          {
+            "name": "productId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "小程序-拼团"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/app/group/my/list": {
+      "get": {
+        "operationId": "AppGroupBuyingController_getMyGroups",
+        "summary": "我的拼团列表",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "小程序-拼团"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/app/group/{groupNo}": {
+      "get": {
+        "operationId": "AppGroupBuyingController_getDetail",
+        "summary": "拼团详情（动态路由放最后）",
+        "parameters": [
+          {
+            "name": "groupNo",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "小程序-拼团"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/app/group/expire-check": {
+      "post": {
+        "operationId": "AppGroupBuyingController_checkExpired",
+        "summary": "触发过期拼团检查",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "小程序-拼团"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
     }
   },
   "info": {
@@ -11000,6 +11467,10 @@
           },
           "flashEnd": {
             "type": "string"
+          },
+          "groupBuyConfig": {
+            "type": "object",
+            "description": "拼团配置JSON [{size,discount}]"
           }
         },
         "required": [
@@ -11057,6 +11528,10 @@
           },
           "flashEnd": {
             "type": "string"
+          },
+          "groupBuyConfig": {
+            "type": "object",
+            "description": "拼团配置JSON [{size,discount}]"
           },
           "id": {
             "type": "number"
@@ -11653,6 +12128,35 @@
       "CreateMealOrderDto": {
         "type": "object",
         "properties": {}
+      },
+      "StartGroupDto": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "number",
+            "description": "商品ID"
+          },
+          "groupSize": {
+            "type": "number",
+            "description": "拼团人数规格"
+          }
+        },
+        "required": [
+          "productId",
+          "groupSize"
+        ]
+      },
+      "JoinGroupDto": {
+        "type": "object",
+        "properties": {
+          "groupNo": {
+            "type": "string",
+            "description": "拼团编号"
+          }
+        },
+        "required": [
+          "groupNo"
+        ]
       }
     }
   }

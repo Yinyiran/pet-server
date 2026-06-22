@@ -211,6 +211,13 @@ onMounted(async () => {
           <text class="profile-menu-arrow">›</text>
         </view>
 
+        <!-- ===== 我的拼团 ===== -->
+        <view class="profile-menu-item" @tap="navigateTo('/pages/group-list/index')">
+          <text class="profile-menu-icon">👥</text>
+          <text class="profile-menu-label">我的拼团</text>
+          <text class="profile-menu-arrow">›</text>
+        </view>
+
         <!-- ===== 商家中心（仅绑定商家的用户可见） ===== -->
         <view
           v-if="userStore.profile?.merchantId"

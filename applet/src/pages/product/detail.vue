@@ -3,10 +3,10 @@
 </route>
 
 <script setup lang="ts">
-import { productApi } from '@/api'
+import { productApi, groupApi } from '@/api'
 import { useCartStore } from '@/store'
 import { useUserStore } from '@/store/modules/user'
-import { onLoad } from '@dcloudio/uni-app'
+import { onLoad, onShareAppMessage } from '@dcloudio/uni-app'
 import { computed, onMounted, ref } from 'vue'
 
 const cartStore = useCartStore()
@@ -17,29 +17,26 @@ const galleryCurrent = ref(0)
 const loading = ref(true)
 
 /** 拼团相关 */
-const groupSizes = [
-  { size: 2, discount: 5 },
-  { size: 3, discount: 10 },
-  { size: 5, discount: 15 },
-  { size: 10, discount: 25 },
-]
-const selectedGroupSize = ref(5)
-const showGroupTable = ref(false)
-
-function selectGroupSize(size: number) {
-  selectedGroupSize.value = size
-}
+const groupSizes = ref<{ size: number; discount: number }[]>([])
+const selectedGroupSize = ref(0)
+const activeGroups = ref<any[]>([])
 
 const groupPrice = computed(() => {
-  if (!product.value) return 0
-  const discount = groupSizes.find(g => g.size === selectedGroupSize.value)?.discount || 0
-  return +(product.value.price * (1 - discount / 100)).toFixed(2)
+  if (!product.value || !selectedGroupSize.value) return 0
+  const config = groupSizes.value.find(g => g.size === selectedGroupSize.value)
+  if (!config) return 0
+  return +(product.value.price * (1 - config.discount / 100)).toFixed(2)
 })
 
 function getGroupPrice(size: number) {
   if (!product.value) return 0
-  const discount = groupSizes.find(g => g.size === size)?.discount || 0
-  return +(product.value.price * (1 - discount / 100)).toFixed(2)
+  const config = groupSizes.value.find(g => g.size === size)
+  if (!config) return 0
+  return +(product.value.price * (1 - config.discount / 100)).toFixed(2)
+}
+
+function selectGroupSize(size: number) {
+  selectedGroupSize.value = size
 }
 
 /** 加载商品 */
@@ -53,6 +50,20 @@ async function loadProduct() {
   loading.value = true
   try {
     product.value = await productApi.getDetail(productId)
+    // 解析拼团配置
+    if (product.value?.groupBuyConfig?.length) {
+      groupSizes.value = product.value.groupBuyConfig.map((c: any) => ({
+        size: Number(c.size),
+        discount: Number(c.discount),
+      }))
+      selectedGroupSize.value = groupSizes.value[0]?.size || 0
+    }
+    // 加载进行中的拼团
+    if (product.value?.groupBuyConfig?.length) {
+      try {
+        activeGroups.value = (await groupApi.getProductGroups(productId)) || []
+      } catch { activeGroups.value = [] }
+    }
   } catch (e) {
     // Demo fallback
     product.value = {
@@ -73,8 +84,15 @@ async function loadProduct() {
         { label: '适用宠物', value: '猫狗通用' },
         { label: '口味', value: '鸡肉味' },
       ],
-      groupBuy: true,
+      groupBuyConfig: [
+        { size: 2, discount: 5 },
+        { size: 3, discount: 10 },
+        { size: 5, discount: 15 },
+        { size: 10, discount: 25 },
+      ],
     }
+    groupSizes.value = product.value.groupBuyConfig
+    selectedGroupSize.value = 2
   } finally {
     loading.value = false
   }
@@ -110,7 +128,41 @@ function initiateGroup() {
     uni.navigateTo({ url: '/pages/login/index' })
     return
   }
-  uni.showToast({ title: `已发起${selectedGroupSize.value}人拼团`, icon: 'success' })
+  if (!selectedGroupSize.value) {
+    uni.showToast({ title: '请选择拼团规格', icon: 'none' })
+    return
+  }
+  groupApi.start({ productId, groupSize: selectedGroupSize.value })
+    .then((res: any) => {
+      uni.showToast({ title: `已发起${selectedGroupSize.value}人拼团`, icon: 'success' })
+      setTimeout(() => {
+        uni.navigateTo({ url: `/pages/group-detail/index?groupNo=${res.groupNo}` })
+      }, 800)
+    })
+    .catch((e: any) => {
+      uni.showToast({ title: e?.message || '发起拼团失败', icon: 'none' })
+    })
+}
+
+function joinGroup(groupNo: string) {
+  if (!userStore.isLoggedIn) {
+    uni.navigateTo({ url: '/pages/login/index' })
+    return
+  }
+  groupApi.join({ groupNo })
+    .then((res: any) => {
+      uni.showToast({ title: res.isComplete ? '拼团成功！' : '已参加拼团', icon: 'success' })
+      setTimeout(() => {
+        uni.navigateTo({ url: `/pages/group-detail/index?groupNo=${groupNo}` })
+      }, 800)
+    })
+    .catch((e: any) => {
+      uni.showToast({ title: e?.message || '参加拼团失败', icon: 'none' })
+    })
+}
+
+function viewGroupDetail(groupNo: string) {
+  uni.navigateTo({ url: `/pages/group-detail/index?groupNo=${groupNo}` })
 }
 
 function shareProduct() {
@@ -131,6 +183,16 @@ function goBack() {
 }
 
 onMounted(loadProduct)
+
+// 微信分享配置
+onShareAppMessage(() => {
+  if (!product.value) return { title: '梵优茗宠', path: '/pages/home/index' }
+  return {
+    title: `${product.value.name} - 拼团更优惠`,
+    path: `/pages/product/detail?id=${product.value.id}`,
+    imageUrl: product.value.image || product.value.imgUrl || '',
+  }
+})
 </script>
 
 <template>
@@ -191,7 +253,7 @@ onMounted(loadProduct)
         </view>
 
         <!-- 拼团优惠 -->
-        <view class="group-card" v-if="product.groupBuy">
+        <view class="group-card" v-if="groupSizes.length">
           <view class="group-header">
             <view class="group-header-left">
               <text class="group-icon">👥</text>
@@ -237,6 +299,32 @@ onMounted(loadProduct)
             <text>👥</text>
             <text>发起 {{ selectedGroupSize }}人拼团 ¥{{ groupPrice }}</text>
           </button>
+        </view>
+
+        <!-- 正在拼团 -->
+        <view class="active-groups-card" v-if="activeGroups.length">
+          <view class="group-header">
+            <view class="group-header-left">
+              <text class="group-icon">🔥</text>
+              <text class="group-title">正在拼团</text>
+            </view>
+            <text class="group-hint">可直接参加</text>
+          </view>
+          <view v-for="ag in activeGroups.slice(0, 3)" :key="ag.groupNo || ag.id" class="active-group-item">
+            <view class="ag-left">
+              <view class="ag-avatar">
+                <image v-if="ag.leaderAvatar" :src="ag.leaderAvatar" mode="aspectFill" class="ag-avatar-img" />
+                <text v-else class="ag-avatar-placeholder">👤</text>
+              </view>
+              <view class="ag-info">
+                <text class="ag-name">{{ ag.leaderNickname || '团长' }}</text>
+                <text class="ag-meta">还差{{ ag.remainSlots || (ag.groupSize - ag.currentCount) }}人成团</text>
+              </view>
+            </view>
+            <view class="ag-right">
+              <view class="ag-btn" @tap="joinGroup(ag.groupNo)">去参团</view>
+            </view>
+          </view>
         </view>
 
         <!-- 商品详情 -->
@@ -693,5 +781,68 @@ onMounted(loadProduct)
   white-space: nowrap;
 
   &::after { border: none; }
+}
+
+/* Active Groups */
+.active-groups-card {
+  background: $card-bg;
+  margin-top: 16rpx;
+  padding: 32rpx;
+}
+.active-group-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid $border;
+
+  &:last-child { border-bottom: none; }
+}
+.ag-left {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+.ag-avatar {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  overflow: hidden;
+  background: $bg;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ag-avatar-img {
+  width: 100%;
+  height: 100%;
+}
+.ag-avatar-placeholder {
+  font-size: 32rpx;
+}
+.ag-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+.ag-name {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: $text;
+}
+.ag-meta {
+  font-size: 22rpx;
+  color: $text-secondary;
+}
+.ag-right {
+  flex-shrink: 0;
+}
+.ag-btn {
+  background: $primary;
+  color: #fff;
+  padding: 12rpx 28rpx;
+  border-radius: 28rpx;
+  font-size: 24rpx;
+  font-weight: 500;
 }
 </style>

@@ -106,6 +106,21 @@
           <el-form-item label="特供价" prop="flashPrice"><el-input-number v-model="form.flashPrice" :min="0" :precision="2" /></el-form-item>
           <el-form-item label="特供时段"><el-date-picker v-model="form.flashStart" type="datetime" placeholder="开始" value-format="YYYY-MM-DD HH:mm:ss" /><span style="margin:0 8px">~</span><el-date-picker v-model="form.flashEnd" type="datetime" placeholder="结束" value-format="YYYY-MM-DD HH:mm:ss" /></el-form-item>
         </template>
+        <el-form-item label="拼团配置">
+          <el-switch v-model="groupBuyEnabled" active-text="启用拼团" inactive-text="关闭" />
+        </el-form-item>
+        <template v-if="groupBuyEnabled">
+          <div style="margin-left:100px;margin-bottom:16px;padding:12px 16px;background:#f5f7fa;border-radius:6px;">
+            <div v-for="(item, idx) in groupBuyOptions" :key="item.size"
+              style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+              <el-checkbox v-model="item.checked" :label="item.size + '人团'" />
+              <span style="color:#909399;font-size:13px;">折扣率</span>
+              <el-input-number v-model="item.discount" :min="1" :max="90" :step="1" size="small" style="width:110px" :disabled="!item.checked" />
+              <span style="color:#909399;font-size:13px;">%</span>
+            </div>
+            <div style="color:#909399;font-size:12px;margin-top:4px;">提示：勾选的拼团规格将对该商品生效，折扣率表示相对售价的优惠百分比</div>
+          </div>
+        </template>
         <el-form-item label="上架"><el-switch v-model="form.isActive" :active-value="1" :inactive-value="0" /></el-form-item>
       </el-form>
       <template #footer><el-button @click="dialogVisible = false">取消</el-button><el-button type="primary" @click="submitForm" :loading="submitLoading">确定</el-button></template>
@@ -126,8 +141,17 @@ const queryParams = reactive({ pageNum: 1, pageSize: 10, keyword: undefined, cat
 // OSS 上传地址
 const ossUploadUrl = import.meta.env.VITE_APP_BASE_API + '/common/upload/oss'
 const formRef = ref(null)
-const defaultForm = { name: '', price: 0, originalPrice: null, stock: 0, categoryList: [], tagList: [], imgUrl: '', gallery: '', description: '', isFlash: 0, flashPrice: null, flashStart: null, flashEnd: null, isActive: 1, merchantId: null }
+const defaultForm = { name: '', price: 0, originalPrice: null, stock: 0, categoryList: [], tagList: [], imgUrl: '', gallery: '', description: '', isFlash: 0, flashPrice: null, flashStart: null, flashEnd: null, isActive: 1, merchantId: null, groupBuyConfig: null }
 const form = reactive({ ...defaultForm, id: null })
+
+// 拼团配置
+const groupBuyEnabled = ref(false)
+const groupBuyOptions = ref([
+  { size: 2, discount: 5, checked: false },
+  { size: 3, discount: 10, checked: false },
+  { size: 5, discount: 15, checked: false },
+  { size: 10, discount: 25, checked: false },
+])
 
 // 分类数据
 const categoryTree = ref([])
@@ -178,7 +202,9 @@ function handleQuery() { queryParams.pageNum = 1; getList() }
 function resetQuery() { queryParams.keyword = undefined; queryParams.category = undefined; queryParams.isActive = undefined; queryParams.source = undefined; handleQuery() }
 
 function handleAdd() {
-  Object.assign(form, { ...defaultForm, tagList: [], categoryList: [], id: null })
+  Object.assign(form, { ...defaultForm, tagList: [], categoryList: [], id: null, groupBuyConfig: null })
+  groupBuyEnabled.value = false
+  groupBuyOptions.value.forEach(o => { o.checked = false; o.discount = [5, 10, 15, 25][groupBuyOptions.value.indexOf(o)] })
   dialogTitle.value = '新增商品'
   dialogVisible.value = true
   nextTick(() => formRef.value?.clearValidate())
@@ -201,6 +227,22 @@ function handleEdit(row) {
   form.tagList = row.tags ? row.tags.split(',').map(t => t.trim()).filter(Boolean) : []
   // 将 category 逗号分隔字符串转为 categoryList 数组（数字类型）
   form.categoryList = row.category ? String(row.category).split(',').filter(Boolean).map(Number) : []
+  // 还原拼团配置
+  if (row.groupBuyConfig && Array.isArray(row.groupBuyConfig) && row.groupBuyConfig.length) {
+    groupBuyEnabled.value = true
+    const configMap = new Map(row.groupBuyConfig.map(c => [c.size, c.discount]))
+    groupBuyOptions.value.forEach(o => {
+      if (configMap.has(o.size)) {
+        o.checked = true
+        o.discount = Number(configMap.get(o.size))
+      } else {
+        o.checked = false
+      }
+    })
+  } else {
+    groupBuyEnabled.value = false
+    groupBuyOptions.value.forEach(o => { o.checked = false })
+  }
   dialogTitle.value = '编辑商品'
   dialogVisible.value = true
   nextTick(() => formRef.value?.clearValidate())
@@ -220,6 +262,13 @@ function submitForm() {
     submitData.category = form.categoryList?.length ? form.categoryList.join(',') : ''
     delete submitData.tagList
     delete submitData.categoryList
+    // 拼团配置组装
+    if (groupBuyEnabled.value) {
+      const checkedItems = groupBuyOptions.value.filter(o => o.checked)
+      submitData.groupBuyConfig = checkedItems.length ? checkedItems.map(o => ({ size: o.size, discount: o.discount })) : null
+    } else {
+      submitData.groupBuyConfig = null
+    }
     submitLoading.value = true
     const api = form.id ? updateProduct : addProduct
     api(submitData).then(() => { dialogVisible.value = false; getList(); loadTags() }).finally(() => submitLoading.value = false)

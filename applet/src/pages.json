@@ -185,6 +185,20 @@
         "navigationStyle": "custom",
         "navigationBarTitleText": "编辑商品"
       }
+    },
+    {
+      "path": "pages/group-detail/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "拼团详情"
+      }
+    },
+    {
+      "path": "pages/group-list/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "我的拼团"
+      }
     }
   ],
   "globalStyle": {

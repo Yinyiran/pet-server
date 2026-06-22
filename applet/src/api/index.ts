@@ -104,6 +104,15 @@ export const liveRoomApi = {
   getList: () => http.get('/app/live-room/list'),
 }
 
+/** 拼团 */
+export const groupApi = {
+  start: (data: { productId: number; groupSize: number }) => http.post('/app/group/start', data),
+  join: (data: { groupNo: string }) => http.post('/app/group/join', data),
+  getDetail: (groupNo: string) => http.get(`/app/group/${groupNo}`),
+  getProductGroups: (productId: number) => http.get(`/app/group/product/${productId}`),
+  getMyGroups: (params?: { status?: string; pageNum?: number; pageSize?: number }) => http.get('/app/group/my/list', params),
+}
+
 /** 用户 */
 export const userApi = {
   wxLogin: (code: string) => http.post('/app/user/wxLogin', { code }),

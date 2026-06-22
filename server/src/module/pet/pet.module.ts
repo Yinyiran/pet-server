@@ -14,8 +14,9 @@ import { CommissionModule } from './commission/commission.module';
 import { MealModule } from './meal/meal.module';
 import { FinanceModule } from './finance/finance.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { GroupBuyingModule } from './group-buying/group-buying.module';
 
 @Module({
-  imports: [PetUserModule, MemberLevelModule, ProductCategoryModule, BannerModule, ProductModule, BundleModule, MerchantModule, OrderModule, RefundModule, CourseModule, LiveRoomModule, CommissionModule, MealModule, FinanceModule, DashboardModule],
+  imports: [PetUserModule, MemberLevelModule, ProductCategoryModule, BannerModule, ProductModule, BundleModule, MerchantModule, OrderModule, RefundModule, CourseModule, LiveRoomModule, CommissionModule, MealModule, FinanceModule, DashboardModule, GroupBuyingModule],
 })
 export class PetModule {}
