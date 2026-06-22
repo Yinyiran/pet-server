@@ -44,6 +44,10 @@ export class PetUserEntity {
   @Column({ type: 'varchar', name: 'city', length: 64, nullable: true, comment: '所在城市' })
   city: string;
 
+  @Index('idx_merchant_id')
+  @Column({ type: 'bigint', name: 'merchant_id', nullable: true, comment: '绑定商家ID' })
+  merchantId: number;
+
   @Column({ type: 'tinyint', name: 'is_active', default: 1, comment: '是否活跃: 0-否 1-是' })
   isActive: number;
 

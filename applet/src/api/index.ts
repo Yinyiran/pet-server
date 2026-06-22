@@ -12,10 +12,20 @@ export const categoryApi = {
 
 /** 商品 */
 export const productApi = {
-  getList: (params: { category?: string; keyword?: string; pageNum?: number; pageSize?: number }) =>
+  getList: (params: { category?: string; keyword?: string; source?: string; pageNum?: number; pageSize?: number }) =>
     http.get('/app/product/list', params),
   getDetail: (id: number) => http.get(`/app/product/${id}`),
   getFlash: () => http.get('/app/product/flash/list'),
+}
+
+/** 商家商品管理（商家中心） */
+export const merchantProductApi = {
+  getList: (params?: any) => http.get('/app/merchant/product/list', params),
+  getDetail: (id: number) => http.get(`/app/merchant/product/${id}`),
+  create: (data: any) => http.post('/app/merchant/product', data),
+  update: (data: any) => http.put('/app/merchant/product', data),
+  remove: (ids: string) => http.delete(`/app/merchant/product/${ids}`),
+  toggleStatus: (id: number, isActive: number) => http.put(`/app/merchant/product/${id}/status`, { isActive }),
 }
 
 /** 组合包 */

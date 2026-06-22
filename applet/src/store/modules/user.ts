@@ -13,6 +13,7 @@ export interface UserProfile {
   points: number
   balance: number
   inviteCount: number
+  merchantId?: number
 }
 
 export const useUserStore = defineStore('user', () => {

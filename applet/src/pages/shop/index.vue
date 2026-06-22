@@ -24,8 +24,15 @@ const categories = ref<Category[]>([
 const products = ref<any[]>([])
 const activeCategory = ref('all')
 const activeFilter = ref('default')
+const activeSource = ref('')
 const searchKeyword = ref('')
 const loading = ref(false)
+
+const sourceFilters = [
+  { key: '', label: '全部' },
+  { key: 'official', label: '官方' },
+  { key: 'merchant', label: '商家' },
+]
 
 const filters = [
   { key: 'default', label: '综合' },
@@ -68,6 +75,7 @@ async function loadProducts() {
     const params: any = { pageNum: 1, pageSize: 50 }
     if (activeCategory.value !== 'all') params.category = activeCategory.value
     if (searchKeyword.value) params.keyword = searchKeyword.value
+    if (activeSource.value) params.source = activeSource.value
     const res = await productApi.getList(params)
     products.value = res?.rows || res || []
   } catch (e) {
@@ -88,6 +96,11 @@ function switchCategory(id: string) {
 
 function setFilter(key: string) {
   activeFilter.value = key
+}
+
+function setSource(key: string) {
+  activeSource.value = key
+  loadProducts()
 }
 
 const filteredProducts = computed(() => {
@@ -145,6 +158,10 @@ onMounted(async () => {
       <view v-for="f in filters" :key="f.key" class="filter-chip" :class="{ active: activeFilter === f.key }" @tap="setFilter(f.key)">
         {{ f.label }}
       </view>
+      <view class="filter-sep" />
+      <view v-for="s in sourceFilters" :key="s.key" class="filter-chip source-chip" :class="{ active: activeSource === s.key }" @tap="setSource(s.key)">
+        {{ s.label }}
+      </view>
     </scroll-view>
 
     <!-- 主体：左分类 + 右列表 -->
@@ -175,6 +192,8 @@ onMounted(async () => {
               <view v-if="item.tag && tagMap[item.tag]" class="product-tag" :class="tagMap[item.tag].cls">
                 {{ tagMap[item.tag].label }}
               </view>
+              <view v-if="!item.merchantId" class="source-tag official-tag">官方</view>
+              <view v-else-if="item.merchantName" class="source-tag merchant-tag">{{ item.merchantName.length > 4 ? item.merchantName.slice(0, 4) + '..' : item.merchantName }}</view>
             </view>
             <!-- 商品信息 -->
             <view class="product-info">
@@ -215,6 +234,10 @@ onMounted(async () => {
 .shop-filter-row { display: flex; padding: 16rpx 24rpx; gap: 16rpx; background: $card-bg; border-bottom: 2rpx solid $border; flex-shrink: 0; white-space: nowrap; }
 .filter-chip { flex-shrink: 0; padding: 10rpx 28rpx; border-radius: 28rpx; font-size: 24rpx; font-weight: 500; color: $text-secondary; background: $bg; transition: all 0.2s; white-space: nowrap;
   &.active { background: $primary; color: #fff; }
+}
+.filter-sep { width: 2rpx; height: 36rpx; background: $border; flex-shrink: 0; align-self: center; margin: 0 8rpx; }
+.source-chip { font-size: 22rpx; padding: 8rpx 22rpx;
+  &.active { background: #3b82f6; }
 }
 
 /* 主体 */
@@ -260,6 +283,12 @@ onMounted(async () => {
   &.new { background: $success; }
   &.best { background: $primary; }
 }
+.source-tag {
+  position: absolute; top: 12rpx; right: 12rpx; padding: 4rpx 14rpx;
+  border-radius: 16rpx; font-size: 18rpx; font-weight: 700; color: #fff;
+}
+.official-tag { background: #3b82f6; }
+.merchant-tag { background: #f59e0b; }
 .product-info { flex: 1; padding: 20rpx 24rpx; display: flex; flex-direction: column; justify-content: space-between; min-width: 0; }
 .product-name { font-size: 28rpx; font-weight: 700; color: $text; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 8rpx; }
 .product-desc { font-size: 22rpx; color: $text-secondary; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 8rpx; }

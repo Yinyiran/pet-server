@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, Query } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Query, Request } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { ProductService } from './product.service';
 import { CreateProductDto, UpdateProductDto, ListProductDto } from './dto/index';
@@ -68,4 +68,59 @@ export class AppProductController {
   @ApiOperation({ summary: '商品详情' })
   @Get(':id')
   findOne(@Param('id') id: string) { return this.service.findOne(+id); }
+}
+
+@ApiTags('小程序-商家商品管理')
+@ApiBearerAuth('Authorization')
+@Controller('app/merchant/product')
+export class MerchantProductController {
+  constructor(private readonly service: ProductService) {}
+
+  @ApiOperation({ summary: '我的商品列表' })
+  @Get('list')
+  async findAll(@Request() req, @Query() query: { keyword?: string; pageNum?: number; pageSize?: number }) {
+    const merchantId = await this.service.getMerchantIdByUserId(req.user?.userId || 0);
+    if (!merchantId) return ResultData.fail(500, '您未绑定商家，无法操作');
+    return this.service.findMerchantProducts(merchantId, query);
+  }
+
+  @ApiOperation({ summary: '商品详情' })
+  @Get(':id')
+  async findOne(@Request() req, @Param('id') id: string) {
+    const merchantId = await this.service.getMerchantIdByUserId(req.user?.userId || 0);
+    if (!merchantId) return ResultData.fail(500, '您未绑定商家，无法操作');
+    return this.service.findMerchantProduct(merchantId, +id);
+  }
+
+  @ApiOperation({ summary: '新增商品' })
+  @Post()
+  async create(@Request() req, @Body() dto: CreateProductDto) {
+    const merchantId = await this.service.getMerchantIdByUserId(req.user?.userId || 0);
+    if (!merchantId) return ResultData.fail(500, '您未绑定商家，无法操作');
+    return this.service.createMerchantProduct(merchantId, dto);
+  }
+
+  @ApiOperation({ summary: '更新商品' })
+  @Put()
+  async update(@Request() req, @Body() dto: UpdateProductDto) {
+    const merchantId = await this.service.getMerchantIdByUserId(req.user?.userId || 0);
+    if (!merchantId) return ResultData.fail(500, '您未绑定商家，无法操作');
+    return this.service.updateMerchantProduct(merchantId, dto);
+  }
+
+  @ApiOperation({ summary: '删除商品' })
+  @Delete(':ids')
+  async remove(@Request() req, @Param('ids') ids: string) {
+    const merchantId = await this.service.getMerchantIdByUserId(req.user?.userId || 0);
+    if (!merchantId) return ResultData.fail(500, '您未绑定商家，无法操作');
+    return this.service.removeMerchantProducts(merchantId, ids);
+  }
+
+  @ApiOperation({ summary: '上下架商品' })
+  @Put(':id/status')
+  async toggleStatus(@Request() req, @Param('id') id: string, @Body('isActive') isActive: number) {
+    const merchantId = await this.service.getMerchantIdByUserId(req.user?.userId || 0);
+    if (!merchantId) return ResultData.fail(500, '您未绑定商家，无法操作');
+    return this.service.toggleMerchantProductStatus(merchantId, +id, isActive);
+  }
 }

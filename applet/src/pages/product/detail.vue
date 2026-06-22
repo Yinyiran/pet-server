@@ -179,6 +179,15 @@ onMounted(loadProduct)
           </view>
           <text class="product-name">{{ product.name }}</text>
           <text class="product-sold">已售 {{ product.sales || product.sold || 0 }} 件</text>
+          <!-- 来源标识 -->
+          <view class="source-badge-row">
+            <view v-if="!product.merchantId" class="source-badge official-badge">
+              <text>官方直营</text>
+            </view>
+            <view v-else-if="product.merchantName" class="source-badge merchant-badge">
+              <text>{{ product.merchantName }}</text>
+            </view>
+          </view>
         </view>
 
         <!-- 拼团优惠 -->
@@ -425,6 +434,24 @@ onMounted(loadProduct)
 .product-sold {
   font-size: 24rpx;
   color: $text-light;
+}
+.source-badge-row {
+  margin-top: 16rpx;
+}
+.source-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6rpx 20rpx;
+  border-radius: 20rpx;
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #fff;
+}
+.official-badge {
+  background: #3b82f6;
+}
+.merchant-badge {
+  background: #f59e0b;
 }
 
 /* Group Buy */

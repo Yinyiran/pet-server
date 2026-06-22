@@ -59,6 +59,9 @@ export class ProductEntity {
   @Column({ type: 'datetime', name: 'flash_end', nullable: true, comment: '特供结束时间' })
   flashEnd: Date;
 
+  @Column({ type: 'json', name: 'group_buy_config', nullable: true, comment: '拼团配置JSON [{size,discount}]' })
+  groupBuyConfig: any;
+
   @CreateDateColumn({ type: 'datetime', name: 'created_at', comment: '创建时间' })
   createdAt: Date;
 }

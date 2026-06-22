@@ -210,6 +210,18 @@ onMounted(async () => {
           <text class="profile-menu-label">我的订单</text>
           <text class="profile-menu-arrow">›</text>
         </view>
+
+        <!-- ===== 商家中心（仅绑定商家的用户可见） ===== -->
+        <view
+          v-if="userStore.profile?.merchantId"
+          class="profile-menu-item merchant-center-entry"
+          @tap="navigateTo('/pages/merchant-center/index')"
+        >
+          <text class="profile-menu-icon">🏪</text>
+          <text class="profile-menu-label">商家中心</text>
+          <view class="merchant-center-badge">管理商品</view>
+          <text class="profile-menu-arrow">›</text>
+        </view>
       </view>
 
       <view style="height: 40rpx" />
@@ -566,5 +578,24 @@ onMounted(async () => {
   background: $card-bg;
   border-radius: $radius-sm;
   margin-bottom: 16rpx;
+}
+
+/* 商家中心入口 */
+.merchant-center-entry {
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 50%, #bfdbfe 100%);
+  border-color: rgba(59, 130, 246, 0.2);
+
+  &:active {
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 50%, #93c5fd 100%);
+  }
+}
+.merchant-center-badge {
+  padding: 6rpx 18rpx;
+  background: #3b82f6;
+  color: #fff;
+  font-size: 20rpx;
+  font-weight: 600;
+  border-radius: 18rpx;
+  flex-shrink: 0;
 }
 </style>

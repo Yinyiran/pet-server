@@ -171,6 +171,20 @@
         "navigationStyle": "custom",
         "navigationBarTitleText": "订单详情"
       }
+    },
+    {
+      "path": "pages/merchant-center/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "商家中心"
+      }
+    },
+    {
+      "path": "pages/merchant-product-edit/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "编辑商品"
+      }
     }
   ],
   "globalStyle": {

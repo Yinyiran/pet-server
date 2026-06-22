@@ -30,3 +30,8 @@ export function getApply(id) {
 export function reviewApply(id, status) {
   return request({ url: '/pet/merchant-apply/' + id + '/review', method: 'put', data: { status } })
 }
+
+// 获取全量商家列表（给商品表单选择器用）
+export function listAllMerchants() {
+  return request({ url: '/pet/merchant/list', method: 'get', params: { pageNum: 1, pageSize: 999 } })
+}

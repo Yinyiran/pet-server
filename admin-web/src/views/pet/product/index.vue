@@ -12,6 +12,12 @@
           <el-option label="上架" :value="1" /><el-option label="下架" :value="0" />
         </el-select>
       </el-form-item>
+      <el-form-item label="来源" prop="source">
+        <el-select v-model="queryParams.source" placeholder="全部" clearable style="width: 110px">
+          <el-option label="官方直营" value="official" />
+          <el-option label="商家商品" value="merchant" />
+        </el-select>
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
         <el-button icon="Refresh" @click="resetQuery">重置</el-button>
@@ -34,6 +40,12 @@
         </template>
       </el-table-column>
       <el-table-column label="商品名称" prop="name" min-width="150" show-overflow-tooltip />
+      <el-table-column label="来源" prop="merchantId" width="110" align="center">
+        <template #default="{ row }">
+          <el-tag v-if="!row.merchantId" type="primary" size="small">官方直营</el-tag>
+          <el-tag v-else type="warning" size="small">{{ row.merchantName || '商家商品' }}</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column label="售价" prop="price" width="90"><template #default="{ row }">¥{{ row.price }}</template></el-table-column>
       <el-table-column label="原价" prop="originalPrice" width="90"><template #default="{ row }">{{ row.originalPrice ? '¥' + row.originalPrice : '—' }}</template></el-table-column>
       <el-table-column label="库存" prop="stock" width="70" align="center">
@@ -66,6 +78,11 @@
     <!-- 新增/编辑弹窗 -->
     <el-dialog :title="dialogTitle" v-model="dialogVisible" width="800px" destroy-on-close>
       <el-form ref="formRef" :model="form" :rules="formRules" label-width="100px">
+        <el-form-item label="所属商家" prop="merchantId">
+          <el-select v-model="form.merchantId" placeholder="不选则为官方直营" clearable filterable style="width: 100%">
+            <el-option v-for="m in merchantList" :key="m.id" :label="m.name" :value="Number(m.id)" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="商品名称" prop="name"><el-input v-model="form.name" placeholder="请输入商品名称" /></el-form-item>
         <el-form-item label="售价" prop="price"><el-input-number v-model="form.price" :min="0" :precision="2" /></el-form-item>
         <el-form-item label="原价" prop="originalPrice"><el-input-number v-model="form.originalPrice" :min="0" :precision="2" /></el-form-item>
@@ -100,15 +117,16 @@
 import { ref, reactive, nextTick } from 'vue'
 import { listProduct, addProduct, updateProduct, delProduct, toggleProductStatus, getProductTags } from '@/api/pet/product'
 import { getCategoryTree } from '@/api/pet/productCategory'
+import { listAllMerchants } from '@/api/pet/merchant'
 
 const loading = ref(false), showSearch = ref(true), list = ref([]), total = ref(0)
 const dialogVisible = ref(false), dialogTitle = ref(''), submitLoading = ref(false)
 const selectedIds = ref([]), multiple = ref(true)
-const queryParams = reactive({ pageNum: 1, pageSize: 10, keyword: undefined, category: undefined, isActive: undefined })
+const queryParams = reactive({ pageNum: 1, pageSize: 10, keyword: undefined, category: undefined, isActive: undefined, source: undefined })
 // OSS 上传地址
 const ossUploadUrl = import.meta.env.VITE_APP_BASE_API + '/common/upload/oss'
 const formRef = ref(null)
-const defaultForm = { name: '', price: 0, originalPrice: null, stock: 0, categoryList: [], tagList: [], imgUrl: '', gallery: '', description: '', isFlash: 0, flashPrice: null, flashStart: null, flashEnd: null, isActive: 1 }
+const defaultForm = { name: '', price: 0, originalPrice: null, stock: 0, categoryList: [], tagList: [], imgUrl: '', gallery: '', description: '', isFlash: 0, flashPrice: null, flashStart: null, flashEnd: null, isActive: 1, merchantId: null }
 const form = reactive({ ...defaultForm, id: null })
 
 // 分类数据
@@ -117,6 +135,9 @@ const categoryNameMap = reactive({}) // id -> name 映射，用于列表显示
 
 // 标签数据
 const tagOptions = ref([])
+
+// 商家列表数据
+const merchantList = ref([])
 
 // 表单校验规则
 const formRules = {
@@ -154,7 +175,7 @@ function loadTags() {
 
 function getList() { loading.value = true; listProduct(queryParams).then(res => { list.value = res.data.list; total.value = res.data.total }).finally(() => loading.value = false) }
 function handleQuery() { queryParams.pageNum = 1; getList() }
-function resetQuery() { queryParams.keyword = undefined; queryParams.category = undefined; queryParams.isActive = undefined; handleQuery() }
+function resetQuery() { queryParams.keyword = undefined; queryParams.category = undefined; queryParams.isActive = undefined; queryParams.source = undefined; handleQuery() }
 
 function handleAdd() {
   Object.assign(form, { ...defaultForm, tagList: [], categoryList: [], id: null })
@@ -209,8 +230,16 @@ function handleStatusChange(row) { toggleProductStatus(row.id, row.isActive) }
 function handleSelectionChange(sel) { selectedIds.value = sel.map(s => s.id); multiple.value = !sel.length }
 function handleDelete(row) { const ids = row?.id ? [row.id] : selectedIds.value; if (!ids.length) return; if (confirm('确定删除？')) delProduct(ids.join(',')).then(() => getList()) }
 
+// 加载商家列表
+function loadMerchants() {
+  listAllMerchants().then(res => {
+    merchantList.value = res.data?.list || []
+  })
+}
+
 // 初始化
 loadCategoryTree()
 loadTags()
+loadMerchants()
 getList()
 </script>

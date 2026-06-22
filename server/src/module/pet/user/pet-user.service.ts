@@ -116,7 +116,7 @@ export class PetUserService {
       token: uuid,
       userId: user.id,
     } as any);
-    return ResultData.ok({ token, user: { id: user.id, nickname: user.nickname, avatar: user.avatar, memberLevel: user.memberLevel, points: user.points } });
+    return ResultData.ok({ token, user: { id: user.id, nickname: user.nickname, avatar: user.avatar, memberLevel: user.memberLevel, points: user.points, merchantId: user.merchantId } });
   }
 
   async getAppProfile(userId: number) {

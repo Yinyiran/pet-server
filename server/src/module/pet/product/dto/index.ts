@@ -19,6 +19,7 @@ export class CreateProductDto {
   @ApiProperty({ required: false }) @IsOptional() @IsNumber() flashPrice?: number;
   @ApiProperty({ required: false }) @IsOptional() @IsString() flashStart?: string;
   @ApiProperty({ required: false }) @IsOptional() @IsString() flashEnd?: string;
+  @ApiProperty({ required: false, description: '拼团配置JSON [{size,discount}]' }) @IsOptional() groupBuyConfig?: any;
 }
 
 export class UpdateProductDto extends CreateProductDto {
@@ -31,4 +32,5 @@ export class ListProductDto extends PagingDto {
   @ApiProperty({ required: false }) @IsOptional() @IsNumber() merchantId?: number;
   @ApiProperty({ required: false }) @IsOptional() @IsNumber() isActive?: number;
   @ApiProperty({ required: false }) @IsOptional() @IsNumber() isFlash?: number;
+  @ApiProperty({ required: false, enum: ['official', 'merchant'] }) @IsOptional() @IsString() source?: string;
 }
