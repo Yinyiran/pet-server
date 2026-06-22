@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { MerchantService } from './merchant.service';
-import { CreateMerchantDto, UpdateMerchantDto, ListMerchantDto, CreateApplyDto, ListApplyDto } from './dto/index';
+import { CreateMerchantDto, UpdateMerchantDto, ListMerchantDto, CreateApplyDto, ListApplyDto, NearbyMerchantDto } from './dto/index';
 import { RequirePermission } from 'src/common/decorators/require-permission.decorator';
 
 @ApiTags('业务-同城商家')
@@ -72,6 +72,10 @@ export class AppMerchantController {
   @ApiOperation({ summary: '商家列表' })
   @Get('list')
   getList(@Query() query: { type?: string; keyword?: string; pageNum?: number; pageSize?: number }) { return this.service.getAppMerchants(query); }
+
+  @ApiOperation({ summary: '附近商家（按距离排序）' })
+  @Get('nearby')
+  getNearby(@Query() query: NearbyMerchantDto) { return this.service.findNearbyMerchants(query); }
 
   @ApiOperation({ summary: '商家详情' })
   @Get(':id')

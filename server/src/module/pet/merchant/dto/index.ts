@@ -44,3 +44,12 @@ export class ListApplyDto extends PagingDto {
   @ApiProperty({ required: false }) @IsOptional() @IsString() keyword?: string;
   @ApiProperty({ required: false }) @IsOptional() @IsString() status?: string;
 }
+
+// ---- 附近商家 ----
+export class NearbyMerchantDto extends PagingDto {
+  @ApiProperty({ description: '用户纬度', required: true }) @IsNumber() userLat: number;
+  @ApiProperty({ description: '用户经度', required: true }) @IsNumber() userLng: number;
+  @ApiProperty({ description: '最大距离(km)，默认10', required: false }) @IsOptional() @IsNumber() maxDistance?: number;
+  @ApiProperty({ description: '商家类型', required: false }) @IsOptional() @IsString() type?: string;
+  @ApiProperty({ description: '关键词', required: false }) @IsOptional() @IsString() keyword?: string;
+}

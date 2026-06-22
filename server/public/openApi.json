@@ -6422,6 +6422,110 @@
         ]
       }
     },
+    "/app/merchant/nearby": {
+      "get": {
+        "operationId": "AppMerchantController_getNearby",
+        "summary": "附近商家（按距离排序）",
+        "parameters": [
+          {
+            "name": "pageNum",
+            "required": true,
+            "in": "query",
+            "description": "当前分页",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": true,
+            "in": "query",
+            "description": "每页数量",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "orderByColumn",
+            "required": false,
+            "in": "query",
+            "description": "排序字段",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isAsc",
+            "required": false,
+            "in": "query",
+            "description": "排序规则",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userLat",
+            "required": true,
+            "in": "query",
+            "description": "用户纬度",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "userLng",
+            "required": true,
+            "in": "query",
+            "description": "用户经度",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "maxDistance",
+            "required": false,
+            "in": "query",
+            "description": "最大距离(km)，默认10",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "description": "商家类型",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "keyword",
+            "required": false,
+            "in": "query",
+            "description": "关键词",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "小程序-同城商家"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
     "/app/merchant/{id}": {
       "get": {
         "operationId": "AppMerchantController_findOne",

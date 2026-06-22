@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { ResultData } from 'src/common/utils/result';
 import { CityMerchantEntity } from './entities/city-merchant.entity';
 import { MerchantApplyEntity } from './entities/merchant-apply.entity';
-import { CreateMerchantDto, UpdateMerchantDto, ListMerchantDto, CreateApplyDto, ListApplyDto } from './dto/index';
+import { CreateMerchantDto, UpdateMerchantDto, ListMerchantDto, CreateApplyDto, ListApplyDto, NearbyMerchantDto } from './dto/index';
 
 @Injectable()
 export class MerchantService {
@@ -110,5 +110,62 @@ export class MerchantService {
   async submitApply(dto: CreateApplyDto) {
     await this.applyRepo.save({ ...dto, status: 'pending' });
     return ResultData.ok();
+  }
+
+  // ====== 附近商家（Haversine 距离计算） ======
+  async findNearbyMerchants(query: NearbyMerchantDto) {
+    const { userLat, userLng, maxDistance = 10, type, keyword, pageNum = 1, pageSize = 10 } = query;
+
+    // Haversine 公式计算距离（单位：km）
+    const distanceExpr = `(
+      2 * 6371 * ASIN(SQRT(
+        POW(SIN((:userLat1 - m.lat) * PI() / 180 / 2), 2)
+        + COS(:userLat2 * PI() / 180) * COS(m.lat * PI() / 180)
+        * POW(SIN((:userLng1 - m.lng) * PI() / 180 / 2), 2)
+      ))
+    )`;
+
+    const params: Record<string, any> = {
+      userLat1: userLat, userLat2: userLat, userLng1: userLng,
+      s: 'active',
+    };
+    if (maxDistance > 0) params.maxDist = maxDistance;
+    if (type) params.t = type;
+    if (keyword) params.kw = `%${keyword}%`;
+
+    const buildWhere = () => {
+      const conds = [
+        'm.status = :s',
+        'm.lat IS NOT NULL',
+        'm.lng IS NOT NULL',
+      ];
+      if (type) conds.push('m.type = :t');
+      if (keyword) conds.push('m.name LIKE :kw');
+      if (maxDistance > 0) conds.push(`${distanceExpr} <= :maxDist`);
+      return conds;
+    };
+
+    // 分页查询（带距离字段）
+    const qb = this.merchantRepo.createQueryBuilder('m')
+      .addSelect(distanceExpr, 'distance')
+      .where(buildWhere().join(' AND '), params)
+      .orderBy('distance', 'ASC')
+      .skip(+pageSize * (+pageNum - 1))
+      .take(+pageSize);
+
+    const { entities, raw } = await qb.getRawAndEntities();
+    const list = entities.map((entity, i) => ({
+      ...entity,
+      distance: Math.round(Number(raw[i].distance) * 100) / 100,
+    }));
+
+    // 总数查询（不含排序和分页）
+    const countQb = this.merchantRepo.createQueryBuilder('m')
+      .select('COUNT(*)', 'cnt')
+      .where(buildWhere().join(' AND '), params);
+    const [{ cnt }] = await countQb.getRawMany();
+    const total = Number(cnt) || 0;
+
+    return ResultData.ok({ list, total });
   }
 }

@@ -55,7 +55,7 @@
     <pagination v-show="total > 0" :total="total" v-model:page="queryParams.pageNum" v-model:limit="queryParams.pageSize" @pagination="getList" />
 
     <!-- 新增/编辑弹窗 -->
-    <el-dialog :title="dialogTitle" v-model="dialogVisible" width="640px" destroy-on-close>
+    <el-dialog :title="dialogTitle" v-model="dialogVisible" width="720px" destroy-on-close>
       <el-form :model="form" label-width="100px">
         <el-form-item label="商家名称" required><el-input v-model="form.name" /></el-form-item>
         <el-form-item label="类型"><el-select v-model="form.type" placeholder="选择类型"><el-option label="宠物店" value="shop" /><el-option label="宠物医院" value="hospital" /><el-option label="其他" value="other" /></el-select></el-form-item>
@@ -65,8 +65,9 @@
           <image-upload v-model="form.imgUrl" :limit="1" :action="ossUploadUrl" />
         </el-form-item>
         <el-form-item label="评分"><el-input-number v-model="form.score" :min="0" :max="5" :step="0.1" :precision="1" /></el-form-item>
-        <el-form-item label="经度"><el-input-number v-model="form.lng" :precision="6" :step="0.000001" /></el-form-item>
-        <el-form-item label="纬度"><el-input-number v-model="form.lat" :precision="6" :step="0.000001" /></el-form-item>
+        <el-form-item label="地图选点">
+          <map-picker v-model="mapLocation" @address-change="onMapAddressChange" />
+        </el-form-item>
         <el-form-item label="简介"><el-input v-model="form.description" type="textarea" :rows="3" /></el-form-item>
         <el-form-item label="状态"><el-select v-model="form.status"><el-option label="正常" value="active" /><el-option label="禁用" value="disabled" /><el-option label="待审" value="pending" /></el-select></el-form-item>
       </el-form>
@@ -76,7 +77,8 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed } from 'vue'
+import MapPicker from '@/components/MapPicker/index.vue'
 import { useRouter } from 'vue-router'
 import { listMerchant, getMerchant, addMerchant, updateMerchant, delMerchant, toggleMerchantStatus } from '@/api/pet/merchant'
 
@@ -87,6 +89,15 @@ const queryParams = reactive({ pageNum: 1, pageSize: 10, keyword: undefined, typ
 const ossUploadUrl = import.meta.env.VITE_APP_BASE_API + '/common/upload/oss'
 const defaultForm = { name: '', type: 'shop', phone: '', address: '', imgUrl: '', score: 5.0, lng: null, lat: null, description: '', status: 'active' }
 const form = reactive({ ...defaultForm, id: null })
+
+const mapLocation = computed({
+  get: () => ({ lng: form.lng, lat: form.lat }),
+  set: (val) => { form.lng = val.lng; form.lat = val.lat }
+})
+
+function onMapAddressChange({ address }) {
+  if (address && !form.address) form.address = address
+}
 
 function getList() { loading.value = true; listMerchant(queryParams).then(res => { list.value = res.data.list; total.value = res.data.total }).finally(() => loading.value = false) }
 function handleQuery() { queryParams.pageNum = 1; getList() }
